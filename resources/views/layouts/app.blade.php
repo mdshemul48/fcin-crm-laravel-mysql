@@ -78,11 +78,14 @@
                     <!-- Include the NavigationMenu Component here -->
                     <x-navigation-menu></x-navigation-menu>
 
-                    <!-- User Dropdown with Logout option -->
-                    <li class="nav-item ms-auto dropdown">
+                    <li class="ms-auto nav-item">
+                        <a class="nav-link pt-2 pb-0" href="#">24564৳</a>
+                    </li>
+
+                    <li class="nav-item  dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
-                            John Doe <!-- Dynamic User Name -->
+                            MD. Shimul
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="#">Profile</a></li>
