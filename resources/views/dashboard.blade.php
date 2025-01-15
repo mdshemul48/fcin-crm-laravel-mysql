@@ -3,5 +3,5 @@
 @section('title', 'Dashboard')
 
 @section('content')
-    <p>Welcome to the Dashboard. You can manage all your data here.</p>
+    <p>this is the best</p>
 @endsection
