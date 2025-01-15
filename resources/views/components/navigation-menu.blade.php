@@ -1,11 +1,8 @@
 <li class="nav-item">
-    <a class="nav-link" href="#">User Management</a>
+    <a class="nav-link" href="#">Clients</a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="#">Client Management</a>
-</li>
-<li class="nav-item">
-    <a class="nav-link" href="#">Sub Reseller Management</a>
+    <a class="nav-link" href="#">Sub Reseller</a>
 </li>
 <li class="nav-item">
     <a class="nav-link" href="#">Expenses</a>
