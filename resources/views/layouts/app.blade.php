@@ -13,10 +13,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
+    <!-- Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
+
     @vite('resources/js/app.js')
 
     <style>
-        /* Make the entire page a flex container */
+        /* Custom styles */
         html,
         body {
             height: 100%;
@@ -24,15 +27,12 @@
             display: flex;
             flex-direction: column;
             font-family: 'Poppins', sans-serif;
-            /* Set the font to Poppins */
         }
 
-        /* Main content should take all available space */
         .content {
             flex: 1;
         }
 
-        /* Title styling */
         .header-title {
             font-weight: 600;
             font-size: 2rem;
@@ -41,7 +41,6 @@
             letter-spacing: 1px;
         }
 
-        /* Footer styling */
         footer {
             background-color: #343a40;
             color: white;
@@ -49,17 +48,20 @@
             padding: 20px;
         }
 
-        /* Navbar styling */
         .navbar {
             margin-bottom: 10px;
         }
 
-        /* Custom styling for dropdown menu */
         .dropdown-menu {
             min-width: 200px;
         }
+
+        .fl-wrapper {
+            margin-top: 45px;
+        }
     </style>
 </head>
+
 
 <body>
     <!-- Navbar -->
@@ -121,6 +123,23 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- Custom JS for Toastr Notifications -->
+    <script>
+        @if (session('success'))
+            toastr.success("{{ session('success') }}");
+        @elseif (session('error'))
+            toastr.error("{{ session('error') }}");
+        @elseif ($errors->any())
+            @foreach ($errors->all() as $error)
+                toastr.error("{{ $error }}");
+            @endforeach
+        @endif
+    </script>
 </body>
+
 
 </html>
