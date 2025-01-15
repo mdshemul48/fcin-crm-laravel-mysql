@@ -109,7 +109,7 @@
 
     <!-- Main Content -->
     <div class="container mt-4 content">
-        <h2 class="header-title">@yield('title', 'Default Page Title')</h2> <!-- Dynamic title -->
+        <h2 class="header-title">@yield('title', 'Default Page Title')</h2>
         <hr class="my-1">
         <div class="content">
             @yield('content') <!-- Dynamic content -->
