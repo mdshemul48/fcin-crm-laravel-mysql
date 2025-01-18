@@ -5,20 +5,20 @@
 
 @section('content')
     <p>this is the best</p>
-    <input id="datepicker" width="276" />
+    {{-- <input id="datepicker" width="276" /> --}}
 
 @endsection
 
-@section('css')
+{{-- @section('css')
     <style>
         .input-group-append {
             cursor: pointer;
         }
     </style>
 
-@endsection
+@endsection --}}
 
-@push('custom-scripts')
+{{-- @push('custom-scripts')
     <script>
         $('#datepicker').datepicker({
             uiLibrary: 'bootstrap5',
@@ -26,4 +26,4 @@
             format: 'dd/mm/yyyy'
         });
     </script>
-@endpush
+@endpush --}}
