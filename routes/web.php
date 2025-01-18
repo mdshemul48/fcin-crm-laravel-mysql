@@ -3,7 +3,7 @@
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
-
+use App\Http\Controllers\PackageController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -28,6 +28,7 @@ Route::middleware('auth')->group(function () {
 
 
     Route::resource('clients', ClientController::class);
+    Route::resource('packages', PackageController::class);
 });
 
 
