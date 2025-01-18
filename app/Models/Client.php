@@ -20,5 +20,7 @@ class Client extends Model
         'current_balance',
         'due',
         'bill_amount',
+        'created_by',
+        'disabled'
     ];
 }
