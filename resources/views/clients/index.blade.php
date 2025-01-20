@@ -2,9 +2,12 @@
 
 @section('title', 'Clients List')
 
+@section('header_content')
+    <a href="{{ route('clients.create') }}" class="btn btn-primary">Add New Client</a>
+@endsection
+
 @section('content')
-    <div class="container-fluid">
-        <a href="{{ route('clients.create') }}" class="btn btn-primary mb-3 mt-1">Add New Client</a>
+    <div>
         <table class="table table-bordered">
             <thead>
                 <tr>

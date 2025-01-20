@@ -2,8 +2,11 @@
 
 @section('title', 'Users Management')
 
+@section('header_content')
+    <a href="{{ route('users.create') }}" class="btn btn-primary">Add User</a>
+@endsection
+
 @section('content')
-    <a href="{{ route('users.create') }}" class="btn btn-primary my-2">Add User</a>
 
     @if (session('success'))
         <div class="alert alert-success">

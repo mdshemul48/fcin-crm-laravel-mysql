@@ -7,6 +7,7 @@
     <title>@yield('title', 'Default Title') - {{ env('APP_NAME', '') }}</title> <!-- Dynamic title -->
 
     <!-- Google Fonts (Poppins) -->
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5.3.3 CDN -->
@@ -21,8 +22,13 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
+
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
+
         /* Custom styles */
         html,
         body {
@@ -33,16 +39,34 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        .navbar-brand {
+            font-family: 'Neoda', sans-serif;
+            font-size: 1.5rem;
+            color: #d62f0d;
+        }
+
+        .navbar {
+            background-color: #f1e2d5 !important;
+        }
+
+        .navbar-collapse {
+            font-family: "Quicksand", serif;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
         .content {
             flex: 1;
         }
 
         .header-title {
             font-weight: 600;
-            font-size: 2rem;
-            color: #333;
+            font-size: 1.8rem;
+            color: rgb(51, 48, 46);
             text-transform: uppercase;
             letter-spacing: 1px;
+            font-family: 'ChicagoFLF', sans-serif;
+
         }
 
         footer {
@@ -69,7 +93,7 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">{{ env('APP_NAME', '') }}</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -112,8 +136,17 @@
     </nav>
 
     <!-- Main Content -->
-    <div class="container mt-4 content">
-        <h2 class="header-title">@yield('title', 'Default Page Title')</h2>
+    <div class="container mt-2 content">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h2 class="header-title">@yield('title', 'Default Page Title')</h2>
+            </div>
+            <div>
+                @yield('header_content')
+            </div>
+
+        </div>
+
         <hr class="my-1">
         <div class="content">
             @yield('content') <!-- Dynamic content -->

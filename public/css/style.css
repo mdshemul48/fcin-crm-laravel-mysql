@@ -1,0 +1,13 @@
+@font-face {
+    font-family: "ChicagoFLF";
+    src: url("/fonts/ChicagoFLF.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Neoda';
+    src: url('/fonts/neoda.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}

@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
 @section('title', 'Packages')
-
-@section('content')
+@section('header_content')
     <a href="{{ route('packages.create') }}" class="btn btn-primary">Add Package</a>
+@endsection
+@section('content')
+
     <table class="table mt-4">
         <thead>
             <tr>
