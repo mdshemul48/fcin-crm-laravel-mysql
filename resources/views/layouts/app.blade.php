@@ -87,6 +87,10 @@
         .fl-wrapper {
             margin-top: 45px;
         }
+
+        footer {
+            background-color: rgb(51, 48, 46);
+        }
     </style>
 </head>
 
@@ -118,7 +122,6 @@
                             {{ Auth()->user()->name }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="#">Profile</a></li>
                             @if (isAdmin())
                                 <li><a class="dropdown-item" href="{{ route('users.index') }}">Users List</a></li>
                             @endif

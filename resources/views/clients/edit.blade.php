@@ -71,7 +71,6 @@
             const packageSelect = document.getElementById('package_id');
             const billAmountInput = document.getElementById('bill_amount');
 
-            // Get the selected package price from the data attribute
             const selectedOption = packageSelect.options[packageSelect.selectedIndex];
             const packagePrice = selectedOption.getAttribute('data-price');
 
@@ -81,10 +80,5 @@
                 billAmountInput.value = '';
             }
         }
-
-        // Initialize the bill amount on page load
-        document.addEventListener('DOMContentLoaded', () => {
-            updateBillAmount();
-        });
     </script>
 @endsection

@@ -25,12 +25,26 @@
             font-family: 'Poppins', sans-serif;
         }
 
+        @font-face {
+            font-family: "ChicagoFLF";
+            src: url("/fonts/ChicagoFLF.ttf") format("truetype");
+            font-weight: normal;
+            font-style: normal;
+        }
+
         .login-container {
             max-width: 400px;
             width: 100%;
             padding: 50px;
             background-color: #f8f9fa;
             border-radius: 8px;
+        }
+
+        .software-name {
+            font-family: 'ChicagoFLF', sans-serif;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #d62f0d;
         }
 
         .login-container h2 {
@@ -45,7 +59,8 @@
 
 <body>
     <div class="container">
-        <div class="login-container">
+        <h2 class="text-center software-name mb-3">Friends Online</h2>
+        <div class="login-container ">
             <h2 class="text-center">Login</h2>
             <form action="{{ route('login') }}" method="POST">
                 @csrf
