@@ -16,7 +16,7 @@
         <tbody>
             @foreach ($packages as $package)
                 <tr>
-                    <td>{{ $package->package_name }}</td>
+                    <td>{{ $package->name }}</td>
                     <td>{{ $package->price }}</td>
                     <td>{{ $package->created_by ? $package->createdBy->name : 'N/A' }}</td>
                     <td>

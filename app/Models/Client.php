@@ -23,4 +23,9 @@ class Client extends Model
         'created_by',
         'disabled'
     ];
+
+    public function package()
+    {
+        return $this->belongsTo(Package::class, 'package_id');
+    }
 }

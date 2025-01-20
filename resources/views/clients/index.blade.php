@@ -12,7 +12,7 @@
                     <th>Client ID</th>
                     <th>Username</th>
                     <th>Phone Number</th>
-                    <th>Package ID</th>
+                    <th>Package</th>
                     <th>Bill Amount</th>
                     <th>Disabled</th>
                     <th>Created By</th>
@@ -26,7 +26,7 @@
                         <td>{{ $client->client_id }}</td>
                         <td>{{ $client->username }}</td>
                         <td>{{ $client->phone_number }}</td>
-                        <td>{{ $client->package_id }}</td>
+                        <td> {{ $client->package->name }} ({{ number_format($client->package->price, 2) }} ৳)</td>
                         <td>{{ $client->bill_amount }}</td>
                         <td>{{ $client->disabled ? 'Yes' : 'No' }}</td>
                         <td>{{ $client->creator->name ?? 'N/A' }}</td>

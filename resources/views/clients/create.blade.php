@@ -3,8 +3,7 @@
 @section('title', 'Add Client')
 
 @section('content')
-    <div class="container">
-        <h1 class="my-3">Add New Client</h1>
+    <div class="container-fluid">
         <form action="{{ route('clients.store') }}" method="POST">
             @csrf
             <div class="mb-3">
@@ -39,9 +38,16 @@
                 @enderror
             </div>
             <div class="mb-3">
-                <label for="package_id" class="form-label">Package ID</label>
-                <input type="number" name="package_id" id="package_id" class="form-control" value="{{ old('package_id') }}"
-                    required>
+                <label for="package_id" class="form-label">Package</label>
+                <select name="package_id" id="package_id" class="form-control" onchange="updateBillAmount()">
+                    <option value="">Select a Package</option>
+                    @foreach ($packages as $package)
+                        <option value="{{ $package->id }}" data-price="{{ $package->price }}"
+                            {{ old('package_id') == $package->id ? 'selected' : '' }}>
+                            {{ $package->name }} ({{ number_format($package->price, 2) }} ৳)
+                        </option>
+                    @endforeach
+                </select>
                 @error('package_id')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -66,4 +72,21 @@
             </div>
         </form>
     </div>
+
+    <script>
+        function updateBillAmount() {
+            const packageSelect = document.getElementById('package_id');
+            const billAmountInput = document.getElementById('bill_amount');
+
+            // Get the selected package price from the data attribute
+            const selectedOption = packageSelect.options[packageSelect.selectedIndex];
+            const packagePrice = selectedOption.getAttribute('data-price');
+
+            if (packagePrice) {
+                billAmountInput.value = parseFloat(packagePrice).toFixed(2);
+            } else {
+                billAmountInput.value = '';
+            }
+        }
+    </script>
 @endsection

@@ -7,9 +7,9 @@
         @csrf
         @method('PUT')
         <div class="form-group">
-            <label for="package_name">Package Name</label>
-            <input type="text" name="package_name" id="package_name" class="form-control"
-                value="{{ old('package_name', $package->package_name) }}" required>
+            <label for="name">Package Name</label>
+            <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $package->name) }}"
+                required>
         </div>
 
         <div class="form-group">

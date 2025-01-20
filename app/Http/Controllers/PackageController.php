@@ -21,12 +21,12 @@ class PackageController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'package_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
         ]);
 
         Package::create([
-            'package_name' => $request->package_name,
+            'name' => $request->name,
             'price' => $request->price,
             'created_by' => auth()->id(),
         ]);
@@ -42,12 +42,12 @@ class PackageController extends Controller
     public function update(Request $request, Package $package)
     {
         $request->validate([
-            'package_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
         ]);
 
         $package->update([
-            'package_name' => $request->package_name,
+            'name' => $request->name,
             'price' => $request->price,
         ]);
 

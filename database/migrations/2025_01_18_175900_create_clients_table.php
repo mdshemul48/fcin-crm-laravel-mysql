@@ -15,7 +15,7 @@ return new class extends Migration
             $table->enum("status", ["due", "paid"])->default("due");
             $table->string('phone_number');
             $table->text('address');
-            $table->unsignedBigInteger('package_id');
+            $table->foreignId('package_id');
             $table->decimal('current_balance', 10, 2)->default(0);
             $table->decimal('due', 10, 2)->default(0);
             $table->decimal('bill_amount', 10, 2);

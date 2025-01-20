@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Package;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -10,13 +11,15 @@ class ClientController extends Controller
 {
     public function index()
     {
-        $clients = Client::paginate(100);
+        $clients = Client::with("package")->paginate(100);
         return view('clients.index', compact('clients'));
     }
 
     public function create()
     {
-        return view('clients.create');
+        $packages = Package::all();
+
+        return view('clients.create', compact("packages"));
     }
 
     public function store(Request $request)
@@ -26,9 +29,9 @@ class ClientController extends Controller
             'username' => 'required|string|max:255',
             'phone_number' => 'required|string|max:15',
             'address' => 'required|string',
-            'package_id' => 'required|integer',
+            'package_id' => 'required|exists:packages,id',
             'bill_amount' => 'required|numeric|min:0',
-            'disabled' => 'nullable|boolean', // Add validation for the 'disabled' field
+            'disabled' => 'nullable|boolean',
         ]);
 
         Client::create([
@@ -45,10 +48,13 @@ class ClientController extends Controller
         return redirect()->route('clients.index')->with('success', 'Client created successfully.');
     }
 
-    public function edit(Client $client)
+    public function edit($id)
     {
-        return view('clients.edit', compact('client'));
+        $client = Client::findOrFail($id);
+        $packages = Package::all();
+        return view('clients.edit', compact('client', 'packages'));
     }
+
 
     public function update(Request $request, Client $client)
     {
@@ -56,7 +62,7 @@ class ClientController extends Controller
             'username' => 'required|string|max:255',
             'phone_number' => 'required|string|max:15',
             'address' => 'required|string',
-            'package_id' => 'required|integer',
+            'package_id' => 'required|exists:packages,id',
             'bill_amount' => 'required|numeric|min:0',
             'disabled' => 'nullable|boolean',
         ]);

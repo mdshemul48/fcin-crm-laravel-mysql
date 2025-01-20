@@ -32,9 +32,16 @@
                 @enderror
             </div>
             <div class="mb-3">
-                <label for="package_id" class="form-label">Package ID</label>
-                <input type="number" name="package_id" id="package_id" class="form-control"
-                    value="{{ old('package_id', $client->package_id) }}" required>
+                <label for="package_id" class="form-label">Package</label>
+                <select name="package_id" id="package_id" class="form-control" onchange="updateBillAmount()">
+                    <option value="">Select a Package</option>
+                    @foreach ($packages as $package)
+                        <option value="{{ $package->id }}" data-price="{{ $package->price }}"
+                            {{ old('package_id', $client->package_id) == $package->id ? 'selected' : '' }}>
+                            {{ $package->name }} ({{ number_format($package->price, 2) }} USD)
+                        </option>
+                    @endforeach
+                </select>
                 @error('package_id')
                     <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -59,4 +66,26 @@
             </div>
         </form>
     </div>
+
+    <script>
+        function updateBillAmount() {
+            const packageSelect = document.getElementById('package_id');
+            const billAmountInput = document.getElementById('bill_amount');
+
+            // Get the selected package price from the data attribute
+            const selectedOption = packageSelect.options[packageSelect.selectedIndex];
+            const packagePrice = selectedOption.getAttribute('data-price');
+
+            if (packagePrice) {
+                billAmountInput.value = parseFloat(packagePrice).toFixed(2);
+            } else {
+                billAmountInput.value = '';
+            }
+        }
+
+        // Initialize the bill amount on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateBillAmount();
+        });
+    </script>
 @endsection

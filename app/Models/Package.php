@@ -10,7 +10,7 @@ class Package extends Model
     use HasFactory;
 
     protected $fillable = [
-        'package_name',
+        'name',
         'price',
         'created_by',
     ];
