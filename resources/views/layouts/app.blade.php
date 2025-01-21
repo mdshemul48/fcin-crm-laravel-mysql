@@ -17,7 +17,10 @@
     <!-- Toastr CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
-    @vite('resources/js/app.js')
+    @if (env('AUTO_RELOAD', false))
+        @vite('resources/js/app.js')
+    @endif
+
     @yield('css')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
@@ -29,7 +32,6 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
-        /* Custom styles */
         html,
         body {
             height: 100%;
