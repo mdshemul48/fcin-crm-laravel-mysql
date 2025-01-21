@@ -61,8 +61,8 @@
                 @enderror
             </div>
             <div class="mb-3">
-                <label for="disabled" class="form-label">Billing Status</label>
-                <select name="disabled" id="disabled" class="form-control">
+                <label for="billing_status" class="form-label">Billing Status</label>
+                <select name="billing_status" id="billing_status" class="form-control">
                     <option value="1" {{ old('billing_status') == '1' ? 'selected' : '' }}>Enable</option>
                     <option value="0" {{ old('billing_status') == '0' ? 'selected' : '' }}>Disable</option>
                 </select>

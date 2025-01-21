@@ -22,10 +22,10 @@
                             ({{ $client->package->price }})</li>
                         <li class="list-group-item"><strong>Bill Amount:</strong> {{ $client->bill_amount }}</li>
                         <li class="list-group-item">
-                            <strong>Billing Disabled:</strong>
+                            <strong>Billing Status:</strong>
                             <span
-                                class="{{ $client->disabled ? 'bg-danger text-light rounded p-1' : 'bg-success text-light rounded p-1' }}">
-                                {{ $client->disabled ? 'YES' : 'NO' }}
+                                class="{{ $client->billing_status ? 'badge rounded-pill text-bg-success' : 'badge rounded-pill text-bg-danger' }}">
+                                {{ $client->billing_status ? 'Enabled' : 'Disabled' }}
                             </span>
                         </li>
                         <li class="list-group-item"><strong>Created By:</strong> {{ $client->createdBy->name ?? 'N/A' }}

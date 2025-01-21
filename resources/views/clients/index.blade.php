@@ -11,7 +11,7 @@
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
         </div>
-        <div class="ms-0 ms-md-1"><a href="{{ route('clients.create') }}" class="btn btn-primary">Add New Client</a></div>
+        <div class="ms-0 ms-md-1"><a href="{{ route('clients.create') }}" class="btn btn-dark">Add New Client</a></div>
     </div>
 @endsection
 

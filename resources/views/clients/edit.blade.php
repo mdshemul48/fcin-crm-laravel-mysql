@@ -63,12 +63,15 @@
                 @enderror
             </div>
             <div class="mb-3">
-                <label for="disabled" class="form-label">Billing Status</label>
-                <select name="disabled" id="disabled" class="form-control">
-                    <option value="0" {{ old('disabled', $client->billing_status) == '0' ? 'selected' : '' }}>disable
+                <label for="billing_status" class="form-label">Billing Status</label>
+                <select name="billing_status" id="billing_status" class="form-control">
+                    <option value="1" {{ old('billing_status', $client->billing_status) == '1' ? 'selected' : '' }}>
+                        Enable
                     </option>
-                    <option value="1" {{ old('disabled', $client->billing_status) == '1' ? 'selected' : '' }}>Enable
+                    <option value="0" {{ old('billing_status', $client->billing_status) == '0' ? 'selected' : '' }}>
+                        disable
                     </option>
+
                 </select>
             </div>
             <div class="mb-3">
