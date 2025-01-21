@@ -56,7 +56,7 @@
 
 <body>
     <div class="container">
-        <h2 class="text-center software-name mb-3">Friends Online</h2>
+        <h2 class="text-center software-name mb-3">{{ env('APP_NAME') }}</h2>
         <div class="login-container ">
             <h2 class="text-center">Login</h2>
             <form action="{{ route('login') }}" method="POST">

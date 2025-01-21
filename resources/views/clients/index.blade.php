@@ -32,7 +32,7 @@
                         <td> {{ $client->package->name }} ({{ number_format($client->package->price, 2) }} ৳)</td>
                         <td>{{ $client->bill_amount }}</td>
                         <td>{{ $client->disabled ? 'Yes' : 'No' }}</td>
-                        <td>{{ $client->creator->name ?? 'N/A' }}</td>
+                        <td>{{ $client->createdBy->name ?? 'N/A' }}</td>
                         <td>
                             <a href="{{ route('clients.show', $client->id) }}" class="btn btn-info btn-sm">Details</a>
                             <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-warning btn-sm">Edit</a>

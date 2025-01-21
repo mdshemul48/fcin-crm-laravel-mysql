@@ -28,4 +28,9 @@ class Client extends Model
     {
         return $this->belongsTo(Package::class, 'package_id');
     }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }

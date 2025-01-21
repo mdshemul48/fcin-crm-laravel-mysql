@@ -7,6 +7,15 @@
         <form action="{{ route('clients.update', $client->id) }}" method="POST">
             @csrf
             @method('PUT')
+
+            <div class="mb-3">
+                <label for="client_id" class="form-label">Client ID</label>
+                <input type="text" name="client_id" id="client_id" class="form-control"
+                    value="{{ old('client_id', $client->client_id) }}" required>
+                @error('client_id')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
                 <input type="text" name="username" id="username" class="form-control"

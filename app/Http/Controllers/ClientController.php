@@ -11,7 +11,8 @@ class ClientController extends Controller
 {
     public function index()
     {
-        $clients = Client::with("package")->paginate(100);
+        $clients = Client::with("package", "createdBy")->paginate(100);
+        // dd($clients);
         return view('clients.index', compact('clients'));
     }
 
@@ -59,6 +60,7 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         $request->validate([
+            'client_id' => 'required|unique:clients,client_id',
             'username' => 'required|string|max:255',
             'phone_number' => 'required|string|max:15',
             'address' => 'required|string',
@@ -74,6 +76,7 @@ class ClientController extends Controller
             'package_id',
             'bill_amount',
             'disabled',
+            'client_id',
         ]));
 
         return redirect()->route('clients.index')->with('success', 'Client updated successfully.');

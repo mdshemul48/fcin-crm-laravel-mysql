@@ -6,7 +6,7 @@
 @endsection
 @section('content')
 
-    <table class="table mt-4">
+    <table class="table">
         <thead>
             <tr>
                 <th>Package Name</th>
