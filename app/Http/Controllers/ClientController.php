@@ -15,8 +15,8 @@ class ClientController extends Controller
         if ($request->has('search')) {
             $search = $request->input('search');
             $query->where('username', 'like', "%{$search}%")
-                  ->orWhere('phone_number', 'like', "%{$search}%")
-                  ->orWhere('client_id', 'like', "%{$search}%");
+                ->orWhere('phone_number', 'like', "%{$search}%")
+                ->orWhere('client_id', 'like', "%{$search}%");
         }
 
         $clients = $query->paginate(100);
@@ -39,21 +39,16 @@ class ClientController extends Controller
             'address' => 'required|string',
             'package_id' => 'required|exists:packages,id',
             'bill_amount' => 'required|numeric|min:0',
-            'disabled' => 'nullable|boolean',
+            'billing_status' => 'nullable|boolean',
+            'remarks' => 'nullable|string',
         ]);
 
-        Client::create([
-            'client_id' => $request->client_id,
-            'username' => $request->username,
-            'phone_number' => $request->phone_number,
-            'address' => $request->address,
-            'package_id' => $request->package_id,
-            'bill_amount' => $request->bill_amount,
-            'disabled' => $request->has('disabled') ? $request->disabled : false,
-            'created_by' => auth()->id(),
-        ]);
+        $clientData = $request->all();
+        $clientData['created_by'] = auth()->id();
 
-        return redirect()->route('clients.index')->with('success', 'Client created successfully.');
+        Client::create($clientData);
+
+        return redirect()->route('clients.index')->with('success', 'Client created successfully!');
     }
 
     public function edit($id)
@@ -67,26 +62,19 @@ class ClientController extends Controller
     public function update(Request $request, Client $client)
     {
         $request->validate([
-            'client_id' => 'required|unique:clients,client_id',
+            'client_id' => 'required|unique:clients,client_id,' . $client->id,
             'username' => 'required|string|max:255',
             'phone_number' => 'required|string|max:15',
             'address' => 'required|string',
             'package_id' => 'required|exists:packages,id',
             'bill_amount' => 'required|numeric|min:0',
-            'disabled' => 'nullable|boolean',
+            'billing_status' => 'nullable|boolean',
+            'remarks' => 'nullable|string',
         ]);
 
-        $client->update($request->only([
-            'username',
-            'phone_number',
-            'address',
-            'package_id',
-            'bill_amount',
-            'disabled',
-            'client_id',
-        ]));
+        $client->update($request->all());
 
-        return redirect()->route('clients.index')->with('success', 'Client updated successfully.');
+        return redirect()->route('clients.index')->with('success', 'Client updated successfully!');
     }
 
 

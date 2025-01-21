@@ -27,7 +27,7 @@
                         <th>Phone Number</th>
                         <th>Package</th>
                         <th>Bill Amount</th>
-                        <th>Disabled</th>
+                        <th>Billing Status</th>
                         <th>Created By</th>
                         <th>Actions</th>
                     </tr>
@@ -41,7 +41,10 @@
                             <td>{{ $client->phone_number }}</td>
                             <td> {{ $client->package->name }} ({{ number_format($client->package->price, 2) }} ৳)</td>
                             <td>{{ $client->bill_amount }}</td>
-                            <td>{{ $client->disabled ? 'Yes' : 'No' }}</td>
+                            <td><span
+                                    class="{{ $client->billing_status ? 'badge rounded-pill text-bg-success' : 'badge rounded-pill text-bg-danger' }}">
+                                    {{ $client->billing_status ? 'enabled' : 'disabled' }}
+                                </span></td>
                             <td>{{ $client->createdBy->name ?? 'N/A' }}</td>
                             <td>
                                 <a href="{{ route('clients.show', $client->id) }}" class="btn btn-info btn-sm">Details</a>
