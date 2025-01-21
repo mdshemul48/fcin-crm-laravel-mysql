@@ -63,7 +63,7 @@
 
         .header-title {
             font-weight: 600;
-            font-size: 1.8rem;
+            font-size: 1.7rem;
             color: rgb(51, 48, 46);
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -140,21 +140,21 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="container mt-2 content">
-        <div class="d-flex justify-content-between">
+        <div
+            class="d-flex flex-column flex-md-row align-items-start align-items-lg-center gap-3 justify-content-between">
             <div>
                 <h2 class="header-title">@yield('title', 'Default Page Title')</h2>
             </div>
-            <div>
+            <div class="ms-0 ms-md-auto mt-2 mt-md-0">
                 @yield('header_content')
             </div>
-
         </div>
+
 
         <hr class="my-1">
         <div class="content">
-            @yield('content') <!-- Dynamic content -->
+            @yield('content')
         </div>
     </div>
 

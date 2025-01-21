@@ -4,15 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Package;
-use App\Models\User;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $clients = Client::with("package", "createdBy")->paginate(100);
-        // dd($clients);
+        $query = Client::with("package", "createdBy");
+
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->where('username', 'like', "%{$search}%")
+                  ->orWhere('phone_number', 'like', "%{$search}%")
+                  ->orWhere('client_id', 'like', "%{$search}%");
+        }
+
+        $clients = $query->paginate(100);
         return view('clients.index', compact('clients'));
     }
 
