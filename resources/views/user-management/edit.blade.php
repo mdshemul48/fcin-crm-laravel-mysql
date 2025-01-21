@@ -42,7 +42,6 @@
             <select name="role" id="role" class="form-control" required>
                 <option value="admin" @if ($user->role == 'admin') selected @endif>Admin</option>
                 <option value="support" @if ($user->role == 'support') selected @endif>Support</option>
-                <option value="user" @if ($user->role == 'user') selected @endif>User</option>
             </select>
             @error('role')
                 <div class="text-danger">{{ $message }}</div>

@@ -34,7 +34,6 @@
                 <select name="role" id="role" class="form-control" required>
                     <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
                     <option value="support" {{ old('role') == 'support' ? 'selected' : '' }}>Support</option>
-                    <option value="user" {{ old('role') == 'user' ? 'selected' : '' }}>User</option>
                 </select>
                 @error('role')
                     <div class="text-danger">{{ $message }}</div>

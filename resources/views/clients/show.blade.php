@@ -1,9 +1,12 @@
 @extends('layouts.app')
 
 @section('title', 'Client Details')
+
 @section('header_content')
     <a href="{{ route('clients.index') }}" class="btn btn-secondary">Back to List</a>
+    <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-warning">Edit</a>
 @endsection
+
 @section('content')
     <div class="card mt-2">
         <div class="card-body">
