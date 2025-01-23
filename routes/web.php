@@ -11,7 +11,7 @@ Route::middleware('guest')->group(function () {
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 });
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'check.user.status'])->group(function () {
     Route::get('/', function () {
         return view("dashboard");
     })->name('dashboard');
@@ -27,12 +27,8 @@ Route::middleware('auth')->group(function () {
         Route::delete('users/{user}', [UserController::class, 'destroy'])->name('users.destroy');
     });
 
-
-
     Route::resource('clients', ClientController::class);
     Route::resource('packages', PackageController::class);
 });
-
-
 
 require __DIR__ . '/auth.php';

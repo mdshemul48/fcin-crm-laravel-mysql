@@ -32,13 +32,16 @@ class AuthenticatedSessionController extends Controller
             'email' => $request->email,
             'password' => $request->password
         ], $request->remember)) {
-            // If successful, regenerate the session and redirect to the dashboard
-            $request->session()->regenerate();
+            $user = Auth::user();
+            if (!$user->isActive) {
+                Auth::logout();
+                return redirect()->route("login")->with('error', 'Your account is not active.');
+            }
 
+            $request->session()->regenerate();
             return redirect()->route('dashboard');
         }
 
-        // If authentication fails, redirect back with an error message
         return redirect()->back()->with('error', 'Invalid credentials');
     }
 

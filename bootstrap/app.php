@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->alias([
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
+            'check.user.status' => \App\Http\Middleware\CheckUserStatusMiddleware::class,
             'restrict.role' => \App\Http\Middleware\AllowedRoleMiddleware::class,
 
         ]);

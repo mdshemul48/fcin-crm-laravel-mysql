@@ -9,7 +9,8 @@ describe("Admin User", function () {
             'name' => 'John Doe',
             'email' => 'john.doe@example.com',
             "password" => $this->password,
-            "role" => "admin"
+            "role" => "admin",
+            'isActive' => true
         ]);
     });
 
@@ -32,7 +33,7 @@ describe("Admin User", function () {
     });
 
     it("can create another user for support as admin", function () {
-        $testUser = User::factory()->raw(["password" => "password", 'role' => "support"]);
+        $testUser = User::factory()->raw(["password" => "password", 'role' => "support", "isActive" => true]);
         $response = $this->actingAs($this->user)->post("/users", $testUser);
 
         $response->assertStatus(302);
@@ -54,8 +55,7 @@ describe("Admin User", function () {
 describe("Support User", function () {
     beforeEach(function () {
         $this->password = 'password';
-        $testUser = User::factory()->raw(["password" => "password", 'role' => "support"]);
-        $this->user = User::create($testUser);
+        $this->user = User::factory()->create(["password" => "password", 'role' => "support", "isActive" => true]);
     });
 
     it('can see dashboard as an support user', function () {
@@ -83,5 +83,30 @@ describe("Support User", function () {
         $response->assertStatus(302);
         $response->assertRedirect("/");
         $this->assertDatabaseMissing("users", ["email" => $testUser["email"]]);
+    });
+});
+
+
+describe("Disabled User", function () {
+    beforeEach(function () {
+        $this->password = 'password';
+        $this->user = User::factory()->create(["password" => "password", 'role' => "support", "isActive" => 0]);
+    });
+
+    it('can not login as disabled user', function () {
+        $response = $this->post('/login', [
+            'email' => $this->user->email,
+            'password' => $this->password
+        ]);
+        $response->assertStatus(302);
+        $response->assertRedirect("/login");
+    });
+
+    it('can redirect disabled user to login page while using software', function () {
+        $response = $this->actingAs($this->user)->get('/');
+
+        $response->assertStatus(302);
+        $response->assertRedirect('/login');
+        $this->assertGuest();
     });
 });
