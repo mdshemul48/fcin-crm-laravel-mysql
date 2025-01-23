@@ -14,7 +14,7 @@ jobs:
     steps:
     - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
       with:
-        php-version: '8.0'
+        php-version: '8.1'
         extensions: mbstring, intl, bcmath, openssl, pdo, tokenizer, xml, ctype, fileinfo
         ini-values: post_max_size=256M, upload_max_filesize=256M
         coverage: none
