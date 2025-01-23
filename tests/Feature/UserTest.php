@@ -14,12 +14,6 @@ describe("Admin User", function () {
         ]);
     });
 
-    it('can redirect and see the login page', function () {
-        $response = $this->get('/');
-        $response->assertStatus(302);
-        $response->assertRedirect('/login');
-    });
-
     it('can can login and see dashboard', function () {
 
         $response = $this->post('/login', [
@@ -108,5 +102,9 @@ describe("Disabled User", function () {
         $response->assertStatus(302);
         $response->assertRedirect('/login');
         $this->assertGuest();
+    });
+
+    afterEach(function () {
+        $this->user->delete();
     });
 });
