@@ -72,14 +72,16 @@ describe("Support User", function () {
 
     it("can not see the users page", function () {
         $response = $this->actingAs($this->user)->get("/users");
-        $response->assertStatus(403);
+        $response->assertStatus(302);
+        $response->assertRedirect("/");
     });
 
     it('can not create another user as support', function () {
         $testUser = User::factory()->raw(["password" => "password", 'role' => "support"]);
         $response = $this->actingAs($this->user)->post("/users", $testUser);
 
-        $response->assertStatus(403);
+        $response->assertStatus(302);
+        $response->assertRedirect("/");
         $this->assertDatabaseMissing("users", ["email" => $testUser["email"]]);
     });
 });

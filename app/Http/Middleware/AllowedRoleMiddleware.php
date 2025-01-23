@@ -17,6 +17,7 @@ class AllowedRoleMiddleware
         if (auth()->check() && auth()->user()->role === $role) {
             return $next($request);
         }
-        return response()->json(['message' => 'Access Denied'], 403);
+
+        return redirect()->route("dashboard")->with('error', 'You are not allowed to access this page.');
     }
 }
