@@ -124,7 +124,7 @@
                             {{ Auth()->user()->name }}
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                            @if (isAdmin())
+                            @if (canAccess('admin'))
                                 <li><a class="dropdown-item" href="{{ route('users.index') }}">Users List</a></li>
                             @endif
                             <li>

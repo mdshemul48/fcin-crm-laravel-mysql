@@ -6,10 +6,10 @@ function USER()
 }
 
 
-if (!function_exists('isAdmin')) {
+if (!function_exists('canAccess')) {
 
-    function isAdmin()
+    function canAccess(...$roleNames)
     {
-        return USER()->role == 'admin';
+        return in_array(USER()->role, $roleNames);
     }
 }
