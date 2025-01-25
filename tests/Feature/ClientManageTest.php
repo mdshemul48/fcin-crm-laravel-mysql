@@ -175,3 +175,78 @@ describe("Client Manage", function () {
         });
     });
 });
+
+
+describe("Client Search", function () {
+    beforeEach(function () {
+        $this->user = User::factory()->create([
+            'role' => 'admin',
+            'isActive' => true
+        ]);
+
+        $this->package = Package::factory()->create([
+            'name' => 'Package 1',
+            'price' => 100
+        ]);
+
+        $this->client1 = Client::factory()->create([
+            'client_id' => "234234234",
+            'username' => 'Client 1',
+            'phone_number' => '1234567890',
+            'address' => 'Client 1 Address',
+            'package_id' => $this->package->id,
+            'bill_amount' => 150,
+            'status' => 'paid',
+            'billing_status' => true,
+            'remarks' => 'Client 1 Remarks',
+            'created_by' => $this->user->id
+        ]);
+
+        $this->client2 = Client::factory()->create([
+            'client_id' => "34234234",
+            'username' => 'Client 2',
+            'phone_number' => '0987654321',
+            'address' => 'Client 2 Address',
+            'package_id' => $this->package->id,
+            'bill_amount' => 200,
+            'status' => 'due',
+            'billing_status' => false,
+            'remarks' => 'Client 2 Remarks',
+            'created_by' => $this->user->id
+        ]);
+    });
+
+    it('can search clients by client ID', function () {
+        $response = $this->actingAs($this->user)->get('/clients?search=234234234');
+        $response->assertStatus(200);
+
+        $response->assertSee('Client 1');
+        $response->assertDontSee('Client 2');
+    });
+
+    it('can search clients by username', function () {
+        $response = $this->actingAs($this->user)->get('/clients?search=Client 1');
+        $response->assertStatus(200);
+        $response->assertSee('Client 1');
+        $response->assertDontSee('Client 2');
+    });
+
+    it('can search clients by phone number', function () {
+        $response = $this->actingAs($this->user)->get('/clients?search=1234567890');
+        $response->assertStatus(200);
+        $response->assertSee('Client 1');
+        $response->assertDontSee('Client 2');
+    });
+
+    it('can search clients by partial information', function () {
+        $response = $this->actingAs($this->user)->get('/clients?search=Client');
+        $response->assertStatus(200);
+        $response->assertSee('Client 1');
+        $response->assertSee('Client 2');
+
+        $response = $this->actingAs($this->user)->get('/clients?search=123');
+        $response->assertStatus(200);
+        $response->assertSee('Client 1');
+        $response->assertDontSee('Client 2');
+    });
+});
