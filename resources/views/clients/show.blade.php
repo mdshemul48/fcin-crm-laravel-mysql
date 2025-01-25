@@ -17,6 +17,7 @@
                         <li class="list-group-item"><strong>Client ID:</strong> {{ $client->client_id }}</li>
                         <li class="list-group-item"><strong>Username:</strong> {{ $client->username }}</li>
                         <li class="list-group-item"><strong>Phone Number:</strong> {{ $client->phone_number }}</li>
+                        <li class="list-group-item"><strong>Address:</strong> {{ $client->address }}</li>
                     </ul>
                 </div>
                 <div class="col-md-6">
@@ -25,18 +26,26 @@
                             ({{ $client->package->price }})</li>
                         <li class="list-group-item"><strong>Bill Amount:</strong> {{ $client->bill_amount }}</li>
                         <li class="list-group-item">
+                            <strong>Status:</strong>
+                            <span
+                                class="{{ $client->status == 'paid' ? 'badge rounded-pill text-bg-success' : 'badge rounded-pill text-bg-danger' }}">
+                                {{ ucfirst($client->status) }}
+                            </span>
+                        </li>
+                        <li class="list-group-item">
                             <strong>Billing Status:</strong>
                             <span
                                 class="{{ $client->billing_status ? 'badge rounded-pill text-bg-success' : 'badge rounded-pill text-bg-danger' }}">
                                 {{ $client->billing_status ? 'Enabled' : 'Disabled' }}
                             </span>
                         </li>
+
                         <li class="list-group-item"><strong>Created By:</strong> {{ $client->createdBy->name ?? 'N/A' }}
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="form-group mt-3">
+            <div class="form-group mt-1">
                 <label for="remarks">Remarks</label>
                 <textarea id="remarks" class="form-control" readonly>{{ $client->remarks }}</textarea>
             </div>

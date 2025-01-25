@@ -174,6 +174,26 @@ describe("Client Manage", function () {
             ]);
         });
     });
+
+    it("can see detail of client on detail page", function () {
+        $this->user = User::factory()->create([
+            'role' => 'admin',
+            'isActive' => true
+        ]);
+
+        $client = Client::factory()->create();
+
+        $response = $this->actingAs($this->user)->get('/clients/' . $client->id);
+        $response->assertStatus(200);
+        $response->assertSee($client->client_id);
+        $response->assertSee($client->username);
+        $response->assertSee($client->address);
+        $response->assertSee($client->package->name);
+        $response->assertSee($client->bill_amount);
+        $response->assertSee(ucfirst($client->status));
+        $response->assertSee($client->billing_status ? 'Enabled' : 'Disabled');
+        $response->assertSee($client->remarks);
+    });
 });
 
 
