@@ -17,6 +17,7 @@ class Client extends Model
         'package_id',
         'bill_amount',
         'billing_status',
+        'status',
         'remarks',
         'created_by',
     ];

@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +20,7 @@ class PackageFactory extends Factory
         return [
             'name' => $this->faker->name(),
             'price' => $this->faker->randomFloat(2, 1, 100),
-            'created_by' => \App\Models\User::factory(),
+            'created_by' => User::factory(),
         ];
     }
 }
