@@ -28,7 +28,7 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
     });
 
     Route::resource('clients', ClientController::class);
-    Route::resource('packages', PackageController::class);
+    Route::resource('packages', PackageController::class)->middleware('restrict.role:admin');
 });
 
 require __DIR__ . '/auth.php';

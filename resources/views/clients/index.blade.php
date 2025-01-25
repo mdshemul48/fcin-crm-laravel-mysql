@@ -39,7 +39,7 @@
                             <td>{{ $client->client_id }}</td>
                             <td>{{ $client->username }}</td>
                             <td>{{ $client->phone_number }}</td>
-                            <td> {{ $client->package->name }} ({{ number_format($client->package->price, 2) }} ৳)</td>
+                            <td> {{ $client->package->name }} ({{ number_format($client->package->price, 2) }}৳)</td>
                             <td>{{ $client->bill_amount }}</td>
                             <td><span
                                     class="{{ $client->billing_status ? 'badge rounded-pill text-bg-success' : 'badge rounded-pill text-bg-danger' }}">

@@ -46,7 +46,7 @@
                     @foreach ($packages as $package)
                         <option value="{{ $package->id }}" data-price="{{ $package->price }}"
                             {{ old('package_id', $client->package_id) == $package->id ? 'selected' : '' }}>
-                            {{ $package->name }} ({{ number_format($package->price, 2) }} USD)
+                            {{ $package->name }} ({{ number_format($package->price, 2) }}৳)
                         </option>
                     @endforeach
                 </select>
