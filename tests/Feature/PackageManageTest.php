@@ -3,7 +3,7 @@
 use App\Models\Package;
 use App\Models\User;
 
-describe('Package Manage Test', function () {
+describe('Package Manage', function () {
     describe("Admin user can manage packages", function () {
         beforeEach(function () {
             $this->user = User::factory()->create([
@@ -39,7 +39,7 @@ describe('Package Manage Test', function () {
         });
     });
 
-    describe("Support user can manage packages", function () {
+    describe("Support user can not manage packages", function () {
         beforeEach(function () {
             $this->user = User::factory()->create([
                 'role' => 'support',
