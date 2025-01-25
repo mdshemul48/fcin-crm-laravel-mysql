@@ -17,7 +17,9 @@ class PackageFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->name(),
+            'price' => $this->faker->randomFloat(2, 1, 100),
+            'created_by' => \App\Models\User::factory(),
         ];
     }
 }

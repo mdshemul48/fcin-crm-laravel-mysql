@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Package;
 use App\Models\User;
 
 describe('Package Manage Test', function () {
@@ -25,6 +26,16 @@ describe('Package Manage Test', function () {
                 'name' => 'Package 1',
                 'price' => 100
             ]);
+        });
+
+        it('can see created packages on packages page', function () {
+            $package1 = Package::factory()->create(['name' => 'Package 1', 'price' => 100]);
+            $package2 = Package::factory()->create(['name' => 'Package 2', 'price' => 200]);
+            $response = $this->actingAs($this->user)->get('/packages');
+            $response->assertSee($package1->name);
+            $response->assertSee($package1->price);
+            $response->assertSee($package2->name);
+            $response->assertSee($package2->price);
         });
     });
 
