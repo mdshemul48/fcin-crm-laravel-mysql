@@ -19,7 +19,7 @@
             @foreach ($packages as $package)
                 <tr>
                     <td>{{ $package->name }}</td>
-                    <td>{{ $package->price }}</td>
+                    <td>{{ $package->price }}৳</td>
                     <td>{{ $package->created_by ? $package->createdBy->name : 'N/A' }}</td>
                     <td>
                         <a href="{{ route('packages.edit', $package) }}" class="btn btn-warning">Edit</a>
