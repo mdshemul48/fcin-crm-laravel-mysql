@@ -17,6 +17,8 @@ class Client extends Model
         'package_id',
         'bill_amount',
         'billing_status',
+        'current_balance',
+        'due_balance',
         'status',
         'remarks',
         'created_by',

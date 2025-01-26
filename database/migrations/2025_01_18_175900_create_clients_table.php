@@ -17,9 +17,8 @@ return new class extends Migration
             $table->text('address');
             $table->foreignId('package_id');
             $table->decimal('current_balance', 10, 2)->default(0);
-            $table->decimal('due', 10, 2)->default(0);
+            $table->decimal('due_balance', 10, 2)->default(0);
             $table->decimal('bill_amount', 10, 2);
-
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
             $table->boolean('disabled')->default(false);
             $table->timestamps();

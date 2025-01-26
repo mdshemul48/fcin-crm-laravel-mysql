@@ -12,7 +12,11 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('client_id');
             $table->decimal('amount', 10, 2);
+            $table->decimal('discount', 10, 2);
             $table->date('payment_date');
+            $table->enum("payment_type", ["monthly", "one_time"])->default("monthly");
+            $table->enum("month", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])->nullable();
+            $table->text('remarks')->nullable();
             $table->timestamps();
 
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');

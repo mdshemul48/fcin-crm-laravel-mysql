@@ -13,6 +13,8 @@ return new class extends Migration
             $table->unsignedBigInteger('client_id');
             $table->decimal('amount', 10, 2);
             $table->date('generated_date');
+            $table->enum("bill_type", ["monthly", "one_time"])->default("monthly");
+            $table->remarks('remarks')->nullable();
             $table->timestamps();
 
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
