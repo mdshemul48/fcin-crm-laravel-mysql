@@ -10,19 +10,20 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
+
             $table->unsignedBigInteger('client_id');
+            $table->decimal('amount_from_client_account', 10, 2)->default(0);
             $table->decimal('amount', 10, 2);
-            $table->decimal('discount', 10, 2);
+            $table->decimal('discount', 10, 2)->default(0);
             $table->date('payment_date');
             $table->enum("payment_type", ["monthly", "one_time"])->default("monthly");
             $table->enum("month", ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"])->nullable();
             $table->text('remarks')->nullable();
-            $table->timestamps();
-
             $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
-
             $table->foreignId('collected_by')->nullable()->constrained('users')->onDelete('set null');
             $table->foreignId('created_by')->nullable()->constrained('users')->onDelete('set null');
+
+            $table->timestamps();
         });
     }
 

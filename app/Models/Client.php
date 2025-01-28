@@ -18,7 +18,7 @@ class Client extends Model
         'bill_amount',
         'billing_status',
         'current_balance',
-        'due_balance',
+        'due_amount',
         'status',
         'remarks',
         'created_by',
