@@ -13,6 +13,10 @@ class GeneratedBill extends Model
         'client_id',
         'amount',
         'generated_date',
+        'month',
+        'bill_type',
+        'remarks',
+        'created_by',
     ];
 
     public function client()

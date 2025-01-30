@@ -6,9 +6,12 @@ use App\Models\Client;
 use App\Models\Package;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Foundation\Testing\WithFaker;
 
 class ClientFactory extends Factory
 {
+    use WithFaker;
+
     protected $model = Client::class;
 
     /**
@@ -25,6 +28,7 @@ class ClientFactory extends Factory
             'address' => $this->faker->address,
             'package_id' => Package::factory(),
             'bill_amount' => $this->faker->randomFloat(2, 100, 1000),
+            'due_amount' => $this->faker->randomFloat(2, 100, 1000),
             'status' => $this->faker->randomElement(['paid', 'due']),
             'billing_status' => $this->faker->randomElement([true, false]),
             'remarks' => $this->faker->sentence,
