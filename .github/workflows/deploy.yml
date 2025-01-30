@@ -1,4 +1,4 @@
-name: Deploy with SSH
+name: Deploy Laravel Application to Production Server
 
 on:
   push:
@@ -10,18 +10,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Run sshpass commands
-      uses: matheusvanzan/sshpass-action@v2
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        port: ${{ secrets.REMOTE_PORT }}
-        user: ${{ secrets.SERVER_USER }}
-        pass: ${{ secrets.SERVER_PASS }}
-        run: |
-          # Your deployment commands here
-          cd /home/${{ secrets.SERVER_USER }}/Projects/fcin-crm-laravel-mysql &&
-          git remote set-url origin git@github.com:mdshemul48/fcin-crm-laravel-mysql.git &&
-          git pull origin main
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        
+      - name: Synchronize Files to Server
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SOURCE: "."
+          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
+          REMOTE_HOST: ${{ secrets.VPS_HOST }}
+          REMOTE_USER: ${{ secrets.VPS_USER }}
+          TARGET: "/home/radius/fcin-crm-laravel-mysql"
+          ARGS: "-avz --exclude='.env' --exclude='node_modules' --exclude='vendor'"
