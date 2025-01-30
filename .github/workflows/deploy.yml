@@ -19,7 +19,7 @@ jobs:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: List .ssh directory
-      run: ls -al ~/.ssh  # Verifies that the SSH key is available
+      run: ls -al ~/.ssh && cat ~/.ssh/known_hosts
 
     - name: Deploy to server
       run: |
