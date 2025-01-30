@@ -13,16 +13,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      - name: Set Up PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: 8.3
-          extensions: mbstring, bcmath, pdo, tokenizer, xml
-          ini-values: memory_limit=-1
-          coverage: none
+      # - name: Set Up PHP
+      #   uses: shivammathur/setup-php@v2
+      #   with:
+      #     php-version: 8.3
+      #     extensions: mbstring, bcmath, pdo, tokenizer, xml
+      #     ini-values: memory_limit=-1
+      #     coverage: none
 
-      - name: Install Composer Dependencies
-        run: composer install --optimize-autoloader --no-dev
+      # - name: Install Composer Dependencies
+      #   run: composer install --optimize-autoloader --no-dev
 
       - name: Synchronize Files to Server
         uses: easingthemes/ssh-deploy@v2.1.5
@@ -50,13 +50,13 @@ jobs:
             php artisan optimize
             php artisan storage:link
 
-      - name: Set Correct Permissions
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            sudo chown -R www-data:www-data /home/radius/Projects/fcin-crm-laravel-mysql
-            sudo chmod -R 775 /home/radius/Projects/fcin-crm-laravel-mysql/storage
-            sudo chmod -R 775 /home/radius/Projects/fcin-crm-laravel-mysql/bootstrap/cache
+      # - name: Set Correct Permissions
+      #   uses: appleboy/ssh-action@v0.1.6
+      #   with:
+      #     host: ${{ secrets.VPS_HOST }}
+      #     username: ${{ secrets.VPS_USER }}
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     script: |
+      #       sudo chown -R www-data:www-data /home/radius/Projects/fcin-crm-laravel-mysql
+      #       sudo chmod -R 775 /home/radius/Projects/fcin-crm-laravel-mysql/storage
+      #       sudo chmod -R 775 /home/radius/Projects/fcin-crm-laravel-mysql/bootstrap/cache
