@@ -1,31 +1,30 @@
-name: Deploy Ubuntu Server Project
+name: Deploy with SSH
 
 on:
   push:
     branches:
-      - main  # Change to your main branch
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-        
-      - name: Add SSH private key to agent
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}  # Ensure this secret contains the new private key
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Deploy to Server
-        env:
-          SERVER_USER: ${{ secrets.VPS_USER }}
-          SERVER_IP: ${{ secrets.VPS_HOST }}
-          SERVER_PORT: ${{ secrets.REMOTE_PORT }}
-        run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SERVER_USER@$SERVER_IP -p $SERVER_PORT"
-          cd /home/radius/Projects/fcin-crm-laravel-mysql &&
+    - name: Set up SSH key
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: List .ssh directory
+      run: ls -al ~/.ssh  # Verifies that the SSH key is available
+
+    - name: Deploy to server
+      run: |
+        ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa -p $SERVER_PORT $SERVER_USER@$SERVER_IP << EOF
+          cd /home/$SERVER_USER/Projects/fcin-crm-laravel-mysql &&
           git remote set-url origin git@github.com:mdshemul48/fcin-crm-laravel-mysql.git &&
           git pull origin main
-          "
+        EOF
