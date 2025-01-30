@@ -24,7 +24,7 @@ jobs:
           SERVER_IP: ${{ secrets.VPS_HOST }}
           SERVER_PORT: ${{ secrets.REMOTE_PORT }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SERVER_USER@$SERVER_IP -p $$SERVER_PORT"
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa $SERVER_USER@$SERVER_IP -p $SERVER_PORT"
           cd /home/radius/Projects/fcin-crm-laravel-mysql &&
           git remote set-url origin git@github.com:mdshemul48/fcin-crm-laravel-mysql.git &&
           git pull origin main
