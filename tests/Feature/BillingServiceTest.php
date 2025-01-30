@@ -5,7 +5,6 @@ use App\Models\Payment;
 use App\Services\BillingService;
 use Carbon\Carbon;
 
-
 describe("Billing Service", function () {
     beforeEach(function () {
         Carbon::setTestNow('2025-01-28');
@@ -18,12 +17,12 @@ describe("Billing Service", function () {
             'status' => 'paid',
             'billing_status' => true,
         ]);
-        $this->created_by_id = $this->client->createdBy->id;
-        $this->collected_by_id = $this->client->createdBy->id;
+        $this->creatorId = $this->client->createdBy->id;
+        $this->collectorId = $this->client->createdBy->id;
     });
 
     it('processes auto payment when balance is sufficient', function () {
-        $this->billingService->generateMonthlyBills($this->created_by_id);
+        $this->billingService->generateMonthlyBills($this->creatorId);
 
         $this->client->refresh();
 
@@ -49,12 +48,12 @@ describe("Billing Service", function () {
         ]);
 
         $this->billingService->processPayment(
-            $this->created_by_id,
-            $this->collected_by_id,
-            $this->client,
-            300,
-            50,
-            'Manual payment'
+            created_by_id: $this->creatorId,
+            collected_by_id: $this->collectorId,
+            client: $this->client,
+            paymentAmount: 300,
+            discount: 50,
+            remarks: 'Manual payment'
         );
 
         $this->client->refresh();
@@ -80,12 +79,12 @@ describe("Billing Service", function () {
         ]);
 
         $this->billingService->processPayment(
-            $this->created_by_id,
-            $this->collected_by_id,
-            $this->client,
-            700,
-            0,
-            'Manual payment with extra balance'
+            created_by_id: $this->creatorId,
+            collected_by_id: $this->collectorId,
+            client: $this->client,
+            paymentAmount: 700,
+            discount: 0,
+            remarks: 'Manual payment with extra balance'
         );
 
         $this->client->refresh();
@@ -110,12 +109,12 @@ describe("Billing Service", function () {
         ]);
 
         $this->billingService->processPayment(
-            $this->created_by_id,
-            $this->collected_by_id,
-            $this->client,
-            200,
-            400,
-            'Partial discount with payment'
+            created_by_id: $this->creatorId,
+            collected_by_id: $this->collectorId,
+            client: $this->client,
+            paymentAmount: 200,
+            discount: 400,
+            remarks: 'Partial discount with payment'
         );
 
         $this->client->refresh();
@@ -141,12 +140,12 @@ describe("Billing Service", function () {
         ]);
 
         $this->billingService->processPayment(
-            $this->created_by_id,
-            $this->collected_by_id,
-            $this->client,
-            300.55,
-            200.44,
-            'Payment with floating points'
+            created_by_id: $this->creatorId,
+            collected_by_id: $this->collectorId,
+            client: $this->client,
+            paymentAmount: 300.55,
+            discount: 200.44,
+            remarks: 'Payment with floating points'
         );
 
         $this->client->refresh();
