@@ -21,5 +21,6 @@ jobs:
           REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
           REMOTE_HOST: ${{ secrets.VPS_HOST }}
           REMOTE_USER: ${{ secrets.VPS_USER }}
+          SCRIPT_BEFORE: ls
           TARGET: "/home/radius/fcin-crm-laravel-mysql"
           ARGS: "-avz --exclude='.env' --exclude='node_modules' --exclude='vendor'"
