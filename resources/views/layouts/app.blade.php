@@ -4,10 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'Default Title') - {{ env('APP_NAME', '') }}</title> <!-- Dynamic title -->
+    <title>@yield('title', 'Default Title') - {{ env('APP_NAME', 'YourApp') }}</title>
 
     <!-- Google Fonts (Poppins) -->
-
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
     <!-- Bootstrap 5.3.3 CDN -->
@@ -22,12 +21,12 @@
     @endif
 
     @yield('css')
+
+    <!-- External Libraries -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://unpkg.com/gijgo@1.9.14/js/gijgo.min.js" type="text/javascript"></script>
     <link href="https://unpkg.com/gijgo@1.9.14/css/gijgo.min.css" rel="stylesheet" type="text/css" />
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
-
-
 
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
@@ -68,11 +67,10 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             font-family: 'ChicagoFLF', sans-serif;
-
         }
 
         footer {
-            background-color: #343a40;
+            background-color: rgb(51, 48, 46);
             color: white;
             text-align: center;
             padding: 20px;
@@ -89,19 +87,14 @@
         .fl-wrapper {
             margin-top: 45px;
         }
-
-        footer {
-            background-color: rgb(51, 48, 46);
-        }
     </style>
 </head>
-
 
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">{{ env('APP_NAME', '') }}</a>
+        <div class="container">
+            <a class="navbar-brand" href="#">{{ env('APP_NAME', 'YourApp') }}</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -109,8 +102,10 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav w-100">
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
+                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                            href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
+
                     <!-- Include the NavigationMenu Component here -->
                     <x-navigation-menu></x-navigation-menu>
 
@@ -118,7 +113,7 @@
                         <a class="nav-link pt-2 pb-0" href="#">24564৳</a>
                     </li>
 
-                    <li class="nav-item  dropdown">
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             {{ Auth()->user()->name }}
@@ -151,7 +146,6 @@
             </div>
         </div>
 
-
         <hr class="my-1">
         <div class="content">
             @yield('content')
@@ -160,18 +154,26 @@
 
     <!-- Footer -->
     <footer>
-        &copy; {{ date('Y') }} {{ env('APP_NAME') }}. All Rights Reserved.
+        &copy; {{ date('Y') }} {{ env('APP_NAME', 'YourApp') }}. All Rights Reserved.
     </footer>
 
-    <!-- Bootstrap 5.3.3 JS and Popper.js -->
+    <!-- Bootstrap JS and Popper.js -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script>
+
+    <!-- Toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <!-- Display Flash Messages -->
+    @if (session('message'))
+        <script>
+            toastr.success("{{ session('message') }}");
+        </script>
+    @endif
+
     @stack('custom-scripts')
 
-
-
 </body>
-
 
 </html>
