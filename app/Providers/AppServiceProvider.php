@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\BillingService;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
@@ -13,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(BillingService::class, function () {
+            return new BillingService();
+        });
     }
 
     /**
