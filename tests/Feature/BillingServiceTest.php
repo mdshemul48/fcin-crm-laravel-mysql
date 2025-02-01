@@ -2,6 +2,7 @@
 
 use App\Models\Client;
 use App\Models\Payment;
+use App\Models\GeneratedBill;
 use App\Services\BillingService;
 use Carbon\Carbon;
 
@@ -166,5 +167,84 @@ describe("Billing Service", function () {
             ->toBe('200.44')
             ->and($payment->remarks)
             ->toBe('Payment with floating points');
+    });
+
+    it('can generate a manual bill', function () {
+        $billType = 'one_time';
+        $month = Carbon::now()->format('F');
+        $amount = 150.75;
+        $remarks = 'Manual bill generation test';
+
+        $this->billingService->generateBillManually(
+            client_id: $this->client->id,
+            created_by_id: $this->creatorId,
+            bill_type: $billType,
+            month: $month,
+            amount: $amount,
+            remarks: $remarks
+        );
+
+        $this->client->refresh();
+
+        $generatedBill = GeneratedBill::where('client_id', $this->client->id)
+            ->where('bill_type', $billType)
+            ->where('month', $month)
+            ->first();
+
+        expect($generatedBill)->not->toBeNull();
+        expect((float)$generatedBill->amount)->toBe($amount);
+        expect($generatedBill->remarks)->toBe($remarks);
+        expect((float)$this->client->due_amount)->toBe($amount);
+    });
+
+    it('can generate a manual bill and process payment for it', function () {
+        $billType = 'one_time';
+        $month = Carbon::now()->format('F');
+        $amount = 150.75;
+        $remarks = 'Manual bill generation test';
+
+        $this->billingService->generateBillManually(
+            client_id: $this->client->id,
+            created_by_id: $this->creatorId,
+            bill_type: $billType,
+            month: $month,
+            amount: $amount,
+            remarks: $remarks
+        );
+
+        $this->client->refresh();
+
+        $generatedBill = GeneratedBill::where('client_id', $this->client->id)
+            ->where('bill_type', $billType)
+            ->where('month', $month)
+            ->first();
+
+        expect($generatedBill)->not->toBeNull();
+        expect((float)$generatedBill->amount)->toBe($amount);
+        expect($generatedBill->remarks)->toBe($remarks);
+        expect((float)$this->client->due_amount)->toBe($amount);
+
+        $this->billingService->processPayment(
+            created_by_id: $this->creatorId,
+            collected_by_id: $this->collectorId,
+            client: $this->client,
+            paymentAmount: $amount,
+            discount: 0,
+            remarks: 'Payment for manual bill'
+        );
+
+        $this->client->refresh();
+
+        expect((float) $this->client->current_balance)->toBe(0.00)
+            ->and((float) $this->client->due_amount)->toBe(0.00)
+            ->and($this->client->status)->toBe('paid');
+
+        $payment = Payment::where('client_id', $this->client->id)->first();
+
+        expect($payment)->not->toBeNull()
+            ->and((float) $payment->amount)->toBe($amount)
+            ->and((float) $payment->amount_from_client_account)->toBe(0.00)
+            ->and((float) $payment->discount)->toBe(0.00)
+            ->and($payment->remarks)->toBe('Payment for manual bill');
     });
 });

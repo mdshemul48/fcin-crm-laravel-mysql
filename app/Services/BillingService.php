@@ -94,4 +94,24 @@ class BillingService
             $client->save();
         });
     }
+
+    public function generateBillManually($client_id, $created_by_id, $bill_type, $month, $amount, $remarks): void
+    {
+        $client = Client::find($client_id);
+
+        DB::transaction(function () use ($client, $created_by_id, $bill_type, $month, $amount, $remarks) {
+            GeneratedBill::create([
+                'client_id' => $client->id,
+                'amount' => $amount,
+                'bill_type' => $bill_type,
+                'generated_date' => Carbon::now(),
+                'month' => $month,
+                'remarks' => $remarks,
+                'created_by' => $created_by_id,
+            ]);
+
+            $client->due_amount += $amount;
+            $client->save();
+        });
+    }
 }
