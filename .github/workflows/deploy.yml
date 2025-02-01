@@ -8,19 +8,22 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
-        
-      - name: Synchronize Files to Server
-        uses: easingthemes/ssh-deploy@v2.1.5
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SOURCE: "."
-          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}
-          REMOTE_HOST: ${{ secrets.VPS_HOST }}
-          REMOTE_USER: ${{ secrets.VPS_USER }}
-          SCRIPT_BEFORE: ls
-          TARGET: "/home/radius/fcin-crm-laravel-mysql"
-          ARGS: "-avz --exclude='.env' --exclude='node_modules' --exclude='vendor'"
+      - uses: actions/checkout@v2
+      - name: Deploy to server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          port: ${{ secrets.REMOTE_PORT }}
+          password: ${{ secrets.SERVER_PASS }}
+          script: |
+            cd /home/radius/fcin-crm-laravel-mysql &&
+            git pull &&
+            composer install &&
+            php artisan migrate --force
+            && php artisan config:cache
+            && php artisan route:cache
+            && php artisan view:cache &&
+            php artisan optimize &&
+            php artisan queue:restart
