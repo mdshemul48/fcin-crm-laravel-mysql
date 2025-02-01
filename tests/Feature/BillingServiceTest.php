@@ -11,7 +11,7 @@ describe("Billing Service", function () {
         Carbon::setTestNow('2025-01-28');
 
         $this->client = Client::factory()->create([
-            'bill_amount' => 500,
+        'bill_amount' => 500,
             'current_balance' => 1000,
             'due_amount' => 0,
             'status' => 'paid',
