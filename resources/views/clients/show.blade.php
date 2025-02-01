@@ -108,8 +108,6 @@
                         </div>
                     </div>
 
-                    <!-- Payments and Generated Bills Section -->
-
                     @include('clients.showPageBillPay')
 
                 </div>
@@ -117,8 +115,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
