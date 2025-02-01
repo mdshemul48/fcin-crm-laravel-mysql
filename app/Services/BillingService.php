@@ -64,8 +64,8 @@ class BillingService
             $amount_from_client_account = 0;
 
             if ($totalBill <= $totalPayment) {
-                $client->due_amount -= $totalPayment;
-            } else if ($totalBill >= $totalPayment && $totalPayment <= $initialBalance + $totalPayment) {
+                $client->due_amount -= $totalPayment + $initialBalance;
+            } else if ($totalBill >= $totalPayment && $totalBill <= $initialBalance + $totalPayment) {
                 $amount_from_client_account = ($totalBill - $totalPayment);
                 $client->due_amount -= $totalPayment + $initialBalance;
             }

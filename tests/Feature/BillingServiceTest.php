@@ -11,7 +11,7 @@ describe("Billing Service", function () {
         Carbon::setTestNow('2025-01-28');
 
         $this->client = Client::factory()->create([
-        'bill_amount' => 500,
+            'bill_amount' => 500,
             'current_balance' => 1000,
             'due_amount' => 0,
             'status' => 'paid',
@@ -197,6 +197,13 @@ describe("Billing Service", function () {
     });
 
     it('can generate a manual bill and process payment for it', function () {
+
+        $this->client->update([
+            'current_balance' => 0,
+            'due_amount' => 0,
+            'status' => 'due',
+        ]);
+
         $billType = 'one_time';
         $month = Carbon::now()->format('F');
         $amount = 150.75;

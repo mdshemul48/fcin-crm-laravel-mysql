@@ -109,56 +109,16 @@
                     </div>
 
                     <!-- Payments and Generated Bills Section -->
-                    <div class="col-12">
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <div class="bg-light p-4 rounded-3">
-                                    <h5 class="text-primary mb-3"><i class="bi bi-cash-stack me-2"></i>Payments</h5>
-                                    <ul class="list-group">
-                                        @forelse ($client->payments as $payment)
-                                            <li class="list-group-item">
-                                                <strong>Amount:</strong> {{ $payment->amount_from_client_account }}
-                                                Taka<br>
-                                                <strong>Payment Date:</strong> {{ $payment->payment_date }}<br>
-                                                <strong>Type:</strong> {{ ucfirst($payment->payment_type) }}<br>
-                                                <strong>Collected By:</strong>
-                                                {{ $payment->collectedBy->name ?? 'N/A' }}<br>
-                                                <strong>Remarks:</strong> {{ $payment->remarks }}
-                                            </li>
-                                        @empty
-                                            <li class="list-group-item">No payments found</li>
-                                        @endforelse
-                                    </ul>
-                                </div>
-                            </div>
 
-                            <div class="col-md-6">
-                                <div class="bg-light p-4 rounded-3">
-                                    <h5 class="text-primary mb-3"><i class="bi bi-receipt me-2"></i>Generated Bills</h5>
-                                    <ul class="list-group">
-                                        @forelse ($client->generatedBills as $bill)
-                                            <li class="list-group-item">
-                                                <strong>Amount:</strong> {{ $bill->amount }} Taka<br>
-                                                <strong>Generated Date:</strong> {{ $bill->generated_date }}<br>
-                                                <strong>Type:</strong> {{ ucfirst($bill->bill_type) }}<br>
-                                                <strong>Remarks:</strong> {{ $bill->remarks }}
-                                            </li>
-                                        @empty
-                                            <li class="list-group-item">No generated bills found</li>
-                                        @endforelse
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @include('clients.showPageBillPay')
 
                 </div>
             </div>
         </div>
     </div>
-    @include('clients.showPageBillPay')
 
-    <div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel" aria-hidden="true">
+    <div class="modal fade" id="addPaymentModal" tabindex="-1" aria-labelledby="addPaymentModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">

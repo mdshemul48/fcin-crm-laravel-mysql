@@ -23,4 +23,9 @@ class GeneratedBill extends Model
     {
         return $this->belongsTo(Client::class);
     }
+
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }
