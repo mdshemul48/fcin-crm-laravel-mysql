@@ -39,7 +39,7 @@
                         <div class="info-card bg-light p-3 rounded-3">
                             <h5 class="text-primary mb-3"><i class="bi bi-credit-card me-2"></i>Billing Details</h5>
                             <ul class="list-unstyled mb-0">
-                                <li class="pt-2"><strong>Client Id:</strong> {{ $client->client_id }}</li>
+                                <li class="pt-2 border-bottom"><strong>Client Id:</strong> {{ $client->client_id }}</li>
                                 <li class="py-2 border-bottom">
                                     <strong>Package:</strong>
                                     <span class="badge bg-primary">{{ $client->package->name }}</span>
@@ -47,14 +47,28 @@
                                 </li>
                                 <li class="py-2 border-bottom"><strong>Bill Amount:</strong> {{ $client->bill_amount }}</li>
                                 <li class="py-2">
-                                    <strong>Status:</strong>
-                                    @if ($client->status == 'paid')
-                                        <span class="badge bg-success rounded-pill"><i
-                                                class="bi bi-check-circle me-1"></i>Paid</span>
-                                    @else
-                                        <span class="badge bg-danger rounded-pill"><i
-                                                class="bi bi-exclamation-circle me-1"></i>Unpaid</span>
-                                    @endif
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <strong>Payment Status:</strong>
+                                            @if ($client->status == 'paid')
+                                                <span class="badge bg-success rounded-pill"><i
+                                                        class="bi bi-check-circle me-1"></i>Paid</span>
+                                            @else
+                                                <span class="badge bg-danger rounded-pill"><i
+                                                        class="bi bi-exclamation-circle me-1"></i>Unpaid</span>
+                                            @endif
+                                        </div>
+                                        <div class="col-md-6">
+                                            <strong>Account Status:</strong>
+                                            @if ($client->billing_status)
+                                                <span class="badge bg-success rounded-pill"><i
+                                                        class="bi bi-check-circle me-1"></i>Active</span>
+                                            @else
+                                                <span class="badge bg-danger rounded-pill"><i
+                                                        class="bi bi-exclamation-circle me-1"></i>Inactive</span>
+                                            @endif
+                                        </div>
+                                    </div>
                                 </li>
                             </ul>
                         </div>
