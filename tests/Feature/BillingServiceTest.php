@@ -169,6 +169,12 @@ describe("Billing Service", function () {
     });
 
     it('can generate a manual bill', function () {
+        $this->client->update([
+            'current_balance' => 0,
+            'due_amount' => 0,
+            'status' => 'due',
+        ]);
+
         $billType = 'one_time';
         $month = Carbon::now()->format('F');
         $amount = 150.75;
