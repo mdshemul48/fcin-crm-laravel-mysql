@@ -82,6 +82,6 @@ class ClientController extends Controller
     public function show(Client $client)
     {
         $users = User::all("id", "name");
-        return view('clients.show', compact('client', 'users'));
+        return view('clients.show', compact('client', 'users', "payments"));
     }
 }
