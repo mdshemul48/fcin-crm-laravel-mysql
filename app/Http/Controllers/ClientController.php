@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Package;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -80,6 +81,7 @@ class ClientController extends Controller
 
     public function show(Client $client)
     {
-        return view('clients.show', compact('client'));
+        $users = User::all("id", "name");
+        return view('clients.show', compact('client', 'users'));
     }
 }

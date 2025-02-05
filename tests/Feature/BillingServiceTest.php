@@ -3,14 +3,13 @@
 use App\Models\Client;
 use App\Models\Payment;
 use App\Models\GeneratedBill;
-use App\Services\BillingService;
+use Billing;
 use Carbon\Carbon;
 
 describe("Billing Service", function () {
     beforeEach(function () {
         Carbon::setTestNow('2025-01-28');
 
-        $this->billingService = new BillingService();
         $this->client = Client::factory()->create([
             'bill_amount' => 500,
             'current_balance' => 1000,
@@ -23,7 +22,7 @@ describe("Billing Service", function () {
     });
 
     it('processes auto payment when balance is sufficient', function () {
-        $this->billingService->generateMonthlyBills($this->creatorId);
+        Billing::generateMonthlyBills($this->creatorId);
 
         $this->client->refresh();
 
@@ -48,7 +47,7 @@ describe("Billing Service", function () {
             'status' => 'due',
         ]);
 
-        $this->billingService->processPayment(
+        Billing::processPayment(
             created_by_id: $this->creatorId,
             collected_by_id: $this->collectorId,
             client: $this->client,
@@ -79,7 +78,7 @@ describe("Billing Service", function () {
             'status' => 'due',
         ]);
 
-        $this->billingService->processPayment(
+        Billing::processPayment(
             created_by_id: $this->creatorId,
             collected_by_id: $this->collectorId,
             client: $this->client,
@@ -109,7 +108,7 @@ describe("Billing Service", function () {
             'status' => 'due',
         ]);
 
-        $this->billingService->processPayment(
+        Billing::processPayment(
             created_by_id: $this->creatorId,
             collected_by_id: $this->collectorId,
             client: $this->client,
@@ -140,7 +139,7 @@ describe("Billing Service", function () {
             'status' => 'due',
         ]);
 
-        $this->billingService->processPayment(
+        Billing::processPayment(
             created_by_id: $this->creatorId,
             collected_by_id: $this->collectorId,
             client: $this->client,
@@ -174,8 +173,8 @@ describe("Billing Service", function () {
         $month = Carbon::now()->format('F');
         $amount = 150.75;
         $remarks = 'Manual bill generation test';
-
-        $this->billingService->generateBillManually(
+      
+        Billing::generateBillManually(
             client_id: $this->client->id,
             created_by_id: $this->creatorId,
             bill_type: $billType,
@@ -198,12 +197,18 @@ describe("Billing Service", function () {
     });
 
     it('can generate a manual bill and process payment for it', function () {
+        $this->client->update([
+            'current_balance' => 0,
+            'due_amount' => 0,
+            'status' => 'due',
+        ]);
+      
         $billType = 'one_time';
         $month = Carbon::now()->format('F');
         $amount = 150.75;
         $remarks = 'Manual bill generation test';
 
-        $this->billingService->generateBillManually(
+        Billing::generateBillManually(
             client_id: $this->client->id,
             created_by_id: $this->creatorId,
             bill_type: $billType,
@@ -224,7 +229,7 @@ describe("Billing Service", function () {
         expect($generatedBill->remarks)->toBe($remarks);
         expect((float)$this->client->due_amount)->toBe($amount);
 
-        $this->billingService->processPayment(
+        Billing::processPayment(
             created_by_id: $this->creatorId,
             collected_by_id: $this->collectorId,
             client: $this->client,

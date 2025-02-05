@@ -33,4 +33,14 @@ class Client extends Model
     {
         return $this->belongsTo(User::class, 'created_by');
     }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class);
+    }
+
+    public function generatedBills()
+    {
+        return $this->hasMany(GeneratedBill::class);
+    }
 }
