@@ -36,7 +36,7 @@ class ClientController extends Controller
         $request->validate([
             'client_id' => 'required|unique:clients,client_id',
             'username' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:15',
+            'phone_number' => 'required|digits_between:10,15',
             'address' => 'required|string',
             'package_id' => 'required|exists:packages,id',
             'bill_amount' => 'required|numeric|min:0',
@@ -65,7 +65,7 @@ class ClientController extends Controller
         $request->validate([
             'client_id' => 'required|unique:clients,client_id,' . $client->id,
             'username' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:15',
+            'phone_number' => 'required|digits_between:10,15',
             'address' => 'required|string',
             'package_id' => 'required|exists:packages,id',
             'bill_amount' => 'required|numeric|min:0',
