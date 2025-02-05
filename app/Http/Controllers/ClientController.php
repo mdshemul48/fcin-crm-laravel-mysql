@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Package;
 use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -45,7 +46,7 @@ class ClientController extends Controller
         ]);
 
         $clientData = $request->all();
-        $clientData['created_by'] = auth()->id();
+        $clientData['created_by'] = Auth::id();
 
         Client::create($clientData);
 

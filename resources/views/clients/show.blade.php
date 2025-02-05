@@ -4,15 +4,18 @@
 
 @section('header_content')
     <div class="d-flex justify-content-between align-items-center">
-        <div>
-            <a href="{{ route('clients.index') }}" class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left"></i> Back
+        <div class="button-group">
+            <a href="{{ route('clients.index') }}" class="btn btn-back">
+                <i class="bi bi-arrow-left me-1"></i> Back
             </a>
-            <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-warning">
-                <i class="bi bi-pencil-square"></i> Edit
+            <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-edit">
+                <i class="bi bi-pencil-square me-1"></i> Edit
             </a>
+            <button type="button" class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#addCustomBillModal">
+                <i class="bi bi-file-earmark-plus me-1"></i> Add Custom Bill
+            </button>
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPaymentModal">
-                <i class="bi bi-plus-lg"></i> Add Payment
+                <i class="bi bi-plus-lg me-1"></i> Add Payment
             </button>
         </div>
     </div>
@@ -194,6 +197,55 @@
         </div>
     </div>
 
+
+
+    <div class="modal fade" id="addCustomBillModal" tabindex="-1" aria-labelledby="addCustomBillModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCustomBillModalLabel">Add Custom Bill</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('bills.generate', $client->id) }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="bill_type" class="form-label">Bill Type</label>
+                            <select class="form-select" id="bill_type" name="bill_type" required>
+                                <option value="" selected disabled>Select Bill Type</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="one_time">One Time</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="month" class="form-label">Month (If Monthly)</label>
+                            <select class="form-select" id="month" name="month">
+                                <option value="" selected disabled>Select Month</option>
+                                @foreach (range(1, 12) as $month)
+                                    <option value="{{ date('F', mktime(0, 0, 0, $month, 1)) }}">
+                                        {{ date('F', mktime(0, 0, 0, $month, 1)) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="amount" name="amount" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="remarks" class="form-label">Remarks</label>
+                            <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Generate Bill</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('css')
@@ -303,6 +355,98 @@
         .hover-scale:hover {
             transform: scale(1.05);
             box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+        }
+    </style>
+    <style>
+        .button-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            font-size: 0.875rem;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-back {
+            background: #f8f9fa;
+            color: #495057;
+            border: 1px solid #dee2e6;
+        }
+
+        .btn-back:hover {
+            background: #e9ecef;
+            border-color: #ced4da;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-back:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #ffc107 0%, #ffdb58 100%);
+            color: #000;
+        }
+
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #e0a800 0%, #f5c516 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(255, 193, 7, 0.25);
+        }
+
+        .btn-edit:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(255, 193, 7, 0.2);
+        }
+
+        .btn-custom {
+            background: linear-gradient(135deg, #209CEE 0%, #68B8F8 100%);
+            color: white;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(135deg, #1A8CD8 0%, #5CA9E2 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(50, 152, 220, 0.25);
+        }
+
+        .btn-custom:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(50, 152, 220, 0.2);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #28a745 0%, #4caf50 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #218838 0%, #43a047 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(40, 167, 69, 0.25);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 2px rgba(40, 167, 69, 0.2);
+        }
+
+        .btn .bi {
+            font-size: 0.875rem;
+            vertical-align: middle;
         }
     </style>
 @endsection

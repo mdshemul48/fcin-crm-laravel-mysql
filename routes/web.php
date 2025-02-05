@@ -5,6 +5,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\BillController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -32,6 +33,7 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
     Route::resource('packages', PackageController::class)->middleware('restrict.role:admin');
 
     Route::post('/payments/{id}', [PaymentController::class, 'store'])->name('payments.store');
+    Route::post('/bills/generate/{clientId}', [BillController::class, 'generate'])->name('bills.generate');
 });
 
 require __DIR__ . '/auth.php';
