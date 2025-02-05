@@ -191,7 +191,7 @@ describe("Client Manage", function () {
         $response->assertSee($client->package->name);
         $response->assertSee($client->bill_amount);
         $response->assertSee(ucfirst($client->status));
-        $response->assertSee($client->billing_status ? 'Enabled' : 'Disabled');
+        $response->assertSee($client->billing_status ? 'Active' : 'Inactive');
         $response->assertSee($client->remarks);
     });
 });
