@@ -68,6 +68,8 @@ class BillingService
             } else if ($totalBill >= $totalPayment && $totalBill <= $initialBalance + $totalPayment) {
                 $amount_from_client_account = ($totalBill - $totalPayment);
                 $client->due_amount -= $totalPayment + $initialBalance;
+            } else {
+                $client->due_amount -= $totalPayment;
             }
 
             if ($client->due_amount <= 0) {
@@ -111,6 +113,12 @@ class BillingService
             ]);
 
             $client->due_amount += $amount;
+            $client->status = 'due';
+
+            if ($client->current_balance >= $client->due_amount) {
+                $this->processPayment($created_by_id, $created_by_id, $client, 0, 0, 'Auto payment applied');
+            }
+
             $client->save();
         });
     }

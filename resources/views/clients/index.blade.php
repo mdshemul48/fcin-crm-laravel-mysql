@@ -23,72 +23,8 @@
     <div class="container-fluid px-0">
         <div class="card border-0 shadow-sm overflow-hidden">
             <div class="card-body p-1">
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead>
-                            <tr>
-                                <th>Actions</th>
-                                <th>ID</th>
-                                <th>Username</th>
-                                <th>Phone</th>
-                                <th>Client Id</th>
-                                <th>Payment Status</th>
-                                <th>Account Status</th>
-                                <th>Due Amount</th>
-                                <th>Package</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($clients as $client)
-                                <tr>
-                                    <td>
-                                        <a href="{{ route('clients.show', $client->id) }}"
-                                            class="btn btn-sm btn-info mb-1 mb-md-0">
-                                            <i class="bi bi-eye"></i> View
-                                        </a>
-                                        <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-sm btn-warning">
-                                            <i class="bi bi-pencil-square"></i> Edit
-                                        </a>
-                                    </td>
-                                    <td>#{{ $client->id }}</td>
-                                    <td>{{ $client->username }}</td>
-                                    <td>{{ $client->phone_number }}</td>
-                                    <td>{{ $client->client_id }}</td>
-                                    <td>
-                                        @if ($client->status == 'paid')
-                                            <span class="badge bg-success rounded-pill"><i
-                                                    class="bi bi-check-circle me-1"></i>Paid</span>
-                                        @else
-                                            <span class="badge bg-danger rounded-pill"><i
-                                                    class="bi bi-exclamation-circle me-1"></i>Unpaid</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if ($client->billing_status)
-                                            <span class="badge bg-success rounded-pill"><i
-                                                    class="bi bi-check-circle me-1"></i>Active</span>
-                                        @else
-                                            <span class="badge bg-danger rounded-pill"><i
-                                                    class="bi bi-exclamation-circle me-1"></i>Inactive</span>
-                                        @endif
-                                    </td>
-                                    <td>
-                                        {{ $client->due_amount ?? '0.00' }}
-                                    </td>
-                                    <td>
-                                        <span
-                                            class="badge bg-primary">{{ $client->package->name }}({{ $client->package->price }})</span>
-                                        <span class="text-muted">
-                                            {{ $client->bill_amount }}
-                                        </span>
-                                    </td>
-                                    <td></td>
-
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                @include('clients.list.desktop')
+                @include('clients.list.mobile')
                 <div class="d-flex justify-content-center mt-4">
                     {{ $clients->links() }}
                 </div>

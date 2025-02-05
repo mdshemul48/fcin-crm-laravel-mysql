@@ -173,7 +173,7 @@ describe("Billing Service", function () {
         $month = Carbon::now()->format('F');
         $amount = 150.75;
         $remarks = 'Manual bill generation test';
-      
+
         Billing::generateBillManually(
             client_id: $this->client->id,
             created_by_id: $this->creatorId,
@@ -202,7 +202,7 @@ describe("Billing Service", function () {
             'due_amount' => 0,
             'status' => 'due',
         ]);
-      
+
         $billType = 'one_time';
         $month = Carbon::now()->format('F');
         $amount = 150.75;

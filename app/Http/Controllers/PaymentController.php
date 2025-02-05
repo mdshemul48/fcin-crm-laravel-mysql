@@ -3,25 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use Auth;
 use Billing;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-    protected $creatorId;
-    protected $collectorId;
-    protected $client;
-
-    public function __construct()
-    {
-        $this->creatorId = auth()->id(); // Assuming the creator is the authenticated user
-        $this->collectorId = 1; // Set this to the appropriate collector ID
-        $this->client = null; // Initialize client to null or appropriate value
-    }
 
     public function store($client_id, Request $request)
     {
-        $this->client = Client::findOrFail($client_id);
+        $client = Client::findOrFail($client_id);
 
         $validatedData = $request->validate([
             'collected_by_id' => 'required|exists:users,id',
@@ -34,9 +25,9 @@ class PaymentController extends Controller
         ]);
 
         Billing::processPayment(
-            created_by_id: $this->creatorId,
+            created_by_id: Auth::id(),
             collected_by_id: $validatedData['collected_by_id'],
-            client: $this->client,
+            client: $client,
             paymentAmount: $validatedData['amount'],
             discount: $validatedData['discount'] ?? 0,
             remarks: $validatedData['remarks']
