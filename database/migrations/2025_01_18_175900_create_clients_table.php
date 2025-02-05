@@ -10,11 +10,11 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->string('client_id')->unique();
+            $table->string('client_id')->unique()->nullable();
             $table->string('username');
             $table->enum("status", ["due", "paid"])->default("due");
-            $table->string('phone_number');
-            $table->text('address');
+            $table->string('phone_number')->nullable();
+            $table->text('address')->nullable();
             $table->foreignId('package_id');
             $table->decimal('current_balance', 10, 2)->default(0);
             $table->decimal('due_amount', 10, 2)->default(0);
