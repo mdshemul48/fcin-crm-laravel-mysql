@@ -103,7 +103,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <small class="text-muted"><i
-                                                class="bi bi-clock me-1"></i>{{ $payment->created_at }}</small><br>
+                                                class="bi bi-clock me-1"></i>{{ $bill->created_at }}</small><br>
                                         <small class="text-muted"><i
                                                 class="bi bi-person me-1"></i>{{ $bill->createdBy->name ?? 'N/A' }}</small><br>
 
