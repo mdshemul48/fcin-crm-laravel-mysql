@@ -27,20 +27,19 @@ describe("Client Manage", function () {
             $response = $this->actingAs($this->user)->post('/clients', [
                 'client_id' => 1,
                 'username' => 'Client 1',
-                'phone_number' => '1234567890',
+                'phone_number' => '12345678901',
                 'address' => 'Client 1 Address',
                 'package_id' => $this->package->id,
                 'bill_amount' => 150,
                 'status' => 'paid',
                 'billing_status' => true,
                 'remarks' => 'Client 1 Remarks',
-                'created_by' => $this->user->id
             ]);
             $response->assertStatus(302);
             $this->assertDatabaseHas('clients', [
                 'client_id' => 1,
                 'username' => 'Client 1',
-                'phone_number' => '1234567890',
+                'phone_number' => '12345678901',
                 'address' => 'Client 1 Address',
                 'package_id' => $this->package->id,
                 'bill_amount' => 150,
@@ -67,7 +66,7 @@ describe("Client Manage", function () {
             $response = $this->actingAs($this->user)->put('/clients/' . $client->id, [
                 'client_id' => 1,
                 'username' => 'Client 2',
-                'phone_number' => '1234567890',
+                'phone_number' => '12345678901',
                 'address' => 'Client 2 Address',
                 'package_id' => $this->package->id,
                 'bill_amount' => 200,
@@ -79,7 +78,7 @@ describe("Client Manage", function () {
             $this->assertDatabaseHas('clients', [
                 'client_id' => 1,
                 'username' => 'Client 2',
-                'phone_number' => '1234567890',
+                'phone_number' => '12345678901',
                 'address' => 'Client 2 Address',
                 'package_id' => $this->package->id,
                 'bill_amount' => 200,
@@ -112,7 +111,7 @@ describe("Client Manage", function () {
             $response = $this->actingAs($this->user)->post('/clients', [
                 'client_id' => 1,
                 'username' => 'Client 1',
-                'phone_number' => '1234567890',
+                'phone_number' => '12345678901',
                 'address' => 'Client 1 Address',
                 'package_id' => $this->package->id,
                 'bill_amount' => 150,
@@ -125,7 +124,7 @@ describe("Client Manage", function () {
             $this->assertDatabaseHas('clients', [
                 'client_id' => 1,
                 'username' => 'Client 1',
-                'phone_number' => '1234567890',
+                'phone_number' => '12345678901',
                 'address' => 'Client 1 Address',
                 'package_id' => $this->package->id,
                 'bill_amount' => 150,
@@ -152,7 +151,7 @@ describe("Client Manage", function () {
             $response = $this->actingAs($this->user)->put('/clients/' . $client->id, [
                 'client_id' => 1,
                 'username' => 'Client 2',
-                'phone_number' => '1234567890',
+                'phone_number' => '12345678901',
                 'address' => 'Client 2 Address',
                 'package_id' => $this->package->id,
                 'bill_amount' => 200,
@@ -164,7 +163,7 @@ describe("Client Manage", function () {
             $this->assertDatabaseHas('clients', [
                 'client_id' => 1,
                 'username' => 'Client 2',
-                'phone_number' => '1234567890',
+                'phone_number' => '12345678901',
                 'address' => 'Client 2 Address',
                 'package_id' => $this->package->id,
                 'bill_amount' => 200,

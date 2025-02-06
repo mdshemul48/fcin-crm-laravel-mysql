@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Package;
 use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
@@ -36,7 +37,7 @@ class ClientController extends Controller
         $request->validate([
             'client_id' => 'required|unique:clients,client_id',
             'username' => 'required|string|max:255',
-            'phone_number' => 'required|digits_between:10,15',
+            'phone_number' => 'required|digits:11',
             'address' => 'required|string',
             'package_id' => 'required|exists:packages,id',
             'bill_amount' => 'required|numeric|min:0',
@@ -45,7 +46,7 @@ class ClientController extends Controller
         ]);
 
         $clientData = $request->all();
-        $clientData['created_by'] = auth()->id();
+        $clientData['created_by'] = Auth::id();
 
         Client::create($clientData);
 
@@ -65,7 +66,7 @@ class ClientController extends Controller
         $request->validate([
             'client_id' => 'required|unique:clients,client_id,' . $client->id,
             'username' => 'required|string|max:255',
-            'phone_number' => 'required|digits_between:10,15',
+            'phone_number' => 'required|digits:11',
             'address' => 'required|string',
             'package_id' => 'required|exists:packages,id',
             'bill_amount' => 'required|numeric|min:0',

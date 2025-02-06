@@ -3,58 +3,67 @@
 @section('title', 'Clients List')
 
 @section('header_content')
-    <div class="d-flex flex-column flex-md-row justify-content-between">
-        <div class="mb-2 mb-md-0">
-            <form action="{{ route('clients.index') }}" method="GET" class="d-flex flex-column flex-md-row">
-                <input type="text" name="search" class="form-control me-0 me-md-2 mb-2 mb-md-0"
-                    placeholder="Search by Username, Number, or C.ID" value="{{ request('search') }}">
-                <button type="submit" class="btn btn-primary">Search</button>
-            </form>
-        </div>
-        <div class="ms-0 ms-md-1"><a href="{{ route('clients.create') }}" class="btn btn-dark">Add New Client</a></div>
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+        <form action="{{ route('clients.index') }}" method="GET" class="d-flex ms-3 mb-2 mb-md-0">
+            <div class="input-group">
+                <input type="text" name="search" class="form-control" placeholder="Search by Username, Number, or C.ID"
+                    value="{{ request()->query('search') }}">
+                <button type="submit" class="btn btn-outline-secondary">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+        </form>
+        <a href="{{ route('clients.create') }}" class="btn btn-primary ms-1">
+            <i class="bi bi-plus-lg me-1"></i> Add Client
+        </a>
     </div>
 @endsection
 
 @section('content')
-    <div>
-        <div class="table-responsive">
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Client ID</th>
-                        <th>Username</th>
-                        <th>Phone Number</th>
-                        <th>Package</th>
-                        <th>Bill Amount</th>
-                        <th>Billing Status</th>
-                        <th>Created By</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($clients as $client)
-                        <tr>
-                            <td>{{ $client->id }}</td>
-                            <td>{{ $client->client_id }}</td>
-                            <td>{{ $client->username }}</td>
-                            <td>{{ $client->phone_number }}</td>
-                            <td> {{ $client->package->name }} ({{ number_format($client->package->price, 2) }}৳)</td>
-                            <td>{{ $client->bill_amount }}</td>
-                            <td><span
-                                    class="{{ $client->billing_status ? 'badge rounded-pill text-bg-success' : 'badge rounded-pill text-bg-danger' }}">
-                                    {{ $client->billing_status ? 'enabled' : 'disabled' }}
-                                </span></td>
-                            <td>{{ $client->createdBy->name ?? 'N/A' }}</td>
-                            <td>
-                                <a href="{{ route('clients.show', $client->id) }}" class="btn btn-info btn-sm">Details</a>
-                                <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+    <div class="container-fluid px-0">
+        <div class="card border-0 shadow-sm overflow-hidden">
+            <div class="card-body p-1">
+                @include('clients.list.desktop')
+                @include('clients.list.mobile')
+                <div class="d-flex justify-content-center mt-4">
+                    {{ $clients->links() }}
+                </div>
+            </div>
         </div>
-        {{ $clients->links() }}
     </div>
+@endsection
+
+@section('css')
+    <style>
+        .table thead th {
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+
+        .table tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+            color: white;
+        }
+
+        .btn-info:hover {
+            background-color: #138496;
+            border-color: #117a8b;
+        }
+
+        .btn-warning {
+            background-color: #ffc107;
+            border-color: #ffc107;
+            color: black;
+        }
+
+        .btn-warning:hover {
+            background-color: #e0a800;
+            border-color: #d39e00;
+        }
+    </style>
 @endsection
