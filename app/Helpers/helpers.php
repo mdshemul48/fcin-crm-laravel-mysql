@@ -2,7 +2,7 @@
 
 function USER()
 {
-    return Auth()->user();
+    return Auth::user();
 }
 
 
