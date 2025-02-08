@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BillController extends Controller
 {
-    /**
-     * Generate a custom bill for a client.
-     */
+
     public function generate(Request $request, $clientId)
     {
         $request->validate([
@@ -38,5 +36,11 @@ class BillController extends Controller
         );
 
         return redirect()->route('clients.show', $client->id)->with('success', 'Bill generated successfully.');
+    }
+
+    public function revertBill($billId)
+    {
+        Billing::revertBill($billId);
+        return back()->with('success', 'Bill reverted successfully!');
     }
 }

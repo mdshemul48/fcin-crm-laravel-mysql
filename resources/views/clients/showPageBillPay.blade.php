@@ -54,12 +54,12 @@
                                     </div>
                                     @if (canAccess('admin'))
                                         <div class="col-md-12 text-end">
-                                            <form action="" method="POST"
+                                            <form action="{{ route('payments.revert', $payment->id) }}" method="POST"
                                                 onsubmit="return confirm('Are you sure you want to delete this payment?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="bi bi-trash"></i> Delete
+                                                    <i class="bi bi-trash"></i> Revert
                                                 </button>
                                             </form>
                                         </div>
@@ -114,7 +114,7 @@
                                     </div>
                                     @if (canAccess('admin'))
                                         <div class="col-md-12 text-end mt-2">
-                                            <form action="" method="POST"
+                                            <form action="{{ route('bills.revert', $bill->id) }}" method="POST"
                                                 onsubmit="return confirm('Are you sure you want to delete this bill?');">
                                                 @csrf
                                                 @method('DELETE')
