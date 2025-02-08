@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Client;
+use App\Models\Payment;
 use Auth;
 use Billing;
+use DB;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
@@ -34,5 +36,12 @@ class PaymentController extends Controller
         );
 
         return back()->with('success', 'Payment added successfully!');
+    }
+
+    public function revertPayment($paymentId)
+    {
+
+        Billing::revertPayment($paymentId);
+        return back()->with('success', 'Payment reverted successfully!');
     }
 }

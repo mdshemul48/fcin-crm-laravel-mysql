@@ -152,6 +152,10 @@
                                         {{ $user->name }}</option>
                                 @endforeach
                             </select>
+                            @if (!canAccess('admin'))
+                                <input type="hidden" name="collected_by_id" value="{{ auth()->id() }}">
+                            @endif
+
                         </div>
                         <div class="mb-3">
                             <label for="amount" class="form-label">Amount</label>

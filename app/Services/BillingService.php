@@ -122,4 +122,40 @@ class BillingService
             $client->save();
         });
     }
+
+
+    public function revertPayment($paymentId): void
+    {
+        $payment = Payment::find($paymentId);
+        $client = $payment->client;
+        DB::transaction(function () use ($client, $payment) {
+            $client->due_amount += $payment->amount + $payment->discount;
+            $client->status = 'due';
+
+            if ($payment->amount_from_client_account > 0) {
+                $client->current_balance += $payment->amount_from_client_account;
+            }
+
+            $client->save();
+            $payment->delete();
+        });
+    }
+
+    public function revertBill($billId): void
+    {
+        $bill = GeneratedBill::find($billId);
+        $client = $bill->client;
+        DB::transaction(function () use ($client, $bill) {
+            if ($client->due_amount >= $bill->amount) {
+                $client->due_amount -= $bill->amount;
+            } else {
+
+                $client->current_balance += $bill->amount - $client->due_amount;
+                $client->due_amount = 0;
+            }
+            $client->status = 'due';
+            $client->save();
+            $bill->delete();
+        });
+    }
 }
