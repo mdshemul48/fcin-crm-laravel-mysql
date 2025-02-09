@@ -25,6 +25,32 @@ class DashboardController extends Controller
             ->with('user')
             ->get();
 
-        return view('dashboard', compact('totalClients', 'paidClients', 'unpaidClients', 'totalDue', 'totalPaymentCollectionsThisMonth', 'paymentCollections'));
+        // New daily collections by user
+        $paymentCollectionsDaily = Payment::selectRaw('collected_by, SUM(amount) as total_amount')
+            ->whereDate('created_at', now())
+            ->groupBy('collected_by')
+            ->with('user')
+            ->get();
+
+        // New variable: today's total collection
+        $paymentCollectedToday = Payment::whereDate('created_at', now())->sum('amount');
+
+        // New variable: latest 20 payments with client info
+        $latestPayments = Payment::with(['user', 'client'])
+            ->orderBy('created_at', 'desc')
+            ->limit(25)
+            ->get();
+
+        return view('dashboard', compact(
+            'totalClients',
+            'paidClients',
+            'unpaidClients',
+            'totalDue',
+            'totalPaymentCollectionsThisMonth',
+            'paymentCollections',
+            'paymentCollectionsDaily',
+            'paymentCollectedToday',
+            'latestPayments'
+        ));
     }
 }

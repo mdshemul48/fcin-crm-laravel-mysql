@@ -11,7 +11,7 @@
 @section('content')
     <div class="container-fluid mt-4">
         <div class="row">
-            <div class="col-xl-3 col-md-6 mb-4">
+            <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-0 shadow h-100 py-3 bg-gradient-primary text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
@@ -27,7 +27,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6 mb-4">
+            <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-0 shadow h-100 py-3 bg-gradient-success text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
@@ -43,7 +43,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6 mb-4">
+            <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-0 shadow h-100 py-3 bg-gradient-danger text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
@@ -59,23 +59,24 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-0 shadow h-100 py-3 bg-gradient-warning text-white">
+            <!-- New card for Today's Collection -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-0 shadow h-100 py-3 bg-gradient-secondary text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h6 class="text-uppercase fw-bold mb-2">Total Due</h6>
-                                <h4 class="fw-bold mb-0">${{ number_format($totalDue, 2) }}</h4>
+                                <h6 class="text-uppercase fw-bold mb-2">Today's Collection</h6>
+                                <h4 class="fw-bold mb-0">${{ number_format($paymentCollectedToday, 2) }}</h4>
                             </div>
                             <div>
-                                <i class="fas fa-dollar-sign fa-3x"></i>
+                                <i class="fas fa-calendar-day fa-3x"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6 mb-4">
+            <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-0 shadow h-100 py-3 bg-gradient-info text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
@@ -90,36 +91,65 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-0 shadow h-100 py-3 bg-gradient-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase fw-bold mb-2">Total Due</h6>
+                                <h4 class="fw-bold mb-0">${{ number_format($totalDue, 2) }}</h4>
+                            </div>
+                            <div>
+                                <i class="fas fa-dollar-sign fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="row mt-4 mb-2 g-1">
-            <div class="col-lg-6 col-12">
+        <!-- New combined table card for Monthly and Daily Payment Collections by User -->
+        @php
+            $monthly = $paymentCollections->keyBy('collected_by');
+            $daily = $paymentCollectionsDaily->keyBy('collected_by');
+            $userIds = $monthly->keys()->merge($daily->keys())->unique();
+        @endphp
+        <div class="row g-1">
+            <div class="col-lg-6 col-12 my-2">
                 <div class="card shadow">
                     <div class="card-header bg-dark text-light rounded-md">
-                        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Monthly Payment Collections by User</h5>
+                        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i> Payment Collections by User</h5>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-striped table-hover mb-0">
                                 <thead class="table-dark">
                                     <tr>
-                                        <th class="ps-4"><i class="fas fa-user me-2"></i>User</th>
-                                        <th class="text-end pe-4"><i class="fas fa-coins me-2"></i>Collected Amount</th>
+                                        <th class="ps-4">User</th>
+                                        <th class="text-end pe-4">Monthly Collections</th>
+                                        <th class="text-end pe-4">Today's Collections</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($paymentCollections as $collection)
+                                    @foreach ($userIds as $userId)
+                                        @php
+                                            $monthlyAmount = $monthly->has($userId)
+                                                ? $monthly[$userId]->total_amount
+                                                : 0;
+                                            $dailyAmount = $daily->has($userId) ? $daily[$userId]->total_amount : 0;
+                                            $name = $monthly->has($userId)
+                                                ? $monthly[$userId]->user->name
+                                                : ($daily->has($userId)
+                                                    ? $daily[$userId]->user->name
+                                                    : 'Unknown');
+                                        @endphp
                                         <tr>
                                             <td class="ps-4">
-                                                <i class="fas fa-user-circle me-2 text-secondary"></i>
-                                                {{ $collection->user->name }}
+                                                <i class="fas fa-user-circle me-2 text-secondary"></i> {{ $name }}
                                             </td>
-                                            <td class="text-end pe-4">
-                                                <span class="badge bg-success rounded-pill me-2">
-                                                    <i class="fas fa-dollar-sign fa-sm"></i>
-                                                </span>
-                                                {{ number_format($collection->total_amount, 2) }}
-                                            </td>
+                                            <td class="text-end pe-4">${{ number_format($monthlyAmount, 2) }}</td>
+                                            <td class="text-end pe-4">${{ number_format($dailyAmount, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -128,6 +158,8 @@
                                         <th class="ps-4">Total</th>
                                         <th class="text-end pe-4">
                                             ${{ number_format($paymentCollections->sum('total_amount'), 2) }}</th>
+                                        <th class="text-end pe-4">
+                                            ${{ number_format($paymentCollectionsDaily->sum('total_amount'), 2) }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -135,7 +167,46 @@
                     </div>
                 </div>
             </div>
+            <div class="col-md-6 col-12 my-2">
+                <div class="card shadow">
+                    <div class="card-header bg-dark text-light rounded-md">
+                        <h5 class="mb-0"><i class="fas fa-receipt me-2"></i> Latest Payments</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-striped table-hover mb-0">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th class="ps-4">User</th>
+                                        <th class="text-end pe-4">Client</th>
+                                        <th class="text-end pe-4">Amount</th>
+                                        <th class="text-end pe-4">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($latestPayments as $payment)
+                                        <tr>
+                                            <td class="ps-4">
+                                                <i class="fas fa-user-circle me-2 text-secondary"></i>
+                                                {{ $payment->user->name }}
+                                            </td>
+                                            <td class="text-end pe-4">
+                                                {{ $payment->client->username ?? 'N/A' }}
+                                            </td>
+                                            <td class="text-end pe-4">${{ number_format($payment->amount, 2) }}</td>
+                                            <td class="text-end pe-4">{{ $payment->created_at->format('h:iA d/m/y') }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+
+
     </div>
 @endsection
 
@@ -189,6 +260,11 @@
 
         .bg-gradient-info {
             background: linear-gradient(135deg, #17a2b8, #0dcaf0);
+        }
+
+        /* New gradient for Today's Collection card */
+        .bg-gradient-secondary {
+            background: linear-gradient(135deg, #6c757d, #adb5bd);
         }
 
         h6 {

@@ -114,11 +114,7 @@
                     <!-- Include the NavigationMenu Component here -->
                     <x-navigation-menu></x-navigation-menu>
 
-                    <li class="ms-auto nav-item">
-                        <a class="nav-link pt-2 pb-0" href="#">24564৳</a>
-                    </li>
-
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown ms-auto">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             {{ Auth()->user()->name }}
