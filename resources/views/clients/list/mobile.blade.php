@@ -14,7 +14,7 @@
                                 class="bi bi-exclamation-circle me-1"></i>Unpaid</span>
                     @endif
                 </p>
-                <p class="card-text"><strong>Account Status:</strong>
+                <p class="card-text"><strong>Billing Status:</strong>
                     @if ($client->billing_status)
                         <span class="badge bg-success rounded-pill"><i class="bi bi-check-circle me-1"></i>Active</span>
                     @else

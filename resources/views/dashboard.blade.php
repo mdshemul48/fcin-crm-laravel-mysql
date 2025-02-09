@@ -177,6 +177,7 @@
                             <table class="table table-striped table-hover mb-0">
                                 <thead class="table-dark">
                                     <tr>
+                                        <th class="ps-4">P.ID</th>
                                         <th class="ps-4">User</th>
                                         <th class="text-end pe-4">Client</th>
                                         <th class="text-end pe-4">Amount</th>
@@ -186,6 +187,7 @@
                                 <tbody>
                                     @foreach ($latestPayments as $payment)
                                         <tr>
+                                            <td class="ps-4">{{ $payment->id }}</td>
                                             <td class="ps-4">
                                                 <i class="fas fa-user-circle me-2 text-secondary"></i>
                                                 {{ $payment->user->name }}
