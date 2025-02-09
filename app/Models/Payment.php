@@ -31,8 +31,15 @@ class Payment extends Model
     {
         return $this->belongsTo(User::class, 'collected_by');
     }
+
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    // Add relationship to the User model
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'collected_by');
     }
 }

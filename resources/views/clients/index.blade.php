@@ -13,7 +13,7 @@
                 </button>
             </div>
         </form>
-        <a href="{{ route('clients.create') }}" class="btn btn-primary ms-1">
+        <a href="{{ route('clients.create') }}" class="btn btn-dark ms-1">
             <i class="bi bi-plus-lg me-1"></i> Add Client
         </a>
     </div>
