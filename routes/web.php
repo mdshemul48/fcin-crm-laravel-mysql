@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\BillController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -14,9 +15,7 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware(['auth', 'check.user.status'])->group(function () {
-    Route::get('/', function () {
-        return view("dashboard");
-    })->name('dashboard');
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 

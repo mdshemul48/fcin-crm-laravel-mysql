@@ -8,7 +8,7 @@
                     <th>Phone</th>
                     <th>Client Id</th>
                     <th>Payment Status</th>
-                    <th>Account Status</th>
+                    <th>Billing Status</th>
                     <th>Due Amount</th>
                     <th>Package</th>
                     <th>Actions</th>

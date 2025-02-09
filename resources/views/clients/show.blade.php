@@ -62,7 +62,7 @@
                                             @endif
                                         </div>
                                         <div class="col-md-6">
-                                            <strong>Account Status:</strong>
+                                            <strong>Billing Status:</strong>
                                             @if ($client->billing_status)
                                                 <span class="badge bg-success rounded-pill"><i
                                                         class="bi bi-check-circle me-1"></i>Active</span>

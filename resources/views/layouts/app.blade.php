@@ -6,6 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Default Title') - {{ env('APP_NAME', 'YourApp') }}</title>
 
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+
     <!-- Google Fonts (Poppins) -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -111,11 +114,7 @@
                     <!-- Include the NavigationMenu Component here -->
                     <x-navigation-menu></x-navigation-menu>
 
-                    <li class="ms-auto nav-item">
-                        <a class="nav-link pt-2 pb-0" href="#">24564৳</a>
-                    </li>
-
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown ms-auto">
                         <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
                             data-bs-toggle="dropdown" aria-expanded="false">
                             {{ Auth()->user()->name }}
