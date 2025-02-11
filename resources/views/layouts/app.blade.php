@@ -45,20 +45,92 @@
             font-family: 'Poppins', sans-serif;
         }
 
-        .navbar-brand {
-            font-family: 'Neoda', sans-serif;
-            font-size: 1.5rem;
-            color: #d62f0d;
-        }
-
         .navbar {
-            background-color: #f1e2d5 !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+            padding: 1rem 0;
+            margin-bottom: 20px;
         }
 
-        .navbar-collapse {
-            font-family: "Quicksand", serif;
-            font-weight: bold;
-            font-size: 1rem;
+        .navbar-brand {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #2c3e50;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-brand:hover {
+            color: #3498db;
+        }
+
+        .nav-link {
+            color: #34495e;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            margin: 0 0.2rem;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: #3498db;
+            background: rgba(52, 152, 219, 0.1);
+        }
+
+        .nav-link.active {
+            color: #3498db;
+            background: rgba(52, 152, 219, 0.15);
+        }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border-radius: 12px;
+            padding: 0.5rem;
+            min-width: 220px;
+            animation: dropdownFade 0.3s ease;
+        }
+
+        .dropdown-item {
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            margin: 2px 0;
+            transition: all 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+            transform: translateX(5px);
+        }
+
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .navbar-toggler {
+            border: none;
+            padding: 0.5rem;
+        }
+
+        .navbar-toggler:focus {
+            box-shadow: none;
+            outline: none;
+        }
+
+        .navbar-toggler-icon {
+            width: 24px;
+            height: 24px;
         }
 
         .content {
@@ -97,36 +169,46 @@
 
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
+    <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">{{ env('APP_NAME', 'YourApp') }}</a>
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-grid-fill me-2"></i>{{ env('APP_NAME', 'YourApp') }}
+            </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
+                <i class="bi bi-list"></i>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav w-100">
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                            href="{{ route('dashboard') }}">Dashboard</a>
+                            href="{{ route('dashboard') }}">
+                            <i class="bi bi-house-door me-1"></i>Dashboard
+                        </a>
                     </li>
 
-                    <!-- Include the NavigationMenu Component here -->
                     <x-navigation-menu></x-navigation-menu>
 
                     <li class="nav-item dropdown ms-auto">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
-                            data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown"
+                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle me-2"></i>
                             {{ Auth()->user()->name }}
                         </a>
-                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                             @if (canAccess('admin'))
-                                <li><a class="dropdown-item" href="{{ route('users.index') }}">Users List</a></li>
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('users.index') }}">
+                                        <i class="bi bi-people me-2"></i>Users List
+                                    </a>
+                                </li>
                             @endif
                             <li>
                                 <form action="{{ route('logout') }}" method="POST">
                                     @csrf
-                                    <button class='dropdown-item' type="submit">Logout</button>
+                                    <button class='dropdown-item' type="submit">
+                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
+                                    </button>
                                 </form>
                             </li>
                         </ul>
@@ -136,7 +218,8 @@
         </div>
     </nav>
 
-    <div class="container mt-2 content">
+    <!-- Add margin-top to content to account for fixed navbar -->
+    <div class="container mt-5 pt-5 content">
         <div
             class="d-flex flex-column flex-md-row align-items-start align-items-lg-center gap-3 justify-content-between">
             <div>
