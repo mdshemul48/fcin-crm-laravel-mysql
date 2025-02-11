@@ -8,4 +8,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 
-Schedule::command("backup:run")->dailyAt("01:40")->sendOutputTo(storage_path('logs/backup.log'));
+Schedule::command("dropbox:refresh-and-backup")->dailyAt("01:40")->sendOutputTo(storage_path('logs/backup.log'));
