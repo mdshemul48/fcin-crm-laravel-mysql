@@ -10,7 +10,7 @@
         <div class="backup-status-btn ms-2" onclick="$('#backupDetailsModal').modal('show')">
             <span class="status-indicator {{ $commandStatus['status'] === 'Failed' ? 'bg-danger' : 'bg-success' }}"></span>
             <span class="d-none d-md-inline">Backup Status</span>
-            @if($backupInfo)
+            @if ($backupInfo)
                 <small class="text-muted d-none d-lg-inline">{{ $backupInfo['formatted_size'] }}</small>
             @endif
         </div>
@@ -68,14 +68,14 @@
                 </div>
             </div>
 
-            <!-- New card for Today's Collection -->
+            <!-- Today's Collection Card -->
             <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-0 shadow h-100 py-3 bg-gradient-secondary text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
                                 <h6 class="text-uppercase fw-bold mb-2">Today's Collection</h6>
-                                <h4 class="fw-bold mb-0">${{ number_format($paymentCollectedToday, 2) }}</h4>
+                                <h4 class="fw-bold mb-0">৳{{ number_format($paymentCollectedToday, 2) }}</h4>
                             </div>
                             <div>
                                 <i class="fas fa-calendar-day fa-3x"></i>
@@ -85,13 +85,14 @@
                 </div>
             </div>
 
+            <!-- Collections This Month Card -->
             <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-0 shadow h-100 py-3 bg-gradient-info text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
                                 <h6 class="text-uppercase fw-bold mb-2">Collections This Month</h6>
-                                <h4 class="fw-bold mb-0">${{ number_format($totalPaymentCollectionsThisMonth, 2) }}</h4>
+                                <h4 class="fw-bold mb-0">৳{{ number_format($totalPaymentCollectionsThisMonth, 2) }}</h4>
                             </div>
                             <div>
                                 <i class="fas fa-money-bill-wave fa-3x"></i>
@@ -101,16 +102,17 @@
                 </div>
             </div>
 
+            <!-- Total Due Card -->
             <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-0 shadow h-100 py-3 bg-gradient-warning text-white">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
                                 <h6 class="text-uppercase fw-bold mb-2">Total Due</h6>
-                                <h4 class="fw-bold mb-0">${{ number_format($totalDue, 2) }}</h4>
+                                <h4 class="fw-bold mb-0">৳{{ number_format($totalDue, 2) }}</h4>
                             </div>
                             <div>
-                                <i class="fas fa-dollar-sign fa-3x"></i>
+                                <i class="fas fa-hand-holding-usd fa-3x"></i>
                             </div>
                         </div>
                     </div>
@@ -118,26 +120,23 @@
             </div>
         </div>
 
-        <!-- New combined table card for Monthly and Daily Payment Collections by User -->
-        @php
-            $monthly = $paymentCollections->keyBy('collected_by');
-            $daily = $paymentCollectionsDaily->keyBy('collected_by');
-            $userIds = $monthly->keys()->merge($daily->keys())->unique();
-        @endphp
-        <div class="row g-1">
-            <div class="col-lg-6 col-12 my-2">
-                <div class="card shadow">
-                    <div class="card-header bg-dark text-light rounded-md">
-                        <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i> Payment Collections by User</h5>
+        <!-- Enhanced Tables Section -->
+        <div class="row g-3">
+            <div class="col-lg-6 col-12">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-gradient-dark text-white py-3">
+                        <h5 class="mb-0 d-flex align-items-center">
+                            <i class="fas fa-chart-line me-2"></i>Payment Collections by User
+                        </h5>
                     </div>
                     <div class="card-body p-0">
                         <div class="table-responsive">
-                            <table class="table table-striped table-hover mb-0">
-                                <thead class="table-dark">
+                            <table class="table table-hover custom-table mb-0">
+                                <thead>
                                     <tr>
-                                        <th class="ps-4">User</th>
-                                        <th class="text-end pe-4">Monthly Collections</th>
-                                        <th class="text-end pe-4">Today's Collections</th>
+                                        <th class="ps-4 py-3">User</th>
+                                        <th class="text-end py-3">Monthly Collections</th>
+                                        <th class="text-end pe-4 py-3">Today's Collections</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -154,21 +153,26 @@
                                                     : 'Unknown');
                                         @endphp
                                         <tr>
-                                            <td class="ps-4">
-                                                <i class="fas fa-user-circle me-2 text-secondary"></i> {{ $name }}
+                                            <td class="ps-4 py-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="user-icon me-2">
+                                                        <i class="fas fa-user-circle text-primary"></i>
+                                                    </div>
+                                                    <span>{{ $name }}</span>
+                                                </div>
                                             </td>
-                                            <td class="text-end pe-4">${{ number_format($monthlyAmount, 2) }}</td>
-                                            <td class="text-end pe-4">${{ number_format($dailyAmount, 2) }}</td>
+                                            <td class="text-end py-3">৳{{ number_format($monthlyAmount, 2) }}</td>
+                                            <td class="text-end pe-4 py-3">৳{{ number_format($dailyAmount, 2) }}</td>
                                         </tr>
                                     @endforeach
                                 </tbody>
-                                <tfoot class="table-secondary">
-                                    <tr>
-                                        <th class="ps-4">Total</th>
-                                        <th class="text-end pe-4">
-                                            ${{ number_format($paymentCollections->sum('total_amount'), 2) }}</th>
-                                        <th class="text-end pe-4">
-                                            ${{ number_format($paymentCollectionsDaily->sum('total_amount'), 2) }}</th>
+                                <tfoot>
+                                    <tr class="bg-light">
+                                        <th class="ps-4 py-3">Total</th>
+                                        <th class="text-end py-3">
+                                            ৳{{ number_format($paymentCollections->sum('total_amount'), 2) }}</th>
+                                        <th class="text-end pe-4 py-3">
+                                            ৳{{ number_format($paymentCollectionsDaily->sum('total_amount'), 2) }}</th>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -176,36 +180,44 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6 col-12 my-2">
-                <div class="card shadow">
-                    <div class="card-header bg-dark text-light rounded-md">
-                        <h5 class="mb-0"><i class="fas fa-receipt me-2"></i> Latest Payments</h5>
+
+            <div class="col-lg-6 col-12">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-gradient-dark text-white py-3">
+                        <h5 class="mb-0 d-flex align-items-center">
+                            <i class="fas fa-receipt me-2"></i>Latest Payments
+                        </h5>
                     </div>
                     <div class="card-body p-0">
-                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
-                            <table class="table table-striped table-hover mb-0">
-                                <thead class="table-dark">
+                        <div class="table-responsive" style="max-height: 400px;">
+                            <table class="table table-hover custom-table mb-0">
+                                <thead>
                                     <tr>
-                                        <th class="ps-4">P.ID</th>
-                                        <th class="ps-4">User</th>
-                                        <th class="text-end pe-4">Client</th>
-                                        <th class="text-end pe-4">Amount</th>
-                                        <th class="text-end pe-4">Date</th>
+                                        <th class="ps-4 py-3">P.ID</th>
+                                        <th class="py-3">User</th>
+                                        <th class="py-3">Client</th>
+                                        <th class="text-end py-3">Amount</th>
+                                        <th class="text-end pe-4 py-3">Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($latestPayments as $payment)
                                         <tr>
-                                            <td class="ps-4">{{ $payment->id }}</td>
-                                            <td class="ps-4">
-                                                <i class="fas fa-user-circle me-2 text-secondary"></i>
-                                                {{ $payment->user->name }}
+                                            <td class="ps-4 py-3">#{{ $payment->id }}</td>
+                                            <td class="py-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="user-icon me-2">
+                                                        <i class="fas fa-user-circle text-secondary"></i>
+                                                    </div>
+                                                    <span>{{ $payment->user->name }}</span>
+                                                </div>
                                             </td>
-                                            <td class="text-end pe-4">
-                                                {{ $payment->client->username ?? 'N/A' }}
-                                            </td>
-                                            <td class="text-end pe-4">${{ number_format($payment->amount, 2) }}</td>
-                                            <td class="text-end pe-4">{{ $payment->created_at->format('h:iA d/m/y') }}
+                                            <td class="py-3">{{ $payment->client->username ?? 'N/A' }}</td>
+                                            <td class="text-end py-3">৳{{ number_format($payment->amount, 2) }}</td>
+                                            <td class="text-end pe-4 py-3">
+                                                <span class="badge bg-light text-dark">
+                                                    {{ $payment->created_at->format('h:iA d/m/y') }}
+                                                </span>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -221,9 +233,11 @@
         <div class="modal fade" id="backupDetailsModal" tabindex="-1">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
-                    <div class="modal-header {{ $commandStatus['status'] === 'Failed' ? 'bg-danger' : 'bg-success' }} text-white">
+                    <div
+                        class="modal-header {{ $commandStatus['status'] === 'Failed' ? 'bg-danger' : 'bg-success' }} text-white">
                         <h5 class="modal-title">
-                            <i class="fas {{ $commandStatus['status'] === 'Failed' ? 'fa-exclamation-circle' : 'fa-server' }} me-2"></i>
+                            <i
+                                class="fas {{ $commandStatus['status'] === 'Failed' ? 'fa-exclamation-circle' : 'fa-server' }} me-2"></i>
                             Backup Status
                         </h5>
                         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
@@ -233,7 +247,8 @@
                             <div class="current-status mb-4">
                                 <h6 class="text-muted mb-3">Current Status</h6>
                                 <div class="d-flex align-items-center">
-                                    <span class="status-dot {{ $commandStatus['status'] === 'Failed' ? 'bg-danger' : 'bg-success' }}"></span>
+                                    <span
+                                        class="status-dot {{ $commandStatus['status'] === 'Failed' ? 'bg-danger' : 'bg-success' }}"></span>
                                     <div class="ms-3">
                                         <h5 class="mb-1">{{ $commandStatus['status'] }}</h5>
                                         <p class="mb-0 text-muted">{{ $commandStatus['message'] }}</p>
@@ -241,7 +256,7 @@
                                 </div>
                             </div>
 
-                            @if($backupInfo)
+                            @if ($backupInfo)
                                 <h6 class="text-muted mb-3">Latest Backup Details</h6>
                                 <div class="row g-3">
                                     <div class="col-md-6">
@@ -273,10 +288,11 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="backup-stat-card">
-                                            <i class="fas fa-file-archive text-warning"></i>
+                                            <i class="fas fa-clock text-warning"></i>
                                             <div>
-                                                <small>Filename</small>
-                                                <h6 class="text-truncate">{{ $backupInfo['filename'] }}</h6>
+                                                <small>Last Backup Time</small>
+                                                <h6>{{ isset($backupInfo['date']) ? \Carbon\Carbon::parse($backupInfo['date'])->format('h:i A') : 'N/A' }}
+                                                </h6>
                                             </div>
                                         </div>
                                     </div>
@@ -355,14 +371,14 @@
             background: white;
             border-radius: 1rem;
             padding: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             cursor: pointer;
             transition: all 0.3s ease;
         }
 
         .backup-status-indicator:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         .backup-details .detail-item {
@@ -408,7 +424,7 @@
 
         .backup-status-btn:hover {
             transform: translateY(-1px);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .status-indicator {
@@ -448,14 +464,79 @@
             margin: 0;
             font-size: 0.9rem;
         }
+
+        /* Enhanced Table Styles */
+        .custom-table {
+            margin-bottom: 0;
+        }
+
+        .custom-table thead tr {
+            background: #f8f9fa;
+            border-bottom: 2px solid #dee2e6;
+        }
+
+        .custom-table th {
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.825rem;
+            letter-spacing: 0.5px;
+            color: #495057;
+        }
+
+        .custom-table td {
+            vertical-align: middle;
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .custom-table tbody tr {
+            transition: all 0.2s ease;
+        }
+
+        .custom-table tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .user-icon {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .user-icon i {
+            font-size: 1.2rem;
+        }
+
+        .badge {
+            padding: 0.5em 0.75em;
+            font-weight: 500;
+        }
+
+        .bg-gradient-dark {
+            background: linear-gradient(135deg, #212529, #343a40);
+        }
+
+        /* Card enhancements */
+        .card {
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+
+        .card-header {
+            border-bottom: none;
+        }
     </style>
 @endsection
 
 @section('js')
-<script>
-    $(document).ready(function() {
-        // Initialize bootstrap modal
-        var backupModal = new bootstrap.Modal(document.getElementById('backupDetailsModal'));
-    });
-</script>
+    <script>
+        $(document).ready(function() {
+            // Initialize bootstrap modal
+            var backupModal = new bootstrap.Modal(document.getElementById('backupDetailsModal'));
+        });
+    </script>
 @endsection

@@ -26,12 +26,23 @@ class DashboardController extends Controller
             ->with('user')
             ->get();
 
+        // Add this to create the $monthly collection
+        $monthly = $paymentCollections->keyBy('collected_by');
+
         // New daily collections by user
         $paymentCollectionsDaily = Payment::selectRaw('collected_by, SUM(amount) as total_amount')
             ->whereDate('created_at', now())
             ->groupBy('collected_by')
             ->with('user')
             ->get();
+
+        // Add this to create the $daily collection
+        $daily = $paymentCollectionsDaily->keyBy('collected_by');
+
+        // Add this new line to fix undefined variable
+        $userIds = $paymentCollections->pluck('collected_by')
+            ->merge($paymentCollectionsDaily->pluck('collected_by'))
+            ->unique();
 
         // New variable: today's total collection
         $paymentCollectedToday = Payment::whereDate('created_at', now())->sum('amount');
@@ -62,7 +73,10 @@ class DashboardController extends Controller
             'backupStatus',
             'backupInfo',
             'commandStatus',
-            'weeklyBackups'
+            'weeklyBackups',
+            'userIds',
+            'monthly', // Add this
+            'daily'    // Add this
         ));
     }
 }
