@@ -10,6 +10,8 @@
         "laravel/framework": "^11.31",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
+        "spatie/flysystem-dropbox": "^3.0",
+        "spatie/laravel-backup": "^9.2",
         "yoeunes/toastr": "^3.1"
     },
     "require-dev": {
