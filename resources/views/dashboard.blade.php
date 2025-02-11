@@ -11,14 +11,15 @@
             <span class="status-indicator {{ $commandStatus['status'] === 'Failed' ? 'bg-danger' : 'bg-success' }}"></span>
             <span class="d-none d-md-inline">Backup Status</span>
             @if ($backupInfo)
-                <small class="text-muted d-none d-lg-inline">{{ $backupInfo['formatted_size'] }}</small>
+                <small
+                    class="text-muted d-none d-lg-inline">{{ isset($backupInfo['date']) ? \Carbon\Carbon::parse($backupInfo['date'])->format('d/m/y') : 'N/A' }}</small>
             @endif
         </div>
     </div>
 @endsection
 
 @section('content')
-    <div class="container-fluid mt-4">
+    <div class="container-fluid mt-4 mb-3">
         <div class="row">
             <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-0 shadow h-100 py-3 bg-gradient-primary text-white">
@@ -288,11 +289,10 @@
                                     </div>
                                     <div class="col-md-6">
                                         <div class="backup-stat-card">
-                                            <i class="fas fa-clock text-warning"></i>
+                                            <i class="fas fa-file-archive text-warning"></i>
                                             <div>
-                                                <small>Last Backup Time</small>
-                                                <h6>{{ isset($backupInfo['date']) ? \Carbon\Carbon::parse($backupInfo['date'])->format('h:i A') : 'N/A' }}
-                                                </h6>
+                                                <small>Filename</small>
+                                                <h6 class="text-truncate">{{ $backupInfo['filename'] }}</h6>
                                             </div>
                                         </div>
                                     </div>

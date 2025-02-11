@@ -15,7 +15,7 @@ class RefreshAndBackup extends Command
 
     public function handle()
     {
-        Cache::put('command_status', ['status' => 'Running', 'message' => 'Refreshing Dropbox token...'], now()->addMinutes(60));
+        Cache::put('command_status', ['status' => 'Running', 'message' => 'Refreshing Dropbox token...']);
 
         $this->info('Refreshing Dropbox token...');
 
@@ -30,10 +30,10 @@ class RefreshAndBackup extends Command
             $accessToken = $response->json('access_token');
             $this->updateEnvFile('DROPBOX_ACCESS_TOKEN', $accessToken);
             $this->info('Dropbox access token updated successfully.');
-            Cache::put('command_status', ['status' => 'Running', 'message' => 'Dropbox access token updated successfully. Running backup...'], now()->addMinutes(60));
+            Cache::put('command_status', ['status' => 'Running', 'message' => 'Dropbox access token updated successfully. Running backup...']);
         } else {
             $errorMessage = 'Failed to refresh Dropbox access token.';
-            Cache::put('command_status', ['status' => 'Failed', 'message' => $errorMessage], now()->addMinutes(60));
+            Cache::put('command_status', ['status' => 'Failed', 'message' => $errorMessage]);
             $this->error($errorMessage);
             return 1;
         }
@@ -73,9 +73,9 @@ class RefreshAndBackup extends Command
 
         if (!empty($backupErrors)) {
             $errorMessage = implode(' ', $backupErrors);
-            Cache::put('backup_status', $errorMessage, now()->addMinutes(60));
+            Cache::put('backup_status', $errorMessage);
             Cache::forget('backup_info');
-            Cache::put('command_status', ['status' => 'Failed', 'message' => $errorMessage], now()->addMinutes(60));
+            Cache::put('command_status', ['status' => 'Failed', 'message' => $errorMessage]);
             $this->error($errorMessage);
         } else {
             Cache::forget('backup_status');
@@ -100,11 +100,11 @@ class RefreshAndBackup extends Command
                     'filename' => $latestBackup,
                     'disk' => 'dropbox'
                 ];
-                Cache::put('backup_info', $backupInfo, now()->addMinutes(60));
+                Cache::put('backup_info', $backupInfo);
                 Cache::put('command_status', [
                     'status' => 'Success',
                     'message' => 'Backup completed successfully. Size: ' . $backupInfo['formatted_size']
-                ], now()->addMinutes(60));
+                ]);
 
                 // Get all backups from the last week
                 $weeklyBackups = collect($files)
@@ -122,7 +122,7 @@ class RefreshAndBackup extends Command
                     ->values()
                     ->toArray();
 
-                Cache::put('weekly_backups', $weeklyBackups, now()->addMinutes(60));
+                Cache::put('weekly_backups', $weeklyBackups);
             }
 
             $this->info('Backup process completed successfully.');
