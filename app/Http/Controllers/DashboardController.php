@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Payment;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
@@ -41,6 +42,13 @@ class DashboardController extends Controller
             ->limit(25)
             ->get();
 
+        $backupStatus = \Cache::get('backup_status', '');
+        $backupInfo = \Cache::get('backup_info', null);
+        $commandStatus = \Cache::get('command_status', ['status' => 'Idle', 'message' => '']);
+
+        // Get backups from the last week
+        $weeklyBackups = Cache::get('weekly_backups', []);
+
         return view('dashboard', compact(
             'totalClients',
             'paidClients',
@@ -50,7 +58,11 @@ class DashboardController extends Controller
             'paymentCollections',
             'paymentCollectionsDaily',
             'paymentCollectedToday',
-            'latestPayments'
+            'latestPayments',
+            'backupStatus',
+            'backupInfo',
+            'commandStatus',
+            'weeklyBackups'
         ));
     }
 }

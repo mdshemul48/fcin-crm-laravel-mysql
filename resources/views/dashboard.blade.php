@@ -2,12 +2,21 @@
 
 @section('title', 'Dashboard')
 @section('header_content')
+    <div class="d-flex align-items-center">
+        <a href="{{ route('clients.create') }}" class="btn btn-dark">
+            <i class="bi bi-plus-lg me-1"></i> Add Client
+        </a>
 
-
-    <a href="{{ route('clients.create') }}" class="btn btn-dark ms-1">
-        <i class="bi bi-plus-lg me-1"></i> Add Client
-    </a>
+        <div class="backup-status-btn ms-2" onclick="$('#backupDetailsModal').modal('show')">
+            <span class="status-indicator {{ $commandStatus['status'] === 'Failed' ? 'bg-danger' : 'bg-success' }}"></span>
+            <span class="d-none d-md-inline">Backup Status</span>
+            @if($backupInfo)
+                <small class="text-muted d-none d-lg-inline">{{ $backupInfo['formatted_size'] }}</small>
+            @endif
+        </div>
+    </div>
 @endsection
+
 @section('content')
     <div class="container-fluid mt-4">
         <div class="row">
@@ -208,7 +217,76 @@
             </div>
         </div>
 
+        <!-- Backup Details Modal -->
+        <div class="modal fade" id="backupDetailsModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header {{ $commandStatus['status'] === 'Failed' ? 'bg-danger' : 'bg-success' }} text-white">
+                        <h5 class="modal-title">
+                            <i class="fas {{ $commandStatus['status'] === 'Failed' ? 'fa-exclamation-circle' : 'fa-server' }} me-2"></i>
+                            Backup Status
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="backup-details">
+                            <div class="current-status mb-4">
+                                <h6 class="text-muted mb-3">Current Status</h6>
+                                <div class="d-flex align-items-center">
+                                    <span class="status-dot {{ $commandStatus['status'] === 'Failed' ? 'bg-danger' : 'bg-success' }}"></span>
+                                    <div class="ms-3">
+                                        <h5 class="mb-1">{{ $commandStatus['status'] }}</h5>
+                                        <p class="mb-0 text-muted">{{ $commandStatus['message'] }}</p>
+                                    </div>
+                                </div>
+                            </div>
 
+                            @if($backupInfo)
+                                <h6 class="text-muted mb-3">Latest Backup Details</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <div class="backup-stat-card">
+                                            <i class="fas fa-calendar-alt text-primary"></i>
+                                            <div>
+                                                <small>Date</small>
+                                                <h6>{{ $backupInfo['date'] }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="backup-stat-card">
+                                            <i class="fas fa-hdd text-success"></i>
+                                            <div>
+                                                <small>Size</small>
+                                                <h6>{{ $backupInfo['formatted_size'] }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="backup-stat-card">
+                                            <i class="fas fa-database text-info"></i>
+                                            <div>
+                                                <small>Storage</small>
+                                                <h6>{{ ucfirst($backupInfo['disk']) }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="backup-stat-card">
+                                            <i class="fas fa-file-archive text-warning"></i>
+                                            <div>
+                                                <small>Filename</small>
+                                                <h6 class="text-truncate">{{ $backupInfo['filename'] }}</h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
 
@@ -272,8 +350,112 @@
         h6 {
             font-size: 0.875rem;
         }
+
+        .backup-status-indicator {
+            background: white;
+            border-radius: 1rem;
+            padding: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .backup-status-indicator:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .backup-details .detail-item {
+            display: flex;
+            align-items: start;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .backup-details .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .backup-details .detail-item i {
+            font-size: 1.5rem;
+            margin-right: 1rem;
+            width: 2rem;
+            text-align: center;
+        }
+
+        .backup-details .detail-item h6 {
+            margin: 0;
+            font-size: 0.875rem;
+            color: #6c757d;
+        }
+
+        .backup-details .detail-item p {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .backup-status-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: white;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid #dee2e6;
+        }
+
+        .backup-status-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .backup-stat-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 0.5rem;
+        }
+
+        .backup-stat-card i {
+            font-size: 1.5rem;
+        }
+
+        .backup-stat-card small {
+            color: #6c757d;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .backup-stat-card h6 {
+            margin: 0;
+            font-size: 0.9rem;
+        }
     </style>
 @endsection
 
 @section('js')
+<script>
+    $(document).ready(function() {
+        // Initialize bootstrap modal
+        var backupModal = new bootstrap.Modal(document.getElementById('backupDetailsModal'));
+    });
+</script>
 @endsection
