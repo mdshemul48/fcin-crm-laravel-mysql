@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Package;
 use App\Models\User;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
@@ -14,11 +14,20 @@ class ClientController extends Controller
     {
         $query = Client::with("package", "createdBy");
 
-        if ($request->has('search')) {
+        if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where('username', 'like', "%{$search}%")
-                ->orWhere('phone_number', 'like', "%{$search}%")
-                ->orWhere('client_id', 'like', "%{$search}%");
+            $query->where(function ($q) use ($search) {
+                $q->where('username', 'like', "%{$search}%")
+                    ->orWhere('phone_number', 'like', "%{$search}%")
+                    ->orWhere('client_id', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('payment_status')) {
+            $status = $request->input('payment_status');
+            if (in_array($status, ['paid', 'due'])) {
+                $query->where('status', $status);
+            }
         }
 
         $clients = $query->paginate(100);
@@ -70,7 +79,7 @@ class ClientController extends Controller
             'address' => 'required|string',
             'package_id' => 'required|exists:packages,id',
             'bill_amount' => 'required|numeric|min:0',
-            'billing_status' => 'nullable|boolean',
+            'status' => 'nullable|in:due,paid',
             'remarks' => 'nullable|string',
         ]);
 

@@ -4,10 +4,17 @@
 
 @section('header_content')
     <div class="d-flex flex-column flex-md-row gap-2 align-items-center">
-        <form action="{{ route('clients.index') }}" method="GET" class="d-flex">
+        <form action="{{ route('clients.index') }}" method="GET" class="d-flex gap-2">
             <div class="input-group">
                 <input type="text" name="search" class="form-control border-0 shadow-sm"
                     placeholder="Search by Username, Number, or C.ID" value="{{ request()->query('search') }}">
+                <select name="payment_status" class="form-select border-0 shadow-sm">
+                    <option value="">All Clients</option>
+                    <option value="paid" {{ request()->query('payment_status') === 'paid' ? 'selected' : '' }}>Paid
+                    </option>
+                    <option value="due" {{ request()->query('payment_status') === 'due' ? 'selected' : '' }}>Unpaid
+                    </option>
+                </select>
                 <button type="submit" class="btn btn-primary shadow-sm">
                     <i class="bi bi-search"></i>
                 </button>
@@ -26,7 +33,7 @@
                 @include('clients.list.desktop')
                 @include('clients.list.mobile')
                 <div class="d-flex justify-content-center mt-4">
-                    {{ $clients->links() }}
+                    {{ $clients->appends(request()->query())->links() }}
                 </div>
             </div>
         </div>
