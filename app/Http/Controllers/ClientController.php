@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Package;
 use App\Models\User;
+use App\Models\SmsTemplate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -92,6 +93,10 @@ class ClientController extends Controller
     public function show(Client $client)
     {
         $users = User::all("id", "name");
-        return view('clients.show', compact('client', 'users'));
+        $smsTemplates = SmsTemplate::where('type', 'payment')
+            ->where('is_active', true)
+            ->get();
+
+        return view('clients.show', compact('client', 'users', 'smsTemplates'));
     }
 }

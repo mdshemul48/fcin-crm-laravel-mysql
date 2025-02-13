@@ -7,6 +7,8 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\BillController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SmsLogsController;
+use App\Http\Controllers\SmsSettingsController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -36,6 +38,15 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
 
     Route::post('/payments/{id}', [PaymentController::class, 'store'])->name('payments.store');
     Route::post('/bills/generate/{clientId}', [BillController::class, 'generate'])->name('bills.generate');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::prefix('sms')->group(function () {
+        Route::get('/settings', [SmsSettingsController::class, 'index'])->name('sms.settings');
+        Route::post('/settings', [SmsSettingsController::class, 'store'])->name('sms.settings.store');
+        Route::post('/templates', [SmsSettingsController::class, 'storeTemplate'])->name('sms.templates.store');
+        Route::get('/sms/logs', [SmsLogsController::class, 'index'])->name('sms.logs');
+    });
 });
 
 require __DIR__ . '/auth.php';

@@ -25,3 +25,8 @@
         <i class="bi bi-cash-stack me-1"></i>Expenses
     </a>
 </li>
+<li>
+    <a class="nav-link" href="{{ route('sms.settings') }}">
+        <i class="bi bi-gear me-2"></i>SMS Settings
+    </a>
+</li>
