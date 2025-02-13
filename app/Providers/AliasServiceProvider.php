@@ -14,6 +14,8 @@ class AliasServiceProvider extends ServiceProvider
     {
         $loader = AliasLoader::getInstance();
         $loader->alias('Billing', \App\Facades\BillingFacade::class);
+
+        $loader->alias('Sms', \App\Facades\Sms::class);
     }
 
     /**

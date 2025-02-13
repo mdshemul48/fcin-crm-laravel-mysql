@@ -191,6 +191,24 @@
                             <label for="remarks" class="form-label">Remarks</label>
                             <textarea class="form-control" id="remarks" name="remarks" rows="3"></textarea>
                         </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="send_sms" name="send_sms"
+                                    value="1" checked>
+                                <label class="form-check-label" for="send_sms">
+                                    Send Payment Confirmation SMS
+                                </label>
+                            </div>
+                        </div>
+                        <div class="mb-3" id="sms_template_section" style="display: none;">
+                            <label for="sms_template" class="form-label">SMS Template</label>
+                            <select class="form-select" id="sms_template" name="sms_template">
+                                <option value="">Select Template</option>
+                                @foreach ($smsTemplates as $template)
+                                    <option value="{{ $template->id }}">{{ $template->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -200,8 +218,6 @@
             </div>
         </div>
     </div>
-
-
 
     <div class="modal fade" id="addCustomBillModal" tabindex="-1" aria-labelledby="addCustomBillModalLabel"
         aria-hidden="true">
@@ -453,4 +469,12 @@
             vertical-align: middle;
         }
     </style>
+@endsection
+
+@section('scripts')
+    <script>
+        document.getElementById('send_sms').addEventListener('change', function() {
+            document.getElementById('sms_template_section').style.display = this.checked ? 'block' : 'none';
+        });
+    </script>
 @endsection
