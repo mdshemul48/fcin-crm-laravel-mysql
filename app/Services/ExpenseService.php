@@ -78,4 +78,13 @@ class ExpenseService
         $startDate = Carbon::now()->subMonth()->startOfMonth();
         return $this->getTotalExpensesByDateRange($startDate, $endDate);
     }
+
+    public function getExpensesByUser($startDate, $endDate)
+    {
+        return Expense::whereBetween('expense_date', [$startDate, $endDate])
+            ->with('createdBy')
+            ->selectRaw('created_by_id, SUM(amount) as total_amount, COUNT(*) as count')
+            ->groupBy('created_by_id')
+            ->get();
+    }
 }

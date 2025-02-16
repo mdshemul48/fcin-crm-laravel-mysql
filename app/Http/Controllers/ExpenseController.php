@@ -24,9 +24,17 @@ class ExpenseController extends Controller
 
             $expenses = $this->expenseService->getExpensesByDateRange($startDate, $endDate);
             $totalExpense = $this->expenseService->getTotalExpensesByDateRange($startDate, $endDate);
+            $expensesByUser = $this->expenseService->getExpensesByUser($startDate, $endDate);
 
-            return view('expenses.index', compact('expenses', 'totalExpense', 'startDate', 'endDate'));
+            return view('expenses.index', compact(
+                'expenses',
+                'totalExpense',
+                'startDate',
+                'endDate',
+                'expensesByUser'
+            ));
         } catch (\Exception $e) {
+            dd($e);
             return redirect()->back()->with('error', 'Error loading expenses: ' . $e->getMessage());
         }
     }

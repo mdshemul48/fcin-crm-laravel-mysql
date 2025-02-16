@@ -6,6 +6,7 @@ use App\Models\Client;
 use App\Models\Payment;
 use App\Services\ExpenseService;
 use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -72,6 +73,12 @@ class DashboardController extends Controller
         $currentMonthExpenses = $this->expenseService->getCurrentMonthTotalExpenses();
         $previousMonthExpenses = $this->expenseService->getPreviousMonthTotalExpenses();
 
+        // Add new expenses by user for current month
+        $expensesByUser = $this->expenseService->getExpensesByUser(
+            Carbon::now()->startOfMonth()->format('Y-m-d'),
+            Carbon::now()->endOfMonth()->format('Y-m-d')
+        );
+
         return view('dashboard', compact(
             'totalClients',
             'paidClients',
@@ -90,7 +97,8 @@ class DashboardController extends Controller
             'monthly',
             'daily',
             'currentMonthExpenses',
-            'previousMonthExpenses'
+            'previousMonthExpenses',
+            'expensesByUser'
         ));
     }
 }
