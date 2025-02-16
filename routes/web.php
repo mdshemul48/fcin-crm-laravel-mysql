@@ -9,6 +9,7 @@ use App\Http\Controllers\BillController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SmsLogsController;
 use App\Http\Controllers\SmsSettingsController;
+use App\Http\Controllers\ExpenseController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -35,6 +36,11 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
 
     Route::resource('clients', ClientController::class);
     Route::resource('packages', PackageController::class)->middleware('restrict.role:admin');
+
+    Route::resource('expenses', ExpenseController::class)->only(['index', 'store']);
+    Route::resource('expenses', ExpenseController::class)
+        ->only(['edit', 'update', 'destroy'])
+        ->middleware('restrict.role:admin');
 
     Route::post('/payments/{id}', [PaymentController::class, 'store'])->name('payments.store');
     Route::post('/bills/generate/{clientId}', [BillController::class, 'generate'])->name('bills.generate');
