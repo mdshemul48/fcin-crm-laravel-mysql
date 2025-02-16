@@ -314,6 +314,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
         <!-- Backup Details Modal -->
@@ -628,6 +629,7 @@
 @section('js')
     <script>
         $(document).ready(function() {
+            // Initialize bootstrap modal
             var backupModal = new bootstrap.Modal(document.getElementById('backupDetailsModal'));
         });
     </script>
