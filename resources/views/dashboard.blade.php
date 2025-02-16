@@ -119,6 +119,40 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Current Month Expenses Card -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-0 shadow h-100 py-3 bg-gradient-purple text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase fw-bold mb-2">This Month's Expenses</h6>
+                                <h4 class="fw-bold mb-0">৳{{ number_format($currentMonthExpenses, 2) }}</h4>
+                            </div>
+                            <div>
+                                <i class="fas fa-file-invoice fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previous Month Expenses Card -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-0 shadow h-100 py-3 bg-gradient-indigo text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase fw-bold mb-2">Last Month's Expenses</h6>
+                                <h4 class="fw-bold mb-0">৳{{ number_format($previousMonthExpenses, 2) }}</h4>
+                            </div>
+                            <div>
+                                <i class="fas fa-history fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Enhanced Tables Section -->
@@ -361,6 +395,14 @@
         /* New gradient for Today's Collection card */
         .bg-gradient-secondary {
             background: linear-gradient(135deg, #6c757d, #adb5bd);
+        }
+
+        .bg-gradient-purple {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+        }
+
+        .bg-gradient-indigo {
+            background: linear-gradient(135deg, #3498db, #2980b9);
         }
 
         h6 {

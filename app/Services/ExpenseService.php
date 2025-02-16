@@ -64,4 +64,18 @@ class ExpenseService
         }
         return $expense->delete();
     }
+
+    public function getCurrentMonthTotalExpenses()
+    {
+        $startDate = Carbon::now()->startOfMonth();
+        $endDate = Carbon::now()->endOfMonth();
+        return $this->getTotalExpensesByDateRange($startDate, $endDate);
+    }
+
+    public function getPreviousMonthTotalExpenses()
+    {
+        $endDate = Carbon::now()->subMonth()->endOfMonth();
+        $startDate = Carbon::now()->subMonth()->startOfMonth();
+        return $this->getTotalExpensesByDateRange($startDate, $endDate);
+    }
 }
