@@ -4,10 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Payment;
+use App\Services\ExpenseService;
 use Illuminate\Support\Facades\Cache;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
+    protected $expenseService;
+
+    public function __construct(ExpenseService $expenseService)
+    {
+        $this->expenseService = $expenseService;
+    }
+
     public function index()
     {
         $totalClients = Client::count();
@@ -60,6 +69,16 @@ class DashboardController extends Controller
         // Get backups from the last week
         $weeklyBackups = Cache::get('weekly_backups', []);
 
+        // Add these new lines for expenses
+        $currentMonthExpenses = $this->expenseService->getCurrentMonthTotalExpenses();
+        $previousMonthExpenses = $this->expenseService->getPreviousMonthTotalExpenses();
+
+        // Add new expenses by user for current month
+        $expensesByUser = $this->expenseService->getExpensesByUser(
+            Carbon::now()->startOfMonth()->format('Y-m-d'),
+            Carbon::now()->endOfMonth()->format('Y-m-d')
+        );
+
         return view('dashboard', compact(
             'totalClients',
             'paidClients',
@@ -75,8 +94,11 @@ class DashboardController extends Controller
             'commandStatus',
             'weeklyBackups',
             'userIds',
-            'monthly', // Add this
-            'daily'    // Add this
+            'monthly',
+            'daily',
+            'currentMonthExpenses',
+            'previousMonthExpenses',
+            'expensesByUser'
         ));
     }
 }

@@ -119,6 +119,40 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Current Month Expenses Card -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-0 shadow h-100 py-3 bg-gradient-purple text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase fw-bold mb-2">This Month's Expenses</h6>
+                                <h4 class="fw-bold mb-0">৳{{ number_format($currentMonthExpenses, 2) }}</h4>
+                            </div>
+                            <div>
+                                <i class="fas fa-file-invoice fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Previous Month Expenses Card -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-0 shadow h-100 py-3 bg-gradient-indigo text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase fw-bold mb-2">Last Month's Expenses</h6>
+                                <h4 class="fw-bold mb-0">৳{{ number_format($previousMonthExpenses, 2) }}</h4>
+                            </div>
+                            <div>
+                                <i class="fas fa-history fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Enhanced Tables Section -->
@@ -228,6 +262,59 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-lg-6 col-12">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-gradient-dark text-white py-3">
+                        <h5 class="mb-0 d-flex align-items-center">
+                            <i class="fas fa-file-invoice me-2"></i>Month's Expenses by User
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover custom-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-4 py-3">User</th>
+                                        <th class="text-end py-3">Amount</th>
+                                        <th class="text-center py-3">Count</th>
+                                        <th class="text-end pe-4 py-3">% of Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($expensesByUser as $userExpense)
+                                        <tr>
+                                            <td class="ps-4 py-3">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="user-icon me-2">
+                                                        <i class="fas fa-user-circle text-primary"></i>
+                                                    </div>
+                                                    <span>{{ $userExpense->createdBy->name }}</span>
+                                                </div>
+                                            </td>
+                                            <td class="text-end py-3">৳{{ number_format($userExpense->total_amount, 2) }}
+                                            </td>
+                                            <td class="text-center py-3">{{ $userExpense->count }}</td>
+                                            <td class="text-end pe-4 py-3">
+                                                {{ number_format(($userExpense->total_amount / $currentMonthExpenses) * 100, 1) }}%
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr class="bg-light">
+                                        <th class="ps-4 py-3">Total</th>
+                                        <th class="text-end py-3">৳{{ number_format($currentMonthExpenses, 2) }}</th>
+                                        <th class="text-center py-3">{{ $expensesByUser->sum('count') }}</th>
+                                        <th class="text-end pe-4 py-3">100%</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Backup Details Modal -->
@@ -326,8 +413,7 @@
             background-color: rgba(25, 135, 84, 0.1) !important;
             color: #198754 !important;
         }
-    </style>
-    <style>
+
         .card {
             border-radius: 1rem;
             transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -361,6 +447,14 @@
         /* New gradient for Today's Collection card */
         .bg-gradient-secondary {
             background: linear-gradient(135deg, #6c757d, #adb5bd);
+        }
+
+        .bg-gradient-purple {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+        }
+
+        .bg-gradient-indigo {
+            background: linear-gradient(135deg, #3498db, #2980b9);
         }
 
         h6 {

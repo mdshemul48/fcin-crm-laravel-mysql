@@ -21,7 +21,7 @@
     </a>
 </li>
 <li class="nav-item">
-    <a class="nav-link" href="#">
+    <a class="nav-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}" href="{{ route('expenses.index') }}">
         <i class="bi bi-cash-stack me-1"></i>Expenses
     </a>
 </li>

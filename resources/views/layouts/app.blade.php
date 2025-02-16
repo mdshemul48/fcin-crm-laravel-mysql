@@ -257,7 +257,7 @@
     @endif
 
     @stack('custom-scripts')
-
+    @stack('scripts')
 </body>
 
 </html>
