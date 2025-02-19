@@ -165,6 +165,22 @@
         .fl-wrapper {
             margin-top: 45px;
         }
+
+        .nav-item .badge {
+            font-size: 0.85em;
+            padding: 0.35em 0.65em;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover .badge {
+            transform: scale(1.05);
+        }
+
+        .sms-balance {
+            background-color: rgba(25, 135, 84, 0.1) !important;
+            color: #198754 !important;
+            font-weight: 500;
+        }
     </style>
 </head>
 
@@ -190,7 +206,16 @@
 
                     <x-navigation-menu></x-navigation-menu>
 
-                    <li class="nav-item dropdown ms-auto">
+                    <!-- Add SMS Balance Display -->
+                    <li class="nav-item ms-auto">
+                        <a class="nav-link" href="{{ route('sms.settings') }}">
+                            <i class="bi bi-envelope-fill me-1"></i>
+                            Balance: <span class="badge bg-success sms-balance">{{ number_format($smsBalance ?? 0, 2) }}
+                                Tk</span>
+                        </a>
+                    </li>
+
+                    <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown"
                             role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="bi bi-person-circle me-2"></i>
