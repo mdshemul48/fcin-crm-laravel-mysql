@@ -4,22 +4,19 @@
 
 @section('header_content')
     <div class="d-flex flex-column flex-md-row gap-2 align-items-center">
-        <form action="{{ route('clients.index') }}" method="GET" class="d-flex gap-2">
+        <div class="d-flex gap-2">
             <div class="input-group">
-                <input type="text" name="search" class="form-control border-0 shadow-sm"
-                    placeholder="Search by Username, Number, or C.ID" value="{{ request()->query('search') }}">
-                <select name="payment_status" class="form-select border-0 shadow-sm">
+                <select id="paymentStatus" class="form-select border-0 shadow-sm w-auto">
                     <option value="">All Clients</option>
                     <option value="paid" {{ request()->query('payment_status') === 'paid' ? 'selected' : '' }}>Paid
                     </option>
                     <option value="due" {{ request()->query('payment_status') === 'due' ? 'selected' : '' }}>Unpaid
                     </option>
                 </select>
-                <button type="submit" class="btn btn-primary shadow-sm">
-                    <i class="bi bi-search"></i>
-                </button>
+                <input type="text" id="searchInput" class="form-control border-0 shadow-sm w-auto"
+                    placeholder="Search by Username, Number, or C.ID" value="{{ request()->query('search') }}">
             </div>
-        </form>
+        </div>
         <a href="{{ route('clients.create') }}" class="btn btn-primary shadow-sm">
             <i class="bi bi-plus-lg me-1"></i> Add Client
         </a>
@@ -29,15 +26,14 @@
 @section('content')
     <div class="container-fluid px-0">
         <div class="card border-0 shadow-sm overflow-hidden">
-            <div class="card-body p-0">
-                @include('clients.list.desktop')
-                @include('clients.list.mobile')
-                <div class="d-flex justify-content-center mt-4">
-                    {{ $clients->appends(request()->query())->links() }}
-                </div>
+            <div class="card-body p-0" id="table-container">
+                @include('clients.list.table-content')
             </div>
         </div>
     </div>
+    <script>
+        console.log("gg")
+    </script>
 @endsection
 
 @section('css')
@@ -115,4 +111,58 @@
             }
         }
     </style>
+@endsection
+
+@section('custom-scripts')
+    <script>
+        $(document).ready(function() {
+            let searchTimeout;
+
+            function performSearch() {
+                const search = $('#searchInput').val();
+                const status = $('#paymentStatus').val();
+
+                const currentUrl = window.location.href.split('?')[0];
+                const params = new URLSearchParams();
+
+                if (search) params.set('search', search);
+                if (status) params.set('payment_status', status);
+
+                const url = `${currentUrl}${params.toString() ? '?' + params.toString() : ''}`;
+
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    dataType: 'json',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    beforeSend: function() {
+                        $('#table-container').addClass('opacity-50');
+                    },
+                    success: function(response) {
+                        $('#table-container').html(response.html);
+                        history.pushState({}, '', response.url);
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Error:', error);
+                        toastr.error('An error occurred while searching');
+                    },
+                    complete: function() {
+                        $('#table-container').removeClass('opacity-50');
+                    }
+                });
+            }
+
+            let debounceTimer;
+            $('#searchInput').on('input', function() {
+                clearTimeout(debounceTimer);
+                if ($(this).val().length >= 3 || $(this).val().length === 0) {
+                    debounceTimer = setTimeout(performSearch, 500);
+                }
+            });
+
+            $('#paymentStatus').on('change', performSearch);
+        });
+    </script>
 @endsection

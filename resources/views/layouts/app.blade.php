@@ -256,8 +256,8 @@
         </script>
     @endif
 
-    @stack('custom-scripts')
-    @stack('scripts')
+    @yield('custom-scripts')
+    @yield('scripts')
 </body>
 
 </html>

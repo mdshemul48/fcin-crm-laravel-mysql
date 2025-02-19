@@ -32,6 +32,14 @@ class ClientController extends Controller
         }
 
         $clients = $query->paginate(100);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'html' => view('clients.list.table-content', compact('clients'))->render(),
+                'url' => $request->fullUrlWithQuery(['search' => $request->search, 'payment_status' => $request->payment_status])
+            ]);
+        }
+
         return view('clients.index', compact('clients'));
     }
 
