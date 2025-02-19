@@ -49,4 +49,23 @@ class SmsSettingsController extends Controller
 
         return redirect()->back()->with('success', 'Template created successfully');
     }
+
+    public function updateTemplate(Request $request, SmsTemplate $template)
+    {
+        $validated = $request->validate([
+            'name' => 'required',
+            'content' => 'required',
+            'type' => 'required|in:payment,bill,custom'
+        ]);
+
+        $template->update($validated);
+
+        return response()->json(['message' => 'Template updated successfully']);
+    }
+
+    public function destroyTemplate(SmsTemplate $template)
+    {
+        $template->delete();
+        return response()->json(['message' => 'Template deleted successfully']);
+    }
 }

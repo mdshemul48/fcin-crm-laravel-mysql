@@ -116,8 +116,16 @@
                                             <td><span class="badge bg-info">{{ $template->type }}</span></td>
                                             <td>{{ Str::limit($template->content, 50) }}</td>
                                             <td>
-                                                <button class="btn btn-sm btn-primary">Edit</button>
-                                                <button class="btn btn-sm btn-danger">Delete</button>
+                                                <button class="btn btn-sm btn-primary edit-template" data-bs-toggle="modal"
+                                                    data-bs-target="#editTemplateModal" data-id="{{ $template->id }}"
+                                                    data-name="{{ $template->name }}" data-type="{{ $template->type }}"
+                                                    data-content="{{ $template->content }}">
+                                                    <i class="bi bi-pencil"></i> Edit
+                                                </button>
+                                                <button class="btn btn-sm btn-danger delete-template"
+                                                    data-id="{{ $template->id }}">
+                                                    <i class="bi bi-trash"></i> Delete
+                                                </button>
                                             </td>
                                         </tr>
                                     @endforeach
@@ -125,6 +133,43 @@
                             </table>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Template Modal -->
+    <div class="modal fade" id="editTemplateModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Template</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editTemplateForm">
+                        <input type="hidden" id="edit_template_id">
+                        <div class="mb-3">
+                            <label class="form-label">Template Name</label>
+                            <input type="text" class="form-control" id="edit_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Template Type</label>
+                            <select class="form-select" id="edit_type" required>
+                                <option value="payment">Payment</option>
+                                <option value="bill">Bill</option>
+                                <option value="custom">Custom</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Template Content</label>
+                            <textarea class="form-control" id="edit_content" rows="4" required></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="updateTemplate">Update</button>
                 </div>
             </div>
         </div>
@@ -158,16 +203,82 @@
         .btn {
             padding: 0.5rem 1rem;
             border-radius: 0.375rem;
-            font-weight: 500;
         }
 
         .table {
             font-size: 0.875rem;
+            font-weight: 500;
         }
 
         .badge {
-            font-weight: 500;
             padding: 0.35em 0.65em;
+            font-weight: 500;
         }
     </style>
+@endsection
+
+@section('custom-scripts')
+    <script>
+        $(document).ready(function() {
+            // Handle Edit Template Modal
+            $('.edit-template').on('click', function() {
+                const id = $(this).data('id');
+                const name = $(this).data('name');
+                const type = $(this).data('type');
+                const content = $(this).data('content');
+
+                $('#edit_template_id').val(id);
+                $('#edit_name').val(name);
+                $('#edit_type').val(type);
+                $('#edit_content').val(content);
+            });
+
+            // Handle Template Update
+            $('#updateTemplate').on('click', function() {
+                const id = $('#edit_template_id').val();
+                const data = {
+                    name: $('#edit_name').val(),
+                    type: $('#edit_type').val(),
+                    content: $('#edit_content').val(),
+                    _token: $('meta[name="csrf-token"]').attr('content')
+                };
+
+                $.ajax({
+                    url: `/sms/templates/${id}`,
+                    type: 'PUT',
+                    data: data,
+                    success: function(response) {
+                        $('#editTemplateModal').modal('hide');
+                        toastr.success(response.message);
+                        setTimeout(() => window.location.reload(), 1000);
+                    },
+                    error: function(xhr) {
+                        toastr.error('Error updating template');
+                    }
+                });
+            });
+
+            // Handle Template Delete
+            $('.delete-template').on('click', function() {
+                if (!confirm('Are you sure you want to delete this template?')) return;
+
+                const id = $(this).data('id');
+
+                $.ajax({
+                    url: `/sms/templates/${id}`,
+                    type: 'DELETE',
+                    data: {
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
+                    success: function(response) {
+                        toastr.success(response.message);
+                        setTimeout(() => window.location.reload(), 1000);
+                    },
+                    error: function(xhr) {
+                        toastr.error('Error deleting template');
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

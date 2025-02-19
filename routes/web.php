@@ -51,6 +51,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/settings', [SmsSettingsController::class, 'index'])->name('sms.settings');
         Route::post('/settings', [SmsSettingsController::class, 'store'])->name('sms.settings.store');
         Route::post('/templates', [SmsSettingsController::class, 'storeTemplate'])->name('sms.templates.store');
+        Route::put('/templates/{template}', [SmsSettingsController::class, 'updateTemplate'])->name('sms.templates.update');
+        Route::delete('/templates/{template}', [SmsSettingsController::class, 'destroyTemplate'])->name('sms.templates.destroy');
         Route::get('/sms/logs', [SmsLogsController::class, 'index'])->name('sms.logs');
     });
 });
