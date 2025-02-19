@@ -1,32 +1,36 @@
-<li class="nav-item dropdown">
-    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <i class="bi bi-people-fill me-1"></i>Clients Management
+<li class="sidebar-item">
+    <a href="#clientSubmenu" class="sidebar-link" data-bs-toggle="collapse">
+        <i class="bi bi-people-fill"></i>
+        <span>Client Management</span>
     </a>
-    <ul class="dropdown-menu">
-        <li>
-            <a class="dropdown-item" href="{{ route('clients.index') }}">
-                <i class="bi bi-person-lines-fill me-2"></i>Clients
-            </a>
-        </li>
-        <li>
-            <a class="dropdown-item" href="{{ route('packages.index') }}">
-                <i class="bi bi-box-seam me-2"></i>Packages
-            </a>
-        </li>
-    </ul>
+    <div class="collapse" id="clientSubmenu">
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <a href="{{ route('clients.index') }}" class="sidebar-link">
+                    <i class="bi bi-person-lines-fill"></i>
+                    <span>Clients</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="{{ route('packages.index') }}" class="sidebar-link">
+                    <i class="bi bi-box-seam"></i>
+                    <span>Packages</span>
+                </a>
+            </li>
+        </ul>
+    </div>
 </li>
-<li class="nav-item">
-    <a class="nav-link" href="#">
-        <i class="bi bi-diagram-3 me-1"></i>Sub Reseller
+
+<li class="sidebar-item">
+    <a href="{{ route('expenses.index') }}" class="sidebar-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
+        <i class="bi bi-cash-stack"></i>
+        <span>Expenses</span>
     </a>
 </li>
-<li class="nav-item">
-    <a class="nav-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}" href="{{ route('expenses.index') }}">
-        <i class="bi bi-cash-stack me-1"></i>Expenses
-    </a>
-</li>
-<li>
-    <a class="nav-link" href="{{ route('sms.settings') }}">
-        <i class="bi bi-gear me-2"></i>SMS Settings
+
+<li class="sidebar-item">
+    <a href="{{ route('sms.settings') }}" class="sidebar-link">
+        <i class="bi bi-gear"></i>
+        <span>SMS Settings</span>
     </a>
 </li>

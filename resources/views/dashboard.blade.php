@@ -3,8 +3,8 @@
 @section('title', 'Dashboard')
 @section('header_content')
     <div class="d-flex align-items-center">
-        <a href="{{ route('clients.create') }}" class="btn btn-dark">
-            <i class="bi bi-plus-lg me-1"></i> Add Client
+        <a href="{{ route('expenses.index') }}" class="btn btn-dark">
+            <i class="bi bi-plus-lg me-1"></i> Add Expense
         </a>
 
         <div class="backup-status-btn ms-2" onclick="$('#backupDetailsModal').modal('show')">

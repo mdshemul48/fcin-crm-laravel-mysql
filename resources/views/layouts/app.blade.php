@@ -20,6 +20,9 @@
     <!-- Toastr CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet" />
 
+    <!-- DarkReader CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/darkreader@4.9.67/darkreader.min.js"></script>
+
     @if (env('AUTO_RELOAD', false))
         @vite('resources/js/app.js')
     @endif
@@ -33,7 +36,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
-
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
@@ -62,81 +64,6 @@
             transition: color 0.3s ease;
         }
 
-        .navbar-brand:hover {
-            color: #3498db;
-        }
-
-        .nav-link {
-            color: #34495e;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            margin: 0 0.2rem;
-            border-radius: 6px;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.1);
-        }
-
-        .nav-link.active {
-            color: #3498db;
-            background: rgba(52, 152, 219, 0.15);
-        }
-
-        .dropdown-menu {
-            border: none;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            border-radius: 12px;
-            padding: 0.5rem;
-            min-width: 220px;
-            animation: dropdownFade 0.3s ease;
-        }
-
-        .dropdown-item {
-            padding: 0.7rem 1.2rem;
-            border-radius: 6px;
-            margin: 2px 0;
-            transition: all 0.2s ease;
-        }
-
-        .dropdown-item:hover {
-            background: rgba(52, 152, 219, 0.1);
-            color: #3498db;
-            transform: translateX(5px);
-        }
-
-        @keyframes dropdownFade {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .navbar-toggler {
-            border: none;
-            padding: 0.5rem;
-        }
-
-        .navbar-toggler:focus {
-            box-shadow: none;
-            outline: none;
-        }
-
-        .navbar-toggler-icon {
-            width: 24px;
-            height: 24px;
-        }
-
-        .content {
-            flex: 1;
-        }
 
         .header-title {
             font-weight: 600;
@@ -147,140 +74,448 @@
             font-family: 'ChicagoFLF', sans-serif;
         }
 
-        footer {
-            background-color: rgb(51, 48, 46);
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-
-        .navbar {
-            margin-bottom: 10px;
-        }
-
-        .dropdown-menu {
-            min-width: 200px;
-        }
-
-        .fl-wrapper {
-            margin-top: 45px;
-        }
-
-        .nav-item .badge {
-            font-size: 0.85em;
-            padding: 0.35em 0.65em;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link:hover .badge {
-            transform: scale(1.05);
-        }
-
         .sms-balance {
             background-color: rgba(25, 135, 84, 0.1) !important;
             color: #198754 !important;
             font-weight: 500;
         }
     </style>
+    <style>
+        :root {
+            --sidebar-width: 280px;
+            --sidebar-collapsed-width: 70px;
+            --topnav-height: 64px;
+            --primary-color: #4361ee;
+            --secondary-color: #3f37c9;
+        }
+
+        /* Base Layout */
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: #f8f9fa;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: var(--sidebar-width);
+            background: #fff;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            z-index: 1040;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 1rem 0;
+            margin: 0;
+        }
+
+        .sidebar-item {
+            padding: 0 1rem;
+            margin: 0.25rem 0;
+        }
+
+        .sidebar-link {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: #495057;
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .sidebar-link i {
+            font-size: 1.1rem;
+            width: 1.5rem;
+            margin-right: 0.75rem;
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            color: var(--primary-color);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        /* Sidebar Dropdown */
+        .sidebar .dropdown-menu {
+            position: static !important;
+            transform: none !important;
+            padding: 0.5rem;
+            margin: 0.25rem 0;
+            border: none;
+            box-shadow: none;
+            background: transparent;
+        }
+
+        .sidebar .dropdown-item {
+            padding: 0.75rem 1rem;
+            margin: 0.25rem 0;
+            color: #495057;
+            border-radius: 0.5rem;
+            transition: all 0.2s;
+        }
+
+        .sidebar .dropdown-item:hover {
+            color: var(--primary-color);
+            background: rgba(67, 97, 238, 0.05);
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            position: fixed;
+            right: 0;
+            top: 0;
+            left: var(--sidebar-width);
+            height: var(--topnav-height);
+            background: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+            z-index: 1030;
+            transition: all 0.3s ease;
+            padding: 0 1.5rem;
+        }
+
+        /* Main Content and Footer Styles */
+        .main {
+            margin-left: var(--sidebar-width);
+            padding: calc(var(--topnav-height) + 1.5rem) 1.5rem 0;
+            min-height: calc(100vh - var(--topnav-height));
+            display: flex;
+            flex-direction: column;
+        }
+
+        .content-wrapper {
+            flex: 1 0 auto;
+        }
+
+        .footer {
+            flex-shrink: 0;
+            background: #fff;
+            padding: 1rem 1.5rem;
+            margin-top: 2rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .footer-link {
+            color: #6c757d;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-link:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 991.98px) {
+            .main {
+                margin-left: 0;
+            }
+        }
+
+        body.sidebar-collapsed .main {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        /* Collapsed State */
+        body.sidebar-collapsed .sidebar {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        body.sidebar-collapsed .top-nav {
+            left: var(--sidebar-collapsed-width);
+        }
+
+        body.sidebar-collapsed .main {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        body.sidebar-collapsed .sidebar-link span,
+        body.sidebar-collapsed .sidebar-brand-text {
+            display: none;
+        }
+
+        body.sidebar-collapsed .sidebar-link {
+            justify-content: center;
+            padding: 0.75rem;
+        }
+
+        body.sidebar-collapsed .sidebar-link i {
+            margin: 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                left: calc(-1 * var(--sidebar-width));
+            }
+
+            .top-nav {
+                left: 0;
+            }
+
+            .main {
+                margin-left: 0;
+            }
+
+            body.sidebar-mobile-open .sidebar {
+                left: 0;
+            }
+
+            body.sidebar-mobile-open::after {
+                content: '';
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 1035;
+            }
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            color: #6c757d;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(67, 97, 238, 0.05);
+            color: var(--primary-color);
+        }
+
+        .theme-toggle i {
+            font-size: 1.25rem;
+        }
+
+        /* Animation for icon switch */
+        .theme-toggle .bi-moon-fill,
+        .theme-toggle.dark-mode .bi-sun-fill {
+            display: none;
+        }
+
+        .theme-toggle.dark-mode .bi-moon-fill {
+            display: inline-block;
+        }
+
+        .theme-toggle .bi-sun-fill {
+            display: inline-block;
+        }
+    </style>
 </head>
 
-<body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="bi bi-grid-fill me-2"></i>{{ env('APP_NAME', 'YourApp') }}
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="bi bi-list"></i>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav w-100">
-                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}"
-                            href="{{ route('dashboard') }}">
-                            <i class="bi bi-house-door me-1"></i>Dashboard
-                        </a>
-                    </li>
+<body class="sidebar-enabled">
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
 
-                    <x-navigation-menu></x-navigation-menu>
+                <a class="navbar-brand" href="{{ route('dashboard') }}">
+                    <i class="bi bi-grid-fill me-2"></i>{{ env('APP_NAME', 'YourApp') }}
+                </a>
 
-                    <!-- Add SMS Balance Display -->
-                    <li class="nav-item ms-auto">
-                        <a class="nav-link" href="{{ route('sms.settings') }}">
-                            <i class="bi bi-envelope-fill me-1"></i>
-                            Balance: <span class="badge bg-success sms-balance">{{ number_format($smsBalance ?? 0, 2) }}
+            </div>
+
+            <ul class="sidebar-nav">
+                <li class="sidebar-item">
+                    <a href="{{ route('dashboard') }}"
+                        class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                        <i class="bi bi-grid-fill"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <x-navigation-menu />
+            </ul>
+        </nav>
+
+        <div class="main">
+            <!-- Top Navigation -->
+
+            <nav class="top-nav pt-2">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <button id="sidebarToggle" class="btn btn-link p-0 me-3">
+                            <i class="bi bi-list fs-4"></i>
+                        </button>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3">
+                        <!-- Add Theme Toggle Button -->
+                        <button class="theme-toggle" id="themeToggle" title="Toggle dark mode">
+                            <i class="bi bi-sun-fill"></i>
+                            <i class="bi bi-moon-fill"></i>
+                        </button>
+
+                        <a href="{{ route('sms.settings') }}" class="nav-link">
+                            <i class="bi bi-envelope-fill"></i>
+                            <span class="badge bg-success sms-balance">{{ number_format($smsBalance ?? 0, 2) }}
                                 Tk</span>
                         </a>
-                    </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="navbarDropdown"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-person-circle me-2"></i>
-                            {{ Auth()->user()->name }}
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            @if (canAccess('admin'))
+                        <div class="dropdown">
+                            <a class="nav-link" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle fs-5"></i>
+                                <span class="ms-2 d-none d-sm-inline">{{ Auth()->user()->name }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                @if (canAccess('admin'))
+                                    <li><a class="dropdown-item" href="{{ route('users.index') }}">
+                                            <i class="bi bi-people me-2"></i>Users List
+                                        </a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                @endif
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('users.index') }}">
-                                        <i class="bi bi-people me-2"></i>Users List
-                                    </a>
+                                    <form action="{{ route('logout') }}" method="POST">
+                                        @csrf
+                                        <button class="dropdown-item text-danger"><i
+                                                class="bi bi-box-arrow-right me-2"></i>Logout</button>
+                                    </form>
                                 </li>
-                            @endif
-                            <li>
-                                <form action="{{ route('logout') }}" method="POST">
-                                    @csrf
-                                    <button class='dropdown-item' type="submit">
-                                        <i class="bi bi-box-arrow-right me-2"></i>Logout
-                                    </button>
-                                </form>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </nav>
 
-    <!-- Add margin-top to content to account for fixed navbar -->
-    <div class="container mt-5 pt-5 content">
-        <div
-            class="d-flex flex-column flex-md-row align-items-start align-items-lg-center gap-3 justify-content-between">
-            <div>
-                <h2 class="header-title">@yield('title', 'Default Page Title')</h2>
-            </div>
-            <div class="ms-0 ms-md-auto mt-2 mt-md-0">
-                @yield('header_content')
-            </div>
-        </div>
+            <!-- Content Area -->
+            <div class="content-wrapper">
+                <!-- Page Header -->
+                <div
+                    class="d-flex flex-column flex-md-row align-items-start align-items-lg-center gap-3 justify-content-between mb-4">
+                    <div>
+                        <h2 class="header-title">@yield('title', 'Default Page Title')</h2>
+                    </div>
+                    <div class="ms-0 ms-md-auto">
+                        @yield('header_content')
+                    </div>
+                </div>
 
-        <hr class="my-1">
-        <div class="content">
-            @yield('content')
+                <!-- Main Content -->
+                @yield('content')
+            </div>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-content">
+                    <div class="footer-copyright">
+                        &copy; {{ date('Y') }} {{ env('APP_NAME', 'YourApp') }}. All rights reserved.
+                    </div>
+                    <div class="footer-links d-none d-md-flex">
+                        <a href="#" class="footer-link">About</a>
+                        <a href="#" class="footer-link">Privacy Policy</a>
+                        <span class="text-muted">v1.0.0</span>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
 
-    <!-- Footer -->
-    <footer>
-        &copy; {{ date('Y') }} {{ env('APP_NAME', 'YourApp') }}. All Rights Reserved.
-    </footer>
-
-    <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
-    </script>
-
-    <!-- Toastr -->
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Initialize DarkReader in disabled state
+            DarkReader.disable();
 
-    <!-- Display Flash Messages -->
-    @if (session('message'))
-        <script>
+            // Theme Toggle Handler
+            const themeToggle = document.getElementById('themeToggle');
+
+            // Check saved theme preference
+            const isDarkMode = localStorage.getItem('darkMode') === 'true';
+            if (isDarkMode) {
+                DarkReader.enable({
+                    brightness: 100,
+                    contrast: 90,
+                    sepia: 10
+                });
+                themeToggle.classList.add('dark-mode');
+            }
+
+            // Theme Toggle Click Handler
+            themeToggle.addEventListener('click', () => {
+                if (themeToggle.classList.contains('dark-mode')) {
+                    DarkReader.disable();
+                    themeToggle.classList.remove('dark-mode');
+                    localStorage.setItem('darkMode', 'false');
+                } else {
+                    DarkReader.enable({
+                        brightness: 100,
+                        contrast: 90,
+                        sepia: 10
+                    });
+                    themeToggle.classList.add('dark-mode');
+                    localStorage.setItem('darkMode', 'true');
+                }
+            });
+
+            // Sidebar Toggle
+            $('#sidebarToggle').click(function(e) {
+                e.preventDefault();
+                $('body').toggleClass('sidebar-collapsed');
+                localStorage.setItem('sidebar-collapsed', $('body').hasClass('sidebar-collapsed'));
+            });
+
+            // Restore sidebar state
+            if (localStorage.getItem('sidebar-collapsed') === 'true') {
+                $('body').addClass('sidebar-collapsed');
+            }
+
+            // Mobile sidebar handling
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('.sidebar').length && !$(e.target).closest('#sidebarToggle')
+                    .length) {
+                    $('body').removeClass('sidebar-mobile-open');
+                }
+            });
+
+            $('#sidebarToggle').on('click', function(e) {
+                e.preventDefault();
+                if (window.innerWidth < 992) {
+                    $('body').toggleClass('sidebar-mobile-open');
+                }
+            });
+        });
+
+        @if (session('message'))
             toastr.success("{{ session('message') }}");
-        </script>
-    @endif
+        @endif
+    </script>
 
     @yield('custom-scripts')
     @yield('scripts')
