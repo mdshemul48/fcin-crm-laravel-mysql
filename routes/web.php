@@ -40,7 +40,7 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
     Route::resource('expenses', ExpenseController::class)->only(['index', 'store']);
     Route::resource('expenses', ExpenseController::class)
         ->only(['edit', 'update', 'destroy'])
-        ->middleware('restrict.role:admin');
+        ->middleware('can.manage.expense');
 
     Route::post('/payments/{id}', [PaymentController::class, 'store'])->name('payments.store');
     Route::post('/bills/generate/{clientId}', [BillController::class, 'generate'])->name('bills.generate');

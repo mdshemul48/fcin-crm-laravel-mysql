@@ -27,4 +27,9 @@ class Expense extends Model
     {
         return $this->belongsTo(User::class, 'created_by_id');
     }
+
+    public function canManage($user)
+    {
+        return $user->id === $this->created_by_id;
+    }
 }

@@ -56,6 +56,11 @@ class ExpenseController extends Controller
 
     public function edit(Expense $expense)
     {
+        if (!$expense->canManage(auth()->user())) {
+            return redirect()->route('expenses.index')
+                ->with('error', 'You are not authorized to edit this expense.');
+        }
+
         try {
             return view('expenses.edit', compact('expense'));
         } catch (\Exception $e) {
@@ -66,9 +71,13 @@ class ExpenseController extends Controller
 
     public function update(Request $request, Expense $expense)
     {
+        if (!$expense->canManage(auth()->user())) {
+            return redirect()->route('expenses.index')
+                ->with('error', 'You are not authorized to update this expense.');
+        }
+
         try {
             $validated = $this->validateExpenseRequest($request);
-
             $this->expenseService->updateExpense($expense, $validated);
 
             return redirect()->route('expenses.index')
@@ -82,6 +91,11 @@ class ExpenseController extends Controller
 
     public function destroy(Expense $expense)
     {
+        if (!$expense->canManage(auth()->user())) {
+            return redirect()->route('expenses.index')
+                ->with('error', 'You are not authorized to delete this expense.');
+        }
+
         try {
             $this->expenseService->deleteExpense($expense);
 
