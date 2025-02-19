@@ -20,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
             'check.user.status' => \App\Http\Middleware\CheckUserStatusMiddleware::class,
             'restrict.role' => \App\Http\Middleware\AllowedRoleMiddleware::class,
+            'can.manage.expense' => \App\Http\Middleware\CanManageExpense::class
 
         ]);
 

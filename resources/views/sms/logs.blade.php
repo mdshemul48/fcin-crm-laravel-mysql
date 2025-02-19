@@ -47,7 +47,7 @@
                                 <tr>
                                     <td>{{ $log->created_at->format('d M Y H:i') }}</td>
                                     <td>
-                                        <strong>{{ $log->client->name }}</strong><br>
+                                        <strong>{{ $log->client->username }}</strong><br>
                                         <small class="text-muted">{{ $log->client->phone_number }}</small>
                                     </td>
                                     <td>{{ Str::limit($log->content, 160) }}</td>
