@@ -12,6 +12,8 @@ class ResellerRechargeController extends Controller
     public function index(Request $request)
     {
         $resellers = Reseller::all();
+
+        // Build the base query
         $query = ResellerRecharge::with('reseller');
 
         // Apply filters
@@ -30,14 +32,15 @@ class ResellerRechargeController extends Controller
                 ->whereYear('created_at', now()->year);
         }
 
+        // Get paginated results
         $recharges = $query->latest()->paginate(15)->withQueryString();
 
-        // Calculate totals for the filtered results
-        $totals = $query->selectRaw('
-            COUNT(*) as count,
-            SUM(amount) as total_amount,
-            SUM(commission) as total_commission
-        ')->first();
+        // Calculate totals using a separate query
+        $totals = (object)[
+            'count' => $recharges->count(),
+            'total_amount' => $recharges->sum('amount'),
+            'total_commission' => $recharges->sum('commission')
+        ];
 
         return view('reseller-recharges.index', compact('recharges', 'resellers', 'totals'));
     }
