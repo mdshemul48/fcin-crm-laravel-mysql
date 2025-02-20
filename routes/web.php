@@ -10,6 +10,8 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SmsLogsController;
 use App\Http\Controllers\SmsSettingsController;
 use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ResellerController;
+use App\Http\Controllers\ResellerRechargeController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -44,6 +46,11 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
 
     Route::post('/payments/{id}', [PaymentController::class, 'store'])->name('payments.store');
     Route::post('/bills/generate/{clientId}', [BillController::class, 'generate'])->name('bills.generate');
+
+    // Reseller Management Routes
+    Route::resource('resellers', ResellerController::class);
+    Route::resource('reseller-recharges', ResellerRechargeController::class);
+    Route::get('reseller-recharges/filter', [ResellerRechargeController::class, 'filter'])->name('reseller-recharges.filter');
 });
 
 Route::middleware(['auth'])->group(function () {
