@@ -22,6 +22,29 @@
 </li>
 
 <li class="sidebar-item">
+    <a href="#resellerSubmenu" class="sidebar-link" data-bs-toggle="collapse">
+        <i class="bi bi-diagram-3-fill"></i>
+        <span>Reseller Management</span>
+    </a>
+    <div class="collapse" id="resellerSubmenu">
+        <ul class="sidebar-nav">
+            <li class="sidebar-item">
+                <a href="{{ route('resellers.index') }}" class="sidebar-link">
+                    <i class="bi bi-people"></i>
+                    <span>Resellers</span>
+                </a>
+            </li>
+            <li class="sidebar-item">
+                <a href="{{ route('reseller-recharges.index') }}" class="sidebar-link">
+                    <i class="bi bi-currency-exchange"></i>
+                    <span>Recharges</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+</li>
+
+<li class="sidebar-item">
     <a href="{{ route('expenses.index') }}" class="sidebar-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
         <i class="bi bi-cash-stack"></i>
         <span>Expenses</span>

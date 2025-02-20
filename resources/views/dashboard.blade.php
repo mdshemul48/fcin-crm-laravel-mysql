@@ -153,6 +153,42 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Reseller Stats -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-0 shadow h-100 bg-gradient-violet text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase fw-bold mb-2">Month's Recharges</h6>
+                                <h4 class="fw-bold mb-0">৳{{ number_format($monthlyRecharges ?? 0, 2) }}</h4>
+                                <small class="text-white-50">{{ $totalRechargeCount ?? 0 }} recharges this month</small>
+                            </div>
+                            <div>
+                                <i class="fas fa-exchange-alt fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-md-6 mb-4">
+                <div class="card border-0 shadow h-100 bg-gradient-pink text-white">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between">
+                            <div>
+                                <h6 class="text-uppercase fw-bold mb-2">Month's Commission</h6>
+                                <h4 class="fw-bold mb-0">৳{{ number_format($monthlyCommission ?? 0, 2) }}</h4>
+                                <small class="text-white-50">Avg:
+                                    ৳{{ number_format($averageCommission ?? 0, 2) }}/recharge</small>
+                            </div>
+                            <div>
+                                <i class="fas fa-percentage fa-3x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Enhanced Tables Section -->
@@ -315,6 +351,71 @@
                 </div>
             </div>
 
+            <div class="col-lg-6 col-12">
+                <div class="card shadow-lg border-0">
+                    <div class="card-header bg-gradient-dark text-white py-3">
+                        <h5 class="mb-0 d-flex align-items-center">
+                            <i class="fas fa-chart-pie me-2"></i>Monthly Recharges by Reseller
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-hover custom-table mb-0">
+                                <thead>
+                                    <tr>
+                                        <th class="ps-4">Reseller</th>
+                                        <th class="text-end">Total Recharge</th>
+                                        <th class="text-end">Total Commission</th>
+                                        <th class="text-center pe-4">Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @forelse($resellerStats as $stat)
+                                        <tr>
+                                            <td class="ps-4">
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar-circle me-2">
+                                                        {{ strtoupper(substr($stat->reseller->name, 0, 1)) }}
+                                                    </div>
+                                                    <div>
+                                                        <h6 class="mb-0">{{ $stat->reseller->name }}</h6>
+                                                        <small class="text-muted">{{ $stat->reseller->phone }}</small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="text-end">৳{{ number_format($stat->total_amount, 2) }}</td>
+                                            <td class="text-end">৳{{ number_format($stat->total_commission, 2) }}</td>
+                                            <td class="text-center pe-4">
+                                                <span class="badge bg-light text-dark">
+                                                    {{ $stat->recharge_count }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    @empty
+                                        <tr>
+                                            <td colspan="4" class="text-center py-4">
+                                                <div class="empty-state">
+                                                    <i class="bi bi-wallet2 display-4 text-muted"></i>
+                                                    <p class="mt-3">No recharges this month</p>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    @endforelse
+                                </tbody>
+                                <tfoot class="bg-light">
+                                    <tr>
+                                        <th class="ps-4">Total</th>
+                                        <th class="text-end">৳{{ number_format($monthlyRecharges, 2) }}</th>
+                                        <th class="text-end">৳{{ number_format($monthlyCommission, 2) }}</th>
+                                        <th class="text-center pe-4">{{ $totalRechargeCount }}</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
         <!-- Backup Details Modal -->
@@ -395,6 +496,7 @@
 
 @section('css')
     <style>
+        /* Table Styles */
         .table thead th {
             letter-spacing: 0.08em;
             text-transform: uppercase;
@@ -409,11 +511,7 @@
             background-color: rgba(0, 0, 0, 0.025);
         }
 
-        .badge.bg-success {
-            background-color: rgba(25, 135, 84, 0.1) !important;
-            color: #198754 !important;
-        }
-
+        /* Card Styles */
         .card {
             border-radius: 1rem;
             transition: transform 0.25s ease, box-shadow 0.25s ease;
@@ -424,6 +522,7 @@
             box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
 
+        /* Gradient Backgrounds */
         .bg-gradient-primary {
             background: linear-gradient(135deg, #6a11cb, #2575fc);
         }
@@ -444,7 +543,6 @@
             background: linear-gradient(135deg, #17a2b8, #0dcaf0);
         }
 
-        /* New gradient for Today's Collection card */
         .bg-gradient-secondary {
             background: linear-gradient(135deg, #6c757d, #adb5bd);
         }
@@ -457,6 +555,15 @@
             background: linear-gradient(135deg, #3498db, #2980b9);
         }
 
+        .bg-gradient-violet {
+            background: linear-gradient(135deg, #8e44ad, #9b59b6);
+        }
+
+        .bg-gradient-pink {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        /* Additional Styles */
         h6 {
             font-size: 0.875rem;
         }
@@ -571,16 +678,6 @@
 
         .custom-table th {
             font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.825rem;
-            letter-spacing: 0.5px;
-            color: #495057;
-        }
-
-        .custom-table td {
-            vertical-align: middle;
-            font-size: 0.875rem;
-            color: #6c757d;
         }
 
         .custom-table tbody tr {
@@ -588,7 +685,13 @@
         }
 
         .custom-table tbody tr:hover {
-            background-color: rgba(0, 0, 0, 0.02);
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+        .custom-table td {
+            vertical-align: middle;
+            font-size: 0.875rem;
+            color: #6c757d;
         }
 
         .user-icon {
@@ -598,7 +701,7 @@
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            background: rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.02);
         }
 
         .user-icon i {
@@ -614,7 +717,6 @@
             background: linear-gradient(135deg, #212529, #343a40);
         }
 
-        /* Card enhancements */
         .card {
             border-radius: 0.75rem;
             overflow: hidden;
@@ -629,7 +731,6 @@
 @section('js')
     <script>
         $(document).ready(function() {
-            // Initialize bootstrap modal
             var backupModal = new bootstrap.Modal(document.getElementById('backupDetailsModal'));
         });
     </script>
