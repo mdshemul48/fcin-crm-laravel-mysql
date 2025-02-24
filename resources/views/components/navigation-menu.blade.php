@@ -52,6 +52,14 @@
 </li>
 
 <li class="sidebar-item">
+    <a href="{{ route('transactions.index') }}"
+        class="sidebar-link {{ request()->routeIs('transactions.*') ? 'active' : '' }}">
+        <i class="bi bi-arrow-left-right"></i>
+        <span>Money Transfer</span>
+    </a>
+</li>
+
+<li class="sidebar-item">
     <a href="{{ route('sms.settings') }}" class="sidebar-link">
         <i class="bi bi-gear"></i>
         <span>SMS Settings</span>
