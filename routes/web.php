@@ -12,6 +12,7 @@ use App\Http\Controllers\SmsSettingsController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ResellerController;
 use App\Http\Controllers\ResellerRechargeController;
+use App\Http\Controllers\UserTransactionController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -51,6 +52,13 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
     Route::resource('resellers', ResellerController::class);
     Route::resource('reseller-recharges', ResellerRechargeController::class);
     Route::get('reseller-recharges/filter', [ResellerRechargeController::class, 'filter'])->name('reseller-recharges.filter');
+
+    Route::resource('transactions', UserTransactionController::class)->only([
+        'index',
+        'store',
+        'update',
+        'destroy'
+    ]);
 });
 
 Route::middleware(['auth'])->group(function () {
