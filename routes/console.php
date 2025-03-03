@@ -12,5 +12,5 @@ Artisan::command('inspire', function () {
 
 Schedule::call(function () {
     app(DatabaseBackupService::class)->createBackup();
-})->dailyAt('21:11')
+})->dailyAt('01:20')
     ->sendOutputTo(storage_path('logs/backup.log'));
