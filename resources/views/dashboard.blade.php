@@ -7,12 +7,22 @@
             <i class="bi bi-plus-lg me-1"></i> Add Expense
         </a>
 
+        @if (auth()->user()->role === 'admin')
+            <form action="{{ route('backup.create') }}" method="POST" class="ms-2">
+                @csrf
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-database me-1"></i> Backup Now
+                </button>
+            </form>
+        @endif
+
         <div class="backup-status-btn ms-2" onclick="$('#backupDetailsModal').modal('show')">
-            <span class="status-indicator {{ $commandStatus['status'] === 'Failed' ? 'bg-danger' : 'bg-success' }}"></span>
+            <span class="status-indicator {{ $backupInfo ? 'bg-success' : 'bg-warning' }}"></span>
             <span class="d-none d-md-inline">Backup Status</span>
             @if ($backupInfo)
-                <small
-                    class="text-muted d-none d-lg-inline">{{ isset($backupInfo['date']) ? \Carbon\Carbon::parse($backupInfo['date'])->format('d/m/y') : 'N/A' }}</small>
+                <small class="text-muted d-none d-lg-inline">
+                    {{ \Carbon\Carbon::parse($backupInfo['date'])->format('d/m/y') }}
+                </small>
             @endif
         </div>
     </div>
@@ -485,6 +495,36 @@
                                         </div>
                                     </div>
                                 </div>
+                                <h6 class="text-muted mb-3 mt-4">All Backups</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Date</th>
+                                                <th>Age</th>
+                                                <th>Filename</th>
+                                                <th class="text-end">Size</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach ($allBackups as $backup)
+                                                <tr>
+                                                    <td>{{ $backup['date'] }}</td>
+                                                    <td>{{ $backup['age'] }}</td>
+                                                    <td>
+                                                        <div class="d-flex align-items-center">
+                                                            <i class="fas fa-file-archive text-warning me-2"></i>
+                                                            <span class="text-truncate" style="max-width: 200px;">
+                                                                {{ $backup['filename'] }}
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="text-end">{{ $backup['size'] }}</td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
                             @endif
                         </div>
                     </div>
@@ -731,7 +771,10 @@
 @section('js')
     <script>
         $(document).ready(function() {
-            var backupModal = new bootstrap.Modal(document.getElementById('backupDetailsModal'));
-        });
-    </script>
-@endsection
+
+
+
+
+
+                    @endsection
+    </script> }); var backupModal = new bootstrap.Modal(document.getElementById('backupDetailsModal'));

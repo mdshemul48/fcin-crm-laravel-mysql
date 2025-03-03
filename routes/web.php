@@ -13,7 +13,9 @@ use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ResellerController;
 use App\Http\Controllers\ResellerRechargeController;
 use App\Http\Controllers\UserTransactionController;
+use App\Http\Controllers\DatabaseBackupController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'showLoginForm'])->name('login');
@@ -35,7 +37,15 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
 
         Route::delete('/payments/{id}', [PaymentController::class, 'revertPayment'])->name('payments.revert');
         Route::delete('/bills/{id}', [BillController::class, 'revertBill'])->name('bills.revert');
+
+        Route::get('/database-backup', [DatabaseBackupController::class, 'backup'])
+            ->name('database.backup');
     });
+
+    Route::post('/database-backup', function () {
+        Artisan::call('backup:database');
+        return back()->with('success', 'Backup process started');
+    })->name('backup.create');
 
     Route::resource('clients', ClientController::class);
     Route::resource('packages', PackageController::class)->middleware('restrict.role:admin');

@@ -6,8 +6,8 @@ use App\Models\Client;
 use App\Models\Payment;
 use App\Models\ResellerRecharge;
 use App\Services\ExpenseService;
-use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class DashboardController extends Controller
 {
@@ -96,8 +96,8 @@ class DashboardController extends Controller
         $resellerStats = ResellerRecharge::with('reseller')
             ->whereYear('created_at', $now->year)
             ->whereMonth('created_at', $now->month)
-            ->selectRaw('reseller_id, 
-                        SUM(amount) as total_amount, 
+            ->selectRaw('reseller_id,
+                        SUM(amount) as total_amount,
                         SUM(commission) as total_commission,
                         COUNT(*) as recharge_count')
             ->groupBy('reseller_id')
@@ -128,14 +128,31 @@ class DashboardController extends Controller
 
     private function getBackupInformation()
     {
+        $disk = Storage::disk('private');
+        $backupFiles = collect($disk->files('backup'))
+            ->filter(fn($file) => str_ends_with($file, '.zip'))
+            ->sortByDesc(fn($file) => $disk->lastModified($file));
+
+        $latestBackup = $backupFiles->first();
+
         return [
-            'backupStatus' => Cache::get('backup_status', ''),
-            'backupInfo' => Cache::get('backup_info'),
-            'commandStatus' => Cache::get('command_status', [
-                'status' => 'Idle',
-                'message' => ''
-            ]),
-            'weeklyBackups' => Cache::get('weekly_backups', []),
+            'backupInfo' => $latestBackup ? [
+                'date' => date('Y-m-d H:i', $disk->lastModified($latestBackup)),
+                'size' => round($disk->size($latestBackup) / 1048576, 2),
+                'filename' => $latestBackup,
+                'formatted_size' => round($disk->size($latestBackup) / 1048576, 2) . ' MB',
+                'disk' => 'private'
+            ] : null,
+            'commandStatus' => [
+                'status' => $latestBackup ? 'Success' : 'No Backup',
+                'message' => $latestBackup ? 'Last backup completed successfully' : 'No backup found'
+            ],
+            'allBackups' => $backupFiles->map(fn($file) => [
+                'date' => date('Y-m-d H:i', $disk->lastModified($file)),
+                'size' => round($disk->size($file) / 1048576, 2) . ' MB (' . round($disk->size($file) / 1024, 2) . ' KB)',
+                'filename' => basename($file),
+                'age' => Carbon::createFromTimestamp($disk->lastModified($file))->diffForHumans(),
+            ])->toArray()
         ];
     }
 }
