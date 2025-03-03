@@ -7,15 +7,6 @@
             <i class="bi bi-plus-lg me-1"></i> Add Expense
         </a>
 
-        @if (auth()->user()->role === 'admin')
-            <form action="{{ route('backup.create') }}" method="POST" class="ms-2">
-                @csrf
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-database me-1"></i> Backup Now
-                </button>
-            </form>
-        @endif
-
         <div class="backup-status-btn ms-2" onclick="$('#backupDetailsModal').modal('show')">
             <span class="status-indicator {{ $backupInfo ? 'bg-success' : 'bg-warning' }}"></span>
             <span class="d-none d-md-inline">Backup Status</span>
@@ -434,12 +425,25 @@
                 <div class="modal-content">
                     <div
                         class="modal-header {{ $commandStatus['status'] === 'Failed' ? 'bg-danger' : 'bg-success' }} text-white">
-                        <h5 class="modal-title">
-                            <i
-                                class="fas {{ $commandStatus['status'] === 'Failed' ? 'fa-exclamation-circle' : 'fa-server' }} me-2"></i>
-                            Backup Status
-                        </h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        <div class="d-flex justify-content-between align-items-center w-100">
+                            <h5 class="modal-title">
+                                <i
+                                    class="fas {{ $commandStatus['status'] === 'Failed' ? 'fa-exclamation-circle' : 'fa-server' }} me-2"></i>
+                                Backup Status
+                            </h5>
+                            <div class="d-flex align-items-center">
+                                @if (auth()->user()->role === 'admin')
+                                    <form action="{{ route('backup.create') }}" method="POST" class="me-2 mb-0">
+                                        @csrf
+                                        <button type="submit" class="btn btn-light btn-sm">
+                                            <i class="fas fa-database me-1"></i> Backup Now
+                                        </button>
+                                    </form>
+                                @endif
+                                <button type="button" class="btn-close btn-close-white"
+                                    data-bs-dismiss="modal"></button>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-body">
                         <div class="backup-details">
@@ -771,10 +775,24 @@
 @section('js')
     <script>
         $(document).ready(function() {
+            // Initialize backup modal
+            var backupModal = new bootstrap.Modal(document.getElementById('backupDetailsModal'));
 
+            // Handle backup form submission
+            $('form[action="{{ route('backup.create') }}"]').on('submit', function() {
+                var btn = $(this).find('button[type="submit"]');
+                btn.prop('disabled', true);
+                btn.html('<i class="fas fa-spinner fa-spin me-1"></i> Processing...');
+            });
 
+            // Show success/error messages if they exist in session
+            @if (session('success'))
+                toastr.success("{{ session('success') }}");
+            @endif
 
-
-
-                    @endsection
-    </script> }); var backupModal = new bootstrap.Modal(document.getElementById('backupDetailsModal'));
+            @if (session('error'))
+                toastr.error("{{ session('error') }}");
+            @endif
+        });
+    </script>
+@endsection
