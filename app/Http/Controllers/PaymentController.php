@@ -35,7 +35,8 @@ class PaymentController extends Controller
             client: $client,
             paymentAmount: $validatedData['amount'],
             discount: $validatedData['discount'] ?? 0,
-            remarks: $validatedData['remarks']
+            remarks: $validatedData['remarks'],
+            month: $validatedData['month'] ?? null,
         );
 
         // Only send SMS if the checkbox is checked
