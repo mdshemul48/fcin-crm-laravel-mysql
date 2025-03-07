@@ -22,13 +22,18 @@ class SmsService
             return false;
         }
 
-        $response = Http::get(config('sms.gateway.send_url'), [
+        $response = Http::withOptions([
+            'curl' => [
+                CURLOPT_SSL_CIPHER_LIST => 'DEFAULT:@SECLEVEL=1',
+            ],
+        ])->get(config('sms.gateway.send_url'), [
             'apikey' => $this->settings->api_key,
             'secretkey' => $this->settings->secret_key,
             'callerID' => $this->settings->caller_id,
             'toUser' => $phoneNumber,
             'messageContent' => $message
         ]);
+
 
         if ($response->successful()) {
             $responseData = $response->json();
