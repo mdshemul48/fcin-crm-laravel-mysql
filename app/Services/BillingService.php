@@ -148,10 +148,6 @@ class BillingService
         DB::transaction(function () use ($client, $bill) {
             if ($client->due_amount >= $bill->amount) {
                 $client->due_amount -= $bill->amount;
-            } else {
-
-                $client->current_balance += $bill->amount - $client->due_amount;
-                $client->due_amount = 0;
             }
             $client->status = 'due';
             $client->save();
