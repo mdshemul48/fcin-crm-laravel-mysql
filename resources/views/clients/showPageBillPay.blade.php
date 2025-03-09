@@ -137,5 +137,7 @@
                 </div>
             </div>
         </div>
+        
+        @include('clients.partials.balance_adjustments')
     </div>
 </div>

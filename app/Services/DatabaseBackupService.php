@@ -67,28 +67,70 @@ class DatabaseBackupService
 
     protected function generateSqlDump()
     {
-        $output = '';
+        $output = "-- Database backup generated on " . date('Y-m-d H:i:s') . "\n";
+        $output .= "-- Laravel Database Backup\n\n";
+        $output .= "SET FOREIGN_KEY_CHECKS=0;\n";
+        $output .= "SET SQL_MODE = \"NO_AUTO_VALUE_ON_ZERO\";\n";
+        $output .= "SET time_zone = \"+00:00\";\n\n";
+        
         $tables = DB::select('SHOW TABLES');
 
         foreach ($tables as $table) {
             $tableName = array_values((array)$table)[0];
+            
+            // Add drop table statement
+            $output .= "DROP TABLE IF EXISTS `$tableName`;\n";
 
             // Get Create Table Syntax
             $createTableSql = DB::select("SHOW CREATE TABLE `$tableName`");
-            $output .= "\n\n" . array_values((array)$createTableSql[0])[1] . ";\n\n";
+            $output .= array_values((array)$createTableSql[0])[1] . ";\n\n";
 
             // Get Table Data
             $rows = DB::table($tableName)->get();
-            foreach ($rows as $row) {
-                $row = (array)$row;
-                $columns = array_map(function ($value) {
-                    return is_null($value) ? "NULL" : "'" . addslashes($value) . "'";
-                }, $row);
-
-                $output .= "INSERT INTO `$tableName` VALUES (" . implode(", ", $columns) . ");\n";
+            
+            if (count($rows) > 0) {
+                // Get column names
+                $columnNames = array_keys((array)$rows[0]);
+                $columnList = "`" . implode("`, `", $columnNames) . "`";
+                
+                // Batch inserts for better performance
+                $batchSize = 100;
+                $rowBatch = [];
+                
+                foreach ($rows as $row) {
+                    $rowData = (array)$row;
+                    $values = [];
+                    
+                    foreach ($rowData as $value) {
+                        if (is_null($value)) {
+                            $values[] = "NULL";
+                        } elseif (is_numeric($value)) {
+                            $values[] = $value;
+                        } else {
+                            $values[] = "'" . addslashes($value) . "'";
+                        }
+                    }
+                    
+                    $rowBatch[] = "(" . implode(", ", $values) . ")";
+                    
+                    // Write batch insert when we reach batch size
+                    if (count($rowBatch) >= $batchSize) {
+                        $output .= "INSERT INTO `$tableName` ($columnList) VALUES\n" . implode(",\n", $rowBatch) . ";\n";
+                        $rowBatch = [];
+                    }
+                }
+                
+                // Write any remaining rows
+                if (count($rowBatch) > 0) {
+                    $output .= "INSERT INTO `$tableName` ($columnList) VALUES\n" . implode(",\n", $rowBatch) . ";\n";
+                }
+                
+                $output .= "\n";
             }
         }
-
+        
+        $output .= "SET FOREIGN_KEY_CHECKS=1;\n";
+        
         return $output;
     }
 

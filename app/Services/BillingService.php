@@ -136,6 +136,12 @@ class BillingService
                 $client->current_balance += $payment->amount_from_client_account;
             }
 
+            if (abs($client->current_balance - $client->due_amount) < 0.01) {
+                $client->current_balance = 0;
+                $client->due_amount = 0;
+                $client->status = 'paid';
+            }
+
             $client->save();
             $payment->delete();
         });
@@ -149,7 +155,15 @@ class BillingService
             if ($client->due_amount >= $bill->amount) {
                 $client->due_amount -= $bill->amount;
             }
-            $client->status = 'due';
+            
+            if (abs($client->current_balance - $client->due_amount) < 0.01) {
+                $client->current_balance = 0;
+                $client->due_amount = 0;
+                $client->status = 'paid';
+            } else {
+                $client->status = 'due';
+            }
+            
             $client->save();
             $bill->delete();
         });

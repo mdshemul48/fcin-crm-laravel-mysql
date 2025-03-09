@@ -17,6 +17,9 @@
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addPaymentModal">
                 <i class="bi bi-plus-lg me-1"></i> Add Payment
             </button>
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#adjustBalanceModal">
+                <i class="bi bi-sliders me-1"></i> Adjust Balance
+            </button>
         </div>
     </div>
 @endsection
@@ -266,6 +269,56 @@
         </div>
     </div>
 
+    <div class="modal fade" id="adjustBalanceModal" tabindex="-1" aria-labelledby="adjustBalanceModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adjustBalanceModalLabel">Adjust Client Balance</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{{ route('clients.adjust-balance', $client->id) }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="adjustment_type" class="form-label">Adjustment Type</label>
+                            <select class="form-select" id="adjustment_type" name="adjustment_type" required>
+                                <option value="" selected disabled>Select Adjustment Type</option>
+                                <option value="current_balance">Current Balance</option>
+                                <option value="due_amount">Due Amount</option>
+                                <option value="both">Both</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3" id="current_balance_section">
+                            <label for="current_balance" class="form-label">Current Balance</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Current: {{ $client->current_balance }}</span>
+                                <input type="number" class="form-control" id="current_balance" name="current_balance" step="0.01" value="{{ $client->current_balance }}">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3" id="due_amount_section">
+                            <label for="due_amount" class="form-label">Due Amount</label>
+                            <div class="input-group">
+                                <span class="input-group-text">Current: {{ $client->due_amount }}</span>
+                                <input type="number" class="form-control" id="due_amount" name="due_amount" step="0.01" value="{{ $client->due_amount }}">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="adjustment_remarks" class="form-label">Remarks</label>
+                            <textarea class="form-control" id="adjustment_remarks" name="remarks" rows="3" placeholder="Reason for adjustment"></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 @endsection
 
 @section('css')
@@ -475,6 +528,36 @@
     <script>
         document.getElementById('send_sms').addEventListener('change', function() {
             document.getElementById('sms_template_section').style.display = this.checked ? 'block' : 'none';
+        });
+        
+        // Balance adjustment form logic
+        document.addEventListener('DOMContentLoaded', function() {
+            const adjustmentType = document.getElementById('adjustment_type');
+            const currentBalanceSection = document.getElementById('current_balance_section');
+            const dueAmountSection = document.getElementById('due_amount_section');
+            
+            // Initially hide both sections
+            currentBalanceSection.style.display = 'none';
+            dueAmountSection.style.display = 'none';
+            
+            adjustmentType.addEventListener('change', function() {
+                const selectedValue = this.value;
+                
+                // Show/hide sections based on selection
+                if (selectedValue === 'current_balance') {
+                    currentBalanceSection.style.display = 'block';
+                    dueAmountSection.style.display = 'none';
+                } else if (selectedValue === 'due_amount') {
+                    currentBalanceSection.style.display = 'none';
+                    dueAmountSection.style.display = 'block';
+                } else if (selectedValue === 'both') {
+                    currentBalanceSection.style.display = 'block';
+                    dueAmountSection.style.display = 'block';
+                } else {
+                    currentBalanceSection.style.display = 'none';
+                    dueAmountSection.style.display = 'none';
+                }
+            });
         });
     </script>
 @endsection

@@ -48,6 +48,7 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
     })->name('backup.create');
 
     Route::resource('clients', ClientController::class);
+    Route::post('/clients/{client}/adjust-balance', [ClientController::class, 'adjustBalance'])->name('clients.adjust-balance');
     Route::resource('packages', PackageController::class)->middleware('restrict.role:admin');
 
     Route::resource('expenses', ExpenseController::class)->only(['index', 'store']);

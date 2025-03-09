@@ -43,4 +43,9 @@ class Client extends Model
     {
         return $this->hasMany(GeneratedBill::class);
     }
+
+    public function balanceAdjustments()
+    {
+        return $this->hasMany(BalanceAdjustment::class);
+    }
 }
