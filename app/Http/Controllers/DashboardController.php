@@ -56,9 +56,20 @@ class DashboardController extends Controller
 
     private function getPaymentStatistics()
     {
+        // Calculate the current billing period (14th to 14th)
+        $now = now();
+        $currentPeriodStart = $now->copy()->day(14);
+        
+        // If we're before the 14th of this month, the billing period started on the 14th of last month
+        if ($now->day < 14) {
+            $currentPeriodStart->subMonth();
+        }
+        
+        $currentPeriodEnd = $currentPeriodStart->copy()->addMonth();
+        
         $paymentCollections = Payment::selectRaw('collected_by, SUM(amount) as total_amount')
-            ->whereYear('created_at', now()->year)
-            ->whereMonth('created_at', now()->month)
+            ->where('created_at', '>=', $currentPeriodStart)
+            ->where('created_at', '<', $currentPeriodEnd)
             ->groupBy('collected_by')
             ->with('user')
             ->get();
@@ -68,6 +79,8 @@ class DashboardController extends Controller
             ->groupBy('collected_by')
             ->with('user')
             ->get();
+
+        $periodLabel = $currentPeriodStart->format('M d') . ' - ' . $currentPeriodEnd->format('M d');
 
         return [
             'totalPaymentCollectionsThisMonth' => $paymentCollections->sum('total_amount'),
@@ -83,25 +96,37 @@ class DashboardController extends Controller
                 ->latest()
                 ->limit(25)
                 ->get(),
+            'currentBillingPeriod' => $periodLabel,
         ];
     }
 
     private function getResellerRechargeStatistics()
     {
         $now = now();
-        $monthlyRecharges = ResellerRecharge::whereYear('created_at', $now->year)
-            ->whereMonth('created_at', $now->month)
+        $currentPeriodStart = $now->copy()->day(14);
+        
+        // If we're before the 14th of this month, the billing period started on the 14th of last month
+        if ($now->day < 14) {
+            $currentPeriodStart->subMonth();
+        }
+        
+        $currentPeriodEnd = $currentPeriodStart->copy()->addMonth();
+        
+        $monthlyRecharges = ResellerRecharge::where('created_at', '>=', $currentPeriodStart)
+            ->where('created_at', '<', $currentPeriodEnd)
             ->get();
 
         $resellerStats = ResellerRecharge::with('reseller')
-            ->whereYear('created_at', $now->year)
-            ->whereMonth('created_at', $now->month)
+            ->where('created_at', '>=', $currentPeriodStart)
+            ->where('created_at', '<', $currentPeriodEnd)
             ->selectRaw('reseller_id,
                         SUM(amount) as total_amount,
                         SUM(commission) as total_commission,
                         COUNT(*) as recharge_count')
             ->groupBy('reseller_id')
             ->get();
+
+        $periodLabel = $currentPeriodStart->format('M d') . ' - ' . $currentPeriodEnd->format('M d');
 
         return [
             'monthlyRecharges' => $monthlyRecharges->sum('amount'),
@@ -111,18 +136,42 @@ class DashboardController extends Controller
                 ? $monthlyRecharges->avg('commission')
                 : 0,
             'resellerStats' => $resellerStats,
+            'rechargesPeriod' => $periodLabel,
         ];
     }
 
     private function getExpenseStatistics()
     {
+        $now = now();
+        $currentPeriodStart = $now->copy()->day(14);
+        
+        // If we're before the 14th of this month, the billing period started on the 14th of last month
+        if ($now->day < 14) {
+            $currentPeriodStart->subMonth();
+        }
+        
+        $currentPeriodEnd = $currentPeriodStart->copy()->addMonth();
+        $previousPeriodStart = $currentPeriodStart->copy()->subMonth();
+        $previousPeriodEnd = $currentPeriodStart;
+        
+        $currentPeriodLabel = $currentPeriodStart->format('M d') . ' - ' . $currentPeriodEnd->format('M d');
+        $previousPeriodLabel = $previousPeriodStart->format('M d') . ' - ' . $previousPeriodEnd->format('M d');
+        
         return [
-            'currentMonthExpenses' => $this->expenseService->getCurrentMonthTotalExpenses(),
-            'previousMonthExpenses' => $this->expenseService->getPreviousMonthTotalExpenses(),
-            'expensesByUser' => $this->expenseService->getExpensesByUser(
-                now()->startOfMonth()->format('Y-m-d'),
-                now()->endOfMonth()->format('Y-m-d')
+            'currentMonthExpenses' => $this->expenseService->getTotalExpensesByDateRange(
+                $currentPeriodStart->format('Y-m-d'),
+                $currentPeriodEnd->format('Y-m-d')
             ),
+            'previousMonthExpenses' => $this->expenseService->getTotalExpensesByDateRange(
+                $previousPeriodStart->format('Y-m-d'),
+                $previousPeriodEnd->format('Y-m-d')
+            ),
+            'expensesByUser' => $this->expenseService->getExpensesByUser(
+                $currentPeriodStart->format('Y-m-d'),
+                $currentPeriodEnd->format('Y-m-d')
+            ),
+            'currentExpensePeriod' => $currentPeriodLabel,
+            'previousExpensePeriod' => $previousPeriodLabel,
         ];
     }
 

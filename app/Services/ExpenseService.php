@@ -45,8 +45,15 @@ class ExpenseService
 
     public function getCurrentMonthExpenses()
     {
-        $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::now()->endOfMonth();
+        $now = Carbon::now();
+        $startDate = $now->copy()->day(14);
+        
+        // If we're before the 14th of this month, the billing period started on the 14th of last month
+        if ($now->day < 14) {
+            $startDate->subMonth();
+        }
+        
+        $endDate = $startDate->copy()->addMonth();
 
         return $this->getExpensesByDateRange($startDate, $endDate);
     }
@@ -67,15 +74,31 @@ class ExpenseService
 
     public function getCurrentMonthTotalExpenses()
     {
-        $startDate = Carbon::now()->startOfMonth();
-        $endDate = Carbon::now()->endOfMonth();
+        $now = Carbon::now();
+        $startDate = $now->copy()->day(14);
+        
+        // If we're before the 14th of this month, the billing period started on the 14th of last month
+        if ($now->day < 14) {
+            $startDate->subMonth();
+        }
+        
+        $endDate = $startDate->copy()->addMonth();
+        
         return $this->getTotalExpensesByDateRange($startDate, $endDate);
     }
 
     public function getPreviousMonthTotalExpenses()
     {
-        $endDate = Carbon::now()->subMonth()->endOfMonth();
-        $startDate = Carbon::now()->subMonth()->startOfMonth();
+        $now = Carbon::now();
+        $endDate = $now->copy()->day(14);
+        
+        // If we're before the 14th of this month, the previous period ended on the 14th of last month
+        if ($now->day < 14) {
+            $endDate->subMonth();
+        }
+        
+        $startDate = $endDate->copy()->subMonth();
+        
         return $this->getTotalExpensesByDateRange($startDate, $endDate);
     }
 

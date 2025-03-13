@@ -59,6 +59,11 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
     Route::post('/payments/{id}', [PaymentController::class, 'store'])->name('payments.store');
     Route::post('/bills/generate/{clientId}', [BillController::class, 'generate'])->name('bills.generate');
 
+    // Manual billing generation route (admin only)
+    Route::post('/bills/generate-monthly', [BillController::class, 'generateMonthlyBills'])
+        ->name('bills.generate-monthly')
+        ->middleware('restrict.role:admin');
+
     // Reseller Management Routes
     Route::resource('resellers', ResellerController::class);
     Route::resource('reseller-recharges', ResellerRechargeController::class);

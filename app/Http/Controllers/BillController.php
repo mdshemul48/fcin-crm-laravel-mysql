@@ -43,4 +43,33 @@ class BillController extends Controller
         Billing::revertBill($billId);
         return back()->with('success', 'Bill reverted successfully!');
     }
+
+    /**
+     * Manually trigger the monthly billing generation
+     * Only accessible to admins
+     */
+    public function generateMonthlyBills()
+    {
+        // Check if user is admin
+        if (auth()->user()->role !== 'admin') {
+            return redirect()->route('dashboard')->with('error', 'You do not have permission to perform this action.');
+        }
+        
+        // Determine the billing date for the current period
+        $now = now();
+        $billingDate = $now->copy()->day(14);
+        
+        // If we're before the 14th, we can't generate bills for the current month yet
+        if ($now->day < 14) {
+            return redirect()->route('dashboard')->with('warning', 'Bills can only be generated on or after the 14th of the month.');
+        }
+        
+        // We no longer check globally if bills exist for this period
+        // Instead, the BillingService will check for each client individually
+        
+        // Generate the bills
+        Billing::generateMonthlyBills(auth()->id());
+        
+        return redirect()->route('dashboard')->with('success', 'Monthly bills generated successfully. Any clients who already had bills for this period were skipped.');
+    }
 }

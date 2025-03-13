@@ -7,6 +7,15 @@
             <i class="bi bi-plus-lg me-1"></i> Add Expense
         </a>
 
+        @if(auth()->user()->role === 'admin')
+            <form action="{{ route('bills.generate-monthly') }}" method="POST" class="ms-2">
+                @csrf
+                <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to generate monthly bills?')">
+                    <i class="fas fa-file-invoice-dollar me-1"></i> Generate Monthly Bills
+                </button>
+            </form>
+        @endif
+
         <div class="backup-status-btn ms-2" onclick="$('#backupDetailsModal').modal('show')">
             <span class="status-indicator {{ $backupInfo ? 'bg-success' : 'bg-warning' }}"></span>
             <span class="d-none d-md-inline">Backup Status</span>
@@ -93,7 +102,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h6 class="text-uppercase fw-bold mb-2">Collections This Month</h6>
+                                <h6 class="text-uppercase fw-bold mb-2">Collections ({{ $currentBillingPeriod }})</h6>
                                 <h4 class="fw-bold mb-0">৳{{ number_format($totalPaymentCollectionsThisMonth, 2) }}</h4>
                             </div>
                             <div>
@@ -127,7 +136,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h6 class="text-uppercase fw-bold mb-2">This Month's Expenses</h6>
+                                <h6 class="text-uppercase fw-bold mb-2">Expenses ({{ $currentExpensePeriod }})</h6>
                                 <h4 class="fw-bold mb-0">৳{{ number_format($currentMonthExpenses, 2) }}</h4>
                             </div>
                             <div>
@@ -144,7 +153,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h6 class="text-uppercase fw-bold mb-2">Last Month's Expenses</h6>
+                                <h6 class="text-uppercase fw-bold mb-2">Previous Expenses ({{ $previousExpensePeriod }})</h6>
                                 <h4 class="fw-bold mb-0">৳{{ number_format($previousMonthExpenses, 2) }}</h4>
                             </div>
                             <div>
@@ -161,9 +170,9 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h6 class="text-uppercase fw-bold mb-2">Month's Recharges</h6>
+                                <h6 class="text-uppercase fw-bold mb-2">Recharges ({{ $rechargesPeriod }})</h6>
                                 <h4 class="fw-bold mb-0">৳{{ number_format($monthlyRecharges ?? 0, 2) }}</h4>
-                                <small class="text-white-50">{{ $totalRechargeCount ?? 0 }} recharges this month</small>
+                                <small class="text-white-50">{{ $totalRechargeCount ?? 0 }} recharges this period</small>
                             </div>
                             <div>
                                 <i class="fas fa-exchange-alt fa-3x"></i>
@@ -178,7 +187,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h6 class="text-uppercase fw-bold mb-2">Month's Commission</h6>
+                                <h6 class="text-uppercase fw-bold mb-2">Commission ({{ $rechargesPeriod }})</h6>
                                 <h4 class="fw-bold mb-0">৳{{ number_format($monthlyCommission ?? 0, 2) }}</h4>
                                 <small class="text-white-50">Avg:
                                     ৳{{ number_format($averageCommission ?? 0, 2) }}/recharge</small>
