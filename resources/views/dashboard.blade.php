@@ -7,10 +7,11 @@
             <i class="bi bi-plus-lg me-1"></i> Add Expense
         </a>
 
-        @if(auth()->user()->role === 'admin')
+        @if (auth()->user()->role === 'admin')
             <form action="{{ route('bills.generate-monthly') }}" method="POST" class="ms-2">
                 @csrf
-                <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure you want to generate monthly bills?')">
+                <button type="submit" class="btn btn-primary"
+                    onclick="return confirm('Are you sure you want to generate monthly bills?')">
                     <i class="fas fa-file-invoice-dollar me-1"></i> Generate Monthly Bills
                 </button>
             </form>
@@ -32,51 +33,57 @@
     <div class="container-fluid mt-4 mb-3">
         <div class="row">
             <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-0 shadow h-100 py-3 bg-gradient-primary text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div>
-                                <h6 class="text-uppercase fw-bold mb-2">Total Clients</h6>
-                                <h4 class="fw-bold mb-0">{{ $totalClients }}</h4>
-                            </div>
-                            <div>
-                                <i class="fas fa-users fa-3x"></i>
+                <a href="{{ route('clients.index') }}" class="text-decoration-none">
+                    <div class="card border-0 shadow h-100 py-3 bg-gradient-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-uppercase fw-bold mb-2">Total Clients</h6>
+                                    <h4 class="fw-bold mb-0">{{ $totalClients }}</h4>
+                                </div>
+                                <div>
+                                    <i class="fas fa-users fa-3x"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-0 shadow h-100 py-3 bg-gradient-success text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div>
-                                <h6 class="text-uppercase fw-bold mb-2">Paid Clients</h6>
-                                <h4 class="fw-bold mb-0">{{ $paidClients }}</h4>
-                            </div>
-                            <div>
-                                <i class="fas fa-check-circle fa-3x"></i>
+                <a href="{{ route('clients.index', ['payment_status' => 'paid']) }}" class="text-decoration-none">
+                    <div class="card border-0 shadow h-100 py-3 bg-gradient-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-uppercase fw-bold mb-2">Paid Clients</h6>
+                                    <h4 class="fw-bold mb-0">{{ $paidClients }}</h4>
+                                </div>
+                                <div>
+                                    <i class="fas fa-check-circle fa-3x"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-0 shadow h-100 py-3 bg-gradient-danger text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div>
-                                <h6 class="text-uppercase fw-bold mb-2">Unpaid Clients</h6>
-                                <h4 class="fw-bold mb-0">{{ $unpaidClients }}</h4>
-                            </div>
-                            <div>
-                                <i class="fas fa-exclamation-circle fa-3x"></i>
+                <a href="{{ route('clients.index', ['payment_status' => 'due']) }}" class="text-decoration-none">
+                    <div class="card border-0 shadow h-100 py-3 bg-gradient-danger text-white">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-uppercase fw-bold mb-2">Unpaid Clients</h6>
+                                    <h4 class="fw-bold mb-0">{{ $unpaidClients }}</h4>
+                                </div>
+                                <div>
+                                    <i class="fas fa-exclamation-circle fa-3x"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Today's Collection Card -->
@@ -115,36 +122,40 @@
 
             <!-- Total Due Card -->
             <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-0 shadow h-100 py-3 bg-gradient-warning text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div>
-                                <h6 class="text-uppercase fw-bold mb-2">Total Due</h6>
-                                <h4 class="fw-bold mb-0">৳{{ number_format($totalDue, 2) }}</h4>
-                            </div>
-                            <div>
-                                <i class="fas fa-hand-holding-usd fa-3x"></i>
+                <a href="{{ route('clients.index', ['payment_status' => 'due']) }}" class="text-decoration-none">
+                    <div class="card border-0 shadow h-100 py-3 bg-gradient-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-uppercase fw-bold mb-2">Total Due</h6>
+                                    <h4 class="fw-bold mb-0">৳{{ number_format($totalDue, 2) }}</h4>
+                                </div>
+                                <div>
+                                    <i class="fas fa-hand-holding-usd fa-3x"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Current Month Expenses Card -->
             <div class="col-xl-4 col-md-6 mb-4">
-                <div class="card border-0 shadow h-100 py-3 bg-gradient-purple text-white">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center justify-content-between">
-                            <div>
-                                <h6 class="text-uppercase fw-bold mb-2">Expenses ({{ $currentExpensePeriod }})</h6>
-                                <h4 class="fw-bold mb-0">৳{{ number_format($currentMonthExpenses, 2) }}</h4>
-                            </div>
-                            <div>
-                                <i class="fas fa-file-invoice fa-3x"></i>
+                <a href="{{ route('expenses.index') }}" class="text-decoration-none">
+                    <div class="card border-0 shadow h-100 py-3 bg-gradient-purple text-white">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-uppercase fw-bold mb-2">Expenses ({{ $currentExpensePeriod }})</h6>
+                                    <h4 class="fw-bold mb-0">৳{{ number_format($currentMonthExpenses, 2) }}</h4>
+                                </div>
+                                <div>
+                                    <i class="fas fa-file-invoice fa-3x"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Previous Month Expenses Card -->
@@ -777,6 +788,15 @@
 
         .card-header {
             border-bottom: none;
+        }
+
+        /* Add these new styles */
+        .card {
+            transition: transform 0.2s ease-in-out;
+        }
+
+        a:hover .card {
+            transform: translateY(-5px);
         }
     </style>
 @endsection
