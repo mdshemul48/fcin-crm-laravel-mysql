@@ -60,6 +60,14 @@
 </li>
 
 <li class="sidebar-item">
+    <a href="{{ route('payment-reports.index') }}"
+        class="sidebar-link {{ request()->routeIs('payment-reports.*') ? 'active' : '' }}">
+        <i class="bi bi-bar-chart-line"></i>
+        <span>Payment Reports</span>
+    </a>
+</li>
+
+<li class="sidebar-item">
     <a href="{{ route('sms.settings') }}" class="sidebar-link">
         <i class="bi bi-gear"></i>
         <span>SMS Settings</span>

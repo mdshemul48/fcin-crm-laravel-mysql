@@ -14,6 +14,7 @@ use App\Http\Controllers\ResellerController;
 use App\Http\Controllers\ResellerRechargeController;
 use App\Http\Controllers\UserTransactionController;
 use App\Http\Controllers\DatabaseBackupController;
+use App\Http\Controllers\PaymentReportController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
 
@@ -75,6 +76,11 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
         'update',
         'destroy'
     ]);
+
+    // Payment Reports Routes
+    Route::get('payment-reports', [PaymentReportController::class, 'index'])->name('payment-reports.index');
+    Route::get('payment-reports/monthly-stats', [PaymentReportController::class, 'monthlyStats'])->name('payment-reports.monthly-stats');
+    Route::get('payment-reports/export', [PaymentReportController::class, 'export'])->name('payment-reports.export');
 });
 
 Route::middleware(['auth'])->group(function () {
