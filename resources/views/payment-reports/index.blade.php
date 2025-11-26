@@ -233,6 +233,20 @@
             background: rgba(255, 255, 255, 0.95);
         }
 
+        input[type="date"] {
+            position: relative;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+        }
+
+        input[type="date"]::-webkit-calendar-picker-indicator:hover {
+            opacity: 1;
+        }
+
         .search-container {
             position: relative;
         }
@@ -561,7 +575,7 @@
 
                 <div class="row g-4">
                     <!-- Month Selection -->
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label for="month" class="form-label">Month</label>
                             <select name="month" id="month" class="form-select">
@@ -575,7 +589,7 @@
                     </div>
 
                     <!-- Year Selection -->
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label for="year" class="form-label">Year</label>
                             <select name="year" id="year" class="form-select">
@@ -588,8 +602,8 @@
                         </div>
                     </div>
 
-                    <!-- Search -->
-                    <div class="col-md-4">
+                    <!-- Search Clients -->
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label for="search" class="form-label">Search Clients</label>
                             <div class="search-container">
@@ -600,13 +614,50 @@
                         </div>
                     </div>
 
-                    <!-- Filter Button -->
+                    <!-- User Search -->
                     <div class="col-md-2">
                         <div class="form-group">
-                            <label class="form-label">&nbsp;</label>
-                            <button type="submit" class="btn filter-btn w-100">
-                                <i class="bi bi-funnel me-1"></i>Apply
+                            <label for="user_search" class="form-label">Collected By</label>
+                            <select name="user_search" id="user_search" class="form-select">
+                                <option value="">All Users</option>
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id }}" {{ $userSearch == $user->id ? 'selected' : '' }}>
+                                        {{ $user->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Date From -->
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="date_from" class="form-label">Date From</label>
+                            <input type="date" name="date_from" id="date_from" class="form-control"
+                                value="{{ $dateFrom }}">
+                        </div>
+                    </div>
+
+                    <!-- Date To -->
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label for="date_to" class="form-label">Date To</label>
+                            <input type="date" name="date_to" id="date_to" class="form-control"
+                                value="{{ $dateTo }}">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter Button Row -->
+                <div class="row g-4 mt-2">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <button type="submit" class="btn filter-btn">
+                                <i class="bi bi-funnel me-1"></i>Apply Filters
                             </button>
+                            <a href="{{ route('payment-reports.index') }}" class="btn btn-secondary ms-2">
+                                <i class="bi bi-arrow-counterclockwise me-1"></i>Reset
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -629,7 +680,13 @@
                         <i class="bi bi-cash-stack"></i>
                     </div>
                     <div class="stats-value">৳{{ number_format($data['totalAmount'], 2) }}</div>
-                    <div class="stats-label">Total Collection</div>
+                    <div class="stats-label">
+                        @if ($selectedUser)
+                            {{ $selectedUser->name }}'s Total Collection
+                        @else
+                            Total Collection
+                        @endif
+                    </div>
                 </div>
 
                 <div class="stats-card">
@@ -645,7 +702,13 @@
                         <i class="bi bi-graph-up-arrow"></i>
                     </div>
                     <div class="stats-value">৳{{ number_format($data['totalCollection'], 2) }}</div>
-                    <div class="stats-label">Gross Revenue</div>
+                    <div class="stats-label">
+                        @if ($selectedUser)
+                            {{ $selectedUser->name }}'s Gross Revenue
+                        @else
+                            Gross Revenue
+                        @endif
+                    </div>
                 </div>
             @else
                 <div class="stats-card unpaid">
@@ -851,8 +914,13 @@
                 $('#filterForm').submit();
             });
 
-            // Auto-submit form when month/year changes
-            $('#month, #year').change(function() {
+            // Auto-submit form when month/year/user_search changes
+            $('#month, #year, #user_search').change(function() {
+                $('#filterForm').submit();
+            });
+
+            // Auto-submit form when date range changes
+            $('#date_from, #date_to').change(function() {
                 $('#filterForm').submit();
             });
 

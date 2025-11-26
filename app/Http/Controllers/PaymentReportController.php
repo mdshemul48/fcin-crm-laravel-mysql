@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Payment;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -18,6 +19,9 @@ class PaymentReportController extends Controller
         $selectedYear = $request->get('year', now()->year);
         $reportType = $request->get('report_type', 'paid'); // 'paid' or 'unpaid'
         $search = $request->get('search', '');
+        $userSearch = $request->get('user_search', '');
+        $dateFrom = $request->get('date_from', '');
+        $dateTo = $request->get('date_to', '');
 
         $months = [
             'January',
@@ -35,11 +39,18 @@ class PaymentReportController extends Controller
         ];
 
         $years = range(2020, now()->year + 1);
+        $users = User::where('isActive', true)->orderBy('name')->get();
+        
+        // Get selected user name if user search is provided
+        $selectedUser = null;
+        if (!empty($userSearch)) {
+            $selectedUser = User::find($userSearch);
+        }
 
         if ($reportType === 'paid') {
-            $data = $this->getPaidClientsData($selectedMonth, $selectedYear, $search);
+            $data = $this->getPaidClientsData($selectedMonth, $selectedYear, $search, $userSearch, $dateFrom, $dateTo);
         } else {
-            $data = $this->getUnpaidClientsData($selectedMonth, $selectedYear, $search);
+            $data = $this->getUnpaidClientsData($selectedMonth, $selectedYear, $search, $userSearch, $dateFrom, $dateTo);
         }
 
         return view('payment-reports.index', compact(
@@ -48,22 +59,51 @@ class PaymentReportController extends Controller
             'selectedYear',
             'reportType',
             'search',
+            'userSearch',
+            'dateFrom',
+            'dateTo',
             'months',
-            'years'
+            'years',
+            'users',
+            'selectedUser'
         ));
     }
 
     /**
      * Get paid clients data for a specific month and year
      */
-    private function getPaidClientsData($month, $year, $search = '')
+    private function getPaidClientsData($month, $year, $search = '', $userSearch = '', $dateFrom = '', $dateTo = '')
     {
-        $query = Client::whereHas('payments', function ($q) use ($month, $year) {
+        $query = Client::whereHas('payments', function ($q) use ($month, $year, $userSearch, $dateFrom, $dateTo) {
             $q->where('month', $month)
                 ->whereYear('payment_date', $year);
-        })->with(['payments' => function ($q) use ($month, $year) {
+            
+            if (!empty($userSearch)) {
+                $q->where('collected_by', $userSearch);
+            }
+            
+            if (!empty($dateFrom)) {
+                $q->whereDate('payment_date', '>=', $dateFrom);
+            }
+            
+            if (!empty($dateTo)) {
+                $q->whereDate('payment_date', '<=', $dateTo);
+            }
+        })->with(['payments' => function ($q) use ($month, $year, $userSearch, $dateFrom, $dateTo) {
             $q->where('month', $month)
                 ->whereYear('payment_date', $year);
+            
+            if (!empty($userSearch)) {
+                $q->where('collected_by', $userSearch);
+            }
+            
+            if (!empty($dateFrom)) {
+                $q->whereDate('payment_date', '>=', $dateFrom);
+            }
+            
+            if (!empty($dateTo)) {
+                $q->whereDate('payment_date', '<=', $dateTo);
+            }
         }, 'package']);
 
         if (!empty($search)) {
@@ -97,11 +137,23 @@ class PaymentReportController extends Controller
     /**
      * Get unpaid clients data for a specific month and year
      */
-    private function getUnpaidClientsData($month, $year, $search = '')
+    private function getUnpaidClientsData($month, $year, $search = '', $userSearch = '', $dateFrom = '', $dateTo = '')
     {
-        $query = Client::whereDoesntHave('payments', function ($q) use ($month, $year) {
+        $query = Client::whereDoesntHave('payments', function ($q) use ($month, $year, $userSearch, $dateFrom, $dateTo) {
             $q->where('month', $month)
                 ->whereYear('payment_date', $year);
+            
+            if (!empty($userSearch)) {
+                $q->where('collected_by', $userSearch);
+            }
+            
+            if (!empty($dateFrom)) {
+                $q->whereDate('payment_date', '>=', $dateFrom);
+            }
+            
+            if (!empty($dateTo)) {
+                $q->whereDate('payment_date', '<=', $dateTo);
+            }
         })->with('package');
 
         if (!empty($search)) {
@@ -157,12 +209,15 @@ class PaymentReportController extends Controller
         $selectedYear = $request->get('year', now()->year);
         $reportType = $request->get('report_type', 'paid');
         $search = $request->get('search', '');
+        $userSearch = $request->get('user_search', '');
+        $dateFrom = $request->get('date_from', '');
+        $dateTo = $request->get('date_to', '');
 
         if ($reportType === 'paid') {
-            $data = $this->getPaidClientsData($selectedMonth, $selectedYear, $search);
+            $data = $this->getPaidClientsData($selectedMonth, $selectedYear, $search, $userSearch, $dateFrom, $dateTo);
             return $this->exportPaidClients($data, $selectedMonth, $selectedYear);
         } else {
-            $data = $this->getUnpaidClientsData($selectedMonth, $selectedYear, $search);
+            $data = $this->getUnpaidClientsData($selectedMonth, $selectedYear, $search, $userSearch, $dateFrom, $dateTo);
             return $this->exportUnpaidClients($data, $selectedMonth, $selectedYear);
         }
     }
