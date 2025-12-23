@@ -15,7 +15,7 @@ class PaymentReportController extends Controller
      */
     public function index(Request $request)
     {
-        $selectedMonth = $request->get('month', now()->format('F'));
+        $selectedMonth = $request->get('month', 'all');
         $selectedYear = $request->get('year', now()->year);
         $reportType = $request->get('report_type', 'paid'); // 'paid' or 'unpaid'
         $search = $request->get('search', '');
@@ -24,6 +24,7 @@ class PaymentReportController extends Controller
         $dateTo = $request->get('date_to', '');
 
         $months = [
+            'all' => 'All Months',
             'January',
             'February',
             'March',
@@ -75,8 +76,11 @@ class PaymentReportController extends Controller
     private function getPaidClientsData($month, $year, $search = '', $userSearch = '', $dateFrom = '', $dateTo = '')
     {
         $query = Client::whereHas('payments', function ($q) use ($month, $year, $userSearch, $dateFrom, $dateTo) {
-            $q->where('month', $month)
-                ->whereYear('payment_date', $year);
+            if ($month !== 'all' && !empty($month)) {
+                $q->where('month', $month);
+            }
+            
+            $q->whereYear('payment_date', $year);
             
             if (!empty($userSearch)) {
                 $q->where('collected_by', $userSearch);
@@ -90,8 +94,11 @@ class PaymentReportController extends Controller
                 $q->whereDate('payment_date', '<=', $dateTo);
             }
         })->with(['payments' => function ($q) use ($month, $year, $userSearch, $dateFrom, $dateTo) {
-            $q->where('month', $month)
-                ->whereYear('payment_date', $year);
+            if ($month !== 'all' && !empty($month)) {
+                $q->where('month', $month);
+            }
+            
+            $q->whereYear('payment_date', $year);
             
             if (!empty($userSearch)) {
                 $q->where('collected_by', $userSearch);
@@ -140,8 +147,11 @@ class PaymentReportController extends Controller
     private function getUnpaidClientsData($month, $year, $search = '', $userSearch = '', $dateFrom = '', $dateTo = '')
     {
         $query = Client::whereDoesntHave('payments', function ($q) use ($month, $year, $userSearch, $dateFrom, $dateTo) {
-            $q->where('month', $month)
-                ->whereYear('payment_date', $year);
+            if ($month !== 'all' && !empty($month)) {
+                $q->where('month', $month);
+            }
+            
+            $q->whereYear('payment_date', $year);
             
             if (!empty($userSearch)) {
                 $q->where('collected_by', $userSearch);
@@ -205,7 +215,7 @@ class PaymentReportController extends Controller
      */
     public function export(Request $request)
     {
-        $selectedMonth = $request->get('month', now()->format('F'));
+        $selectedMonth = $request->get('month', 'all');
         $selectedYear = $request->get('year', now()->year);
         $reportType = $request->get('report_type', 'paid');
         $search = $request->get('search', '');
@@ -224,7 +234,8 @@ class PaymentReportController extends Controller
 
     private function exportPaidClients($data, $month, $year)
     {
-        $filename = "paid_clients_{$month}_{$year}.csv";
+        $monthLabel = $month === 'all' ? 'all_months' : $month;
+        $filename = "paid_clients_{$monthLabel}_{$year}.csv";
 
         $headers = [
             'Content-Type' => 'text/csv',
@@ -258,7 +269,8 @@ class PaymentReportController extends Controller
 
     private function exportUnpaidClients($data, $month, $year)
     {
-        $filename = "unpaid_clients_{$month}_{$year}.csv";
+        $monthLabel = $month === 'all' ? 'all_months' : $month;
+        $filename = "unpaid_clients_{$monthLabel}_{$year}.csv";
 
         $headers = [
             'Content-Type' => 'text/csv',

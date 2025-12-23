@@ -579,10 +579,16 @@
                         <div class="form-group">
                             <label for="month" class="form-label">Month</label>
                             <select name="month" id="month" class="form-select">
-                                @foreach ($months as $month)
-                                    <option value="{{ $month }}" {{ $selectedMonth === $month ? 'selected' : '' }}>
-                                        {{ $month }}
-                                    </option>
+                                @foreach ($months as $key => $month)
+                                    @if ($key === 'all')
+                                        <option value="all" {{ $selectedMonth === 'all' ? 'selected' : '' }}>
+                                            {{ $month }}
+                                        </option>
+                                    @else
+                                        <option value="{{ $month }}" {{ $selectedMonth === $month ? 'selected' : '' }}>
+                                            {{ $month }}
+                                        </option>
+                                    @endif
                                 @endforeach
                             </select>
                         </div>
@@ -746,7 +752,9 @@
                     <h5>
                         <i class="bi bi-table"></i>
                         {{ $reportType === 'paid' ? 'Paid' : 'Unpaid' }} Clients Report
-                        <small class="opacity-75">{{ $selectedMonth }} {{ $selectedYear }}</small>
+                        <small class="opacity-75">
+                            {{ $selectedMonth === 'all' ? 'All Months' : $selectedMonth }} {{ $selectedYear }}
+                        </small>
                     </h5>
                     @if ($data['totalClients'] > 0)
                         <span class="badge bg-light text-dark">{{ $data['totalClients'] }} Records</span>
@@ -880,7 +888,7 @@
                     </div>
                     <h4>No {{ $reportType }} clients found</h4>
                     <p class="text-muted">
-                        No clients match your search criteria for {{ $selectedMonth }} {{ $selectedYear }}.
+                        No clients match your search criteria for {{ $selectedMonth === 'all' ? 'All Months' : $selectedMonth }} {{ $selectedYear }}.
                         Try adjusting your filters or search terms.
                     </p>
                 </div>
