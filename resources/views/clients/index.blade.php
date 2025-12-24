@@ -38,10 +38,32 @@
                 @include('clients.list.table-content')
             </div>
         </div>
+        
+        <!-- Bulk SMS Section -->
+        <div class="card border-0 shadow-sm mt-4" id="bulkSmsSection" style="display: none;">
+            <div class="card-body">
+                <h6 class="card-title mb-3">
+                    <i class="bi bi-chat-dots me-2"></i>Send SMS to Selected Clients
+                    <span class="badge bg-primary ms-2" id="selectedCount">0</span>
+                </h6>
+                <form id="bulkSmsForm">
+                    @csrf
+                    <div class="mb-3">
+                        <label for="smsMessage" class="form-label">Message</label>
+                        <textarea class="form-control" id="smsMessage" name="message" rows="4" 
+                            placeholder="Enter your message here..." required></textarea>
+                        <small class="text-muted">Selected clients: <span id="selectedClientsList"></span></small>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="sendSmsBtn">
+                        <i class="bi bi-send me-1"></i> Send SMS
+                    </button>
+                    <button type="button" class="btn btn-secondary ms-2" id="clearSelectionBtn">
+                        <i class="bi bi-x-circle me-1"></i> Clear Selection
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
-    <script>
-        console.log("gg")
-    </script>
 @endsection
 
 @section('css')
@@ -166,6 +188,9 @@
                     },
                     success: function(response) {
                         $('#table-container').html(response.html);
+                        // Clear selections after filter/search
+                        $('.client-checkbox, #selectAll, #selectAllMobile').prop('checked', false);
+                        updateSelectedCount();
                         // Update dropdown option counts
                         if (response.counts) {
                             $('#paymentStatus option[value=""]').text('All Clients (' + response.counts
@@ -200,6 +225,100 @@
             });
 
             $('#paymentStatus').on('change', performSearch);
+
+            // Select All functionality
+            function updateSelectedCount() {
+                const selected = $('.client-checkbox:checked');
+                const count = selected.length;
+                const selectedIds = selected.map(function() {
+                    return $(this).val();
+                }).get();
+                
+                $('#selectedCount').text(count);
+                
+                if (count > 0) {
+                    $('#bulkSmsSection').slideDown();
+                    $('#selectedClientsList').text(selectedIds.join(', '));
+                } else {
+                    $('#bulkSmsSection').slideUp();
+                    $('#selectedClientsList').text('');
+                }
+            }
+
+            // Select All checkbox
+            $(document).on('change', '#selectAll, #selectAllMobile', function() {
+                const isChecked = $(this).is(':checked');
+                $('.client-checkbox').prop('checked', isChecked);
+                updateSelectedCount();
+            });
+
+            // Individual checkbox change
+            $(document).on('change', '.client-checkbox', function() {
+                updateSelectedCount();
+                // Update select all checkbox state
+                const totalCheckboxes = $('.client-checkbox').length;
+                const checkedCheckboxes = $('.client-checkbox:checked').length;
+                $('#selectAll, #selectAllMobile').prop('checked', totalCheckboxes === checkedCheckboxes);
+            });
+
+            // Clear selection
+            $('#clearSelectionBtn').on('click', function() {
+                $('.client-checkbox, #selectAll, #selectAllMobile').prop('checked', false);
+                updateSelectedCount();
+                $('#smsMessage').val('');
+            });
+
+            // Bulk SMS form submission
+            $('#bulkSmsForm').on('submit', function(e) {
+                e.preventDefault();
+                
+                const selectedIds = $('.client-checkbox:checked').map(function() {
+                    return $(this).val();
+                }).get();
+                
+                if (selectedIds.length === 0) {
+                    toastr.error('Please select at least one client');
+                    return;
+                }
+                
+                const message = $('#smsMessage').val().trim();
+                if (!message) {
+                    toastr.error('Please enter a message');
+                    return;
+                }
+                
+                // Disable button and show loading
+                const $btn = $('#sendSmsBtn');
+                const originalText = $btn.html();
+                $btn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-1"></span>Sending...');
+                
+                $.ajax({
+                    url: '{{ route("clients.bulk-sms") }}',
+                    type: 'POST',
+                    data: {
+                        _token: '{{ csrf_token() }}',
+                        client_ids: selectedIds,
+                        message: message
+                    },
+                    success: function(response) {
+                        toastr.success(response.message || 'SMS sent successfully to ' + selectedIds.length + ' client(s)');
+                        $('#smsMessage').val('');
+                        $('.client-checkbox:checked').prop('checked', false);
+                        $('#selectAll, #selectAllMobile').prop('checked', false);
+                        updateSelectedCount();
+                    },
+                    error: function(xhr) {
+                        const errorMsg = xhr.responseJSON?.message || 'An error occurred while sending SMS';
+                        toastr.error(errorMsg);
+                    },
+                    complete: function() {
+                        $btn.prop('disabled', false).html(originalText);
+                    }
+                });
+            });
+
+            // Initialize on page load
+            updateSelectedCount();
         });
     </script>
 @endsection

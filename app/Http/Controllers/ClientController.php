@@ -226,4 +226,44 @@ class ClientController extends Controller
         return redirect()->route('clients.show', $client->id)
             ->with('success', 'Client balance adjusted successfully');
     }
+
+    public function bulkSms(Request $request)
+    {
+        $validated = $request->validate([
+            'client_ids' => 'required|array|min:1',
+            'client_ids.*' => 'exists:clients,id',
+            'message' => 'required|string|max:1000',
+        ]);
+
+        $clients = Client::whereIn('id', $validated['client_ids'])->get();
+        $smsService = app(\App\Services\SmsService::class);
+        $successCount = 0;
+        $failedCount = 0;
+
+        foreach ($clients as $client) {
+            try {
+                $result = $smsService->sendSms($client->phone_number, $validated['message'], $client->id);
+                if ($result) {
+                    $successCount++;
+                } else {
+                    $failedCount++;
+                }
+            } catch (\Exception $e) {
+                $failedCount++;
+                \Log::error('Failed to send SMS to client ' . $client->id . ': ' . $e->getMessage());
+            }
+        }
+
+        $message = "SMS sent to {$successCount} client(s)";
+        if ($failedCount > 0) {
+            $message .= ". {$failedCount} failed.";
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'success_count' => $successCount,
+            'failed_count' => $failedCount
+        ]);
+    }
 }

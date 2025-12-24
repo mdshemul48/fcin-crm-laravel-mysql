@@ -3,6 +3,9 @@
         <table class="table table-striped table-hover">
             <thead>
                 <tr>
+                    <th>
+                        <input type="checkbox" id="selectAll" class="form-check-input">
+                    </th>
                     <th>ID</th>
                     <th>Username</th>
                     <th>Phone</th>
@@ -17,6 +20,10 @@
             <tbody>
                 @foreach ($clients as $client)
                     <tr>
+                        <td>
+                            <input type="checkbox" class="form-check-input client-checkbox" name="selected_clients[]"
+                                value="{{ $client->id }}">
+                        </td>
                         <td>#{{ $client->id }}</td>
                         <td>{{ $client->username }}</td>
                         <td>{{ $client->phone_number }}</td>

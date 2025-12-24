@@ -50,6 +50,7 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
 
     Route::resource('clients', ClientController::class);
     Route::post('/clients/{client}/adjust-balance', [ClientController::class, 'adjustBalance'])->name('clients.adjust-balance');
+    Route::post('/clients/bulk-sms', [ClientController::class, 'bulkSms'])->name('clients.bulk-sms');
     Route::resource('packages', PackageController::class)->middleware('restrict.role:admin');
 
     Route::resource('expenses', ExpenseController::class)->only(['index', 'store']);

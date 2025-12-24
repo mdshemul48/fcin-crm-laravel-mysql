@@ -1,8 +1,17 @@
 <div class="d-block d-md-none">
+    <div class="mb-3">
+        <input type="checkbox" id="selectAllMobile" class="form-check-input">
+        <label for="selectAllMobile" class="form-check-label ms-2">Select All</label>
+    </div>
     @foreach ($clients as $client)
         <div class="card mb-3">
             <div class="card-body">
-                <h5 class="card-title">Client #{{ $client->id }}</h5>
+                <div class="form-check mb-2">
+                    <input type="checkbox" class="form-check-input client-checkbox" name="selected_clients[]" value="{{ $client->id }}" id="client-{{ $client->id }}">
+                    <label class="form-check-label" for="client-{{ $client->id }}">
+                        <h5 class="card-title mb-0">Client #{{ $client->id }}</h5>
+                    </label>
+                </div>
                 <p class="card-text"><strong>Username:</strong> {{ $client->username }}</p>
                 <p class="card-text"><strong>Phone:</strong> {{ $client->phone_number }}</p>
                 <p class="card-text"><strong>Client Id:</strong> {{ $client->client_id }}</p>
