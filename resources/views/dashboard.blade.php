@@ -548,12 +548,20 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
-                                        <div class="backup-stat-card">
+                                    <div class="col-md-12">
+                                        <div class="backup-stat-card backup-stat-card-with-action">
                                             <i class="fas fa-file-archive text-warning"></i>
-                                            <div>
+                                            <div class="flex-grow-1 min-w-0">
                                                 <small>Filename</small>
-                                                <h6 class="text-truncate">{{ $backupInfo['filename'] }}</h6>
+                                                <h6 class="mb-0" style="word-break: break-all;">
+                                                    {{ $backupInfo['filename'] }}</h6>
+                                            </div>
+                                            <div class="ms-2 flex-shrink-0">
+                                                <a href="{{ route('backup.download', ['file' => $backupInfo['filename']]) }}"
+                                                    class="btn btn-sm btn-primary" title="Download Backup">
+                                                    <i class="fas fa-download"></i> <span
+                                                        class="d-none d-sm-inline">Download</span>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -567,6 +575,7 @@
                                                 <th>Age</th>
                                                 <th>Filename</th>
                                                 <th class="text-end">Size</th>
+                                                <th class="text-end">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -576,13 +585,20 @@
                                                     <td>{{ $backup['age'] }}</td>
                                                     <td>
                                                         <div class="d-flex align-items-center">
-                                                            <i class="fas fa-file-archive text-warning me-2"></i>
-                                                            <span class="text-truncate" style="max-width: 200px;">
+                                                            <i
+                                                                class="fas fa-file-archive text-warning me-2 flex-shrink-0"></i>
+                                                            <span style="word-break: break-all; max-width: 100%;">
                                                                 {{ $backup['filename'] }}
                                                             </span>
                                                         </div>
                                                     </td>
                                                     <td class="text-end">{{ $backup['size'] }}</td>
+                                                    <td class="text-end">
+                                                        <a href="{{ route('backup.download', ['file' => $backup['filepath']]) }}"
+                                                            class="btn btn-sm btn-primary" title="Download Backup">
+                                                            <i class="fas fa-download"></i> Download
+                                                        </a>
+                                                    </td>
                                                 </tr>
                                             @endforeach
                                         </tbody>
@@ -752,10 +768,22 @@
             padding: 1rem;
             background: #f8f9fa;
             border-radius: 0.5rem;
+            min-width: 0;
+        }
+
+        .backup-stat-card-with-action {
+            flex-wrap: wrap;
+        }
+
+        @media (min-width: 768px) {
+            .backup-stat-card-with-action {
+                flex-wrap: nowrap;
+            }
         }
 
         .backup-stat-card i {
             font-size: 1.5rem;
+            flex-shrink: 0;
         }
 
         .backup-stat-card small {
@@ -767,6 +795,12 @@
         .backup-stat-card h6 {
             margin: 0;
             font-size: 0.9rem;
+            word-break: break-all;
+            overflow-wrap: break-word;
+        }
+
+        .backup-stat-card .min-w-0 {
+            min-width: 0;
         }
 
         /* Enhanced Table Styles */

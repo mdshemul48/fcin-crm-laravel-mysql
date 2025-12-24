@@ -188,6 +188,7 @@ class DashboardController extends Controller
                 'date' => date('Y-m-d H:i', $disk->lastModified($file)),
                 'size' => round($disk->size($file) / 1048576, 2) . ' MB (' . round($disk->size($file) / 1024, 2) . ' KB)',
                 'filename' => basename($file),
+                'filepath' => $file,
                 'age' => Carbon::createFromTimestamp($disk->lastModified($file))->diffForHumans(),
             ])->toArray()
         ];

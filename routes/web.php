@@ -48,6 +48,8 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
         return back()->with('success', 'Backup process started');
     })->name('backup.create');
 
+    Route::get('/backup/download', [DatabaseBackupController::class, 'download'])->name('backup.download');
+
     Route::resource('clients', ClientController::class);
     Route::post('/clients/{client}/adjust-balance', [ClientController::class, 'adjustBalance'])->name('clients.adjust-balance');
     Route::post('/clients/bulk-sms', [ClientController::class, 'bulkSms'])->name('clients.bulk-sms');
