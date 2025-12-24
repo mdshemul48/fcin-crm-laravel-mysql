@@ -19,13 +19,13 @@ Schedule::call(function () {
     ->sendOutputTo(storage_path('logs/backup.log'));
 
 // Check daily if we need to generate bills
-// This is more resilient than running only on the 14th
+// Bills are generated on the 1st day of each month
 Schedule::call(function () {
     $now = Carbon::now();
-    $billingDate = $now->copy()->day(14);
+    $billingDate = $now->copy()->startOfMonth();
     
-    // If we're before the 14th, we're not in the billing period yet
-    if ($now->day < 14) {
+    // Only generate bills on the 1st day of the month
+    if ($now->day != 1) {
         return;
     }
     
@@ -35,18 +35,18 @@ Schedule::call(function () {
     // Generate bills for all clients who don't have one yet
     // Using direct service call instead of Artisan
     app(BillingService::class)->generateMonthlyBills(1); // Using admin ID 1
-    \Log::info('Monthly billing process initiated for ' . $billingDate->format('F Y') . ' at 00:01');
+    \Log::info('Monthly billing process initiated for ' . $billingDate->format('F Y') . ' at 00:05');
     
 })->dailyAt('00:05')
     ->appendOutputTo(storage_path('logs/billing_check.log'));
 
-// Additional check at 12:30 to catch any clients that might have been missed or added during the day
+// Additional check at 12:30 on the 1st to catch any clients that might have been missed
 Schedule::call(function () {
     $now = Carbon::now();
-    $billingDate = $now->copy()->day(14);
+    $billingDate = $now->copy()->startOfMonth();
     
-    // If we're before the 14th, we're not in the billing period yet
-    if ($now->day < 14) {
+    // Only generate bills on the 1st day of the month
+    if ($now->day != 1) {
         return;
     }
     

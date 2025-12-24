@@ -47,20 +47,41 @@ class ClientController extends Controller
             $query->where('billing_status', true);
         }
 
+        // Get total count before pagination
+        $totalCount = $query->count();
+
+        // Calculate counts for each filter option (without search filter)
+        // "All Clients" shows only active clients by default
+        $allClientsCount = Client::where('billing_status', true)->count();
+        $paidClientsCount = Client::where('billing_status', true)->where('status', 'paid')->count();
+        $unpaidClientsCount = Client::where('billing_status', true)->where('status', 'due')->count();
+        $activeClientsCount = Client::where('billing_status', true)->count();
+        $inactiveClientsCount = Client::where('billing_status', false)->count();
+
         $clients = $query->paginate(100);
+
+        $counts = [
+            'all' => $allClientsCount,
+            'paid' => $paidClientsCount,
+            'due' => $unpaidClientsCount,
+            'active' => $activeClientsCount,
+            'inactive' => $inactiveClientsCount,
+        ];
 
         if ($request->ajax()) {
             return response()->json([
-                'html' => view('clients.list.table-content', compact('clients'))->render(),
+                'html' => view('clients.list.table-content', compact('clients', 'totalCount'))->render(),
                 'url' => $request->fullUrlWithQuery([
                     'search' => $request->search,
                     'payment_status' => $request->payment_status,
                     'billing_status' => $request->billing_status
-                ])
+                ]),
+                'totalCount' => $totalCount,
+                'counts' => $counts
             ]);
         }
 
-        return view('clients.index', compact('clients'));
+        return view('clients.index', compact('clients', 'totalCount', 'counts'));
     }
 
     public function create()

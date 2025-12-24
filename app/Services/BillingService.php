@@ -13,30 +13,25 @@ class BillingService
     public function generateMonthlyBills($created_by_id): void
     {
         $clients = Client::where('billing_status', true)->get();
-        
-        // Determine the billing date for the current period
+
+        // Determine the billing date for the current period (first day of the month)
         $now = Carbon::now();
-        $billingDate = $now->copy()->day(14);
-        
-        // If we're before the 14th, we're not in the billing period yet
-        // This should not happen with the scheduler, but just in case
-        if ($now->day < 14) {
-            return;
-        }
-        
-        // The bill is for the current month, not the previous month
+        $billingDate = $now->copy()->startOfMonth();
+
+    
+        // The bill is for the current month
         $billMonth = $billingDate->format('F');
         $billYear = $billingDate->year;
-        
+
         // We no longer check globally if bills exist for this period
         // Instead, we'll check for each client individually
-        
+
         $billsGenerated = 0;
         $clientsProcessed = 0;
 
         foreach ($clients as $client) {
             $clientsProcessed++;
-            
+
             // Check if this specific client already has a bill for this period
             $existingBill = GeneratedBill::where('client_id', $client->id)
                 ->where('bill_type', 'monthly')
@@ -48,7 +43,7 @@ class BillingService
             if ($existingBill) {
                 continue;
             }
-            
+
             // Generate bill for this client
             DB::transaction(function () use ($client, $created_by_id, $billingDate, $billMonth, $billYear, &$billsGenerated) {
                 GeneratedBill::create([
@@ -57,7 +52,7 @@ class BillingService
                     'bill_type' => 'monthly',
                     'generated_date' => $billingDate,
                     'month' => $billMonth,
-                    'remarks' => "Monthly bill for {$billMonth} {$billYear} (14th to 14th)",
+                    'remarks' => "Monthly bill for {$billMonth} {$billYear} (1st to last day of month)",
                     'created_by' => $created_by_id,
                 ]);
 
@@ -68,11 +63,11 @@ class BillingService
                     $this->processPayment($created_by_id, $created_by_id, $client, 0, 0, 'Auto payment applied');
                 }
                 $client->save();
-                
+
                 $billsGenerated++;
             });
         }
-        
+
         // Log the results
         \Log::info("Monthly billing process completed: {$billsGenerated} bills generated out of {$clientsProcessed} clients processed.");
     }
@@ -185,7 +180,7 @@ class BillingService
             if ($client->due_amount >= $bill->amount) {
                 $client->due_amount -= $bill->amount;
             }
-            
+
             if (abs($client->current_balance - $client->due_amount) < 0.01) {
                 $client->current_balance = 0;
                 $client->due_amount = 0;
@@ -193,7 +188,7 @@ class BillingService
             } else {
                 $client->status = 'due';
             }
-            
+
             $client->save();
             $bill->delete();
         });

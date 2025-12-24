@@ -7,15 +7,18 @@
         <div class="d-flex gap-2">
             <div class="input-group">
                 <select id="paymentStatus" class="form-select border-0 shadow-sm w-auto">
-                    <option value="">All Clients</option>
+                    <option value="">All Clients ({{ $counts['all'] ?? 0 }})</option>
                     <option value="paid" {{ request()->query('payment_status') === 'paid' ? 'selected' : '' }}>Paid
+                        ({{ $counts['paid'] ?? 0 }})
                     </option>
                     <option value="due" {{ request()->query('payment_status') === 'due' ? 'selected' : '' }}>Unpaid
+                        ({{ $counts['due'] ?? 0 }})
                     </option>
                     <option value="active" {{ request()->query('billing_status') === 'active' ? 'selected' : '' }}>Active
+                        ({{ $counts['active'] ?? 0 }})
                     </option>
                     <option value="inactive" {{ request()->query('billing_status') === 'inactive' ? 'selected' : '' }}>
-                        Inactive
+                        Inactive ({{ $counts['inactive'] ?? 0 }})
                     </option>
                 </select>
                 <input type="text" id="searchInput" class="form-control border-0 shadow-sm w-auto"
@@ -163,6 +166,19 @@
                     },
                     success: function(response) {
                         $('#table-container').html(response.html);
+                        // Update dropdown option counts
+                        if (response.counts) {
+                            $('#paymentStatus option[value=""]').text('All Clients (' + response.counts
+                                .all + ')');
+                            $('#paymentStatus option[value="paid"]').text('Paid (' + response.counts
+                                .paid + ')');
+                            $('#paymentStatus option[value="due"]').text('Unpaid (' + response.counts
+                                .due + ')');
+                            $('#paymentStatus option[value="active"]').text('Active (' + response.counts
+                                .active + ')');
+                            $('#paymentStatus option[value="inactive"]').text('Inactive (' + response
+                                .counts.inactive + ')');
+                        }
                         history.pushState({}, '', response.url);
                     },
                     error: function(xhr, status, error) {
