@@ -33,12 +33,30 @@ class ClientController extends Controller
             }
         }
 
+        // By default, exclude inactive clients (only show active clients)
+        // Only show inactive clients when explicitly filtered
+        if ($request->filled('billing_status')) {
+            $billingStatus = $request->input('billing_status');
+            if ($billingStatus === 'active') {
+                $query->where('billing_status', true);
+            } elseif ($billingStatus === 'inactive') {
+                $query->where('billing_status', false);
+            }
+        } else {
+            // Default behavior: only show active clients
+            $query->where('billing_status', true);
+        }
+
         $clients = $query->paginate(100);
 
         if ($request->ajax()) {
             return response()->json([
                 'html' => view('clients.list.table-content', compact('clients'))->render(),
-                'url' => $request->fullUrlWithQuery(['search' => $request->search, 'payment_status' => $request->payment_status])
+                'url' => $request->fullUrlWithQuery([
+                    'search' => $request->search,
+                    'payment_status' => $request->payment_status,
+                    'billing_status' => $request->billing_status
+                ])
             ]);
         }
 
@@ -106,7 +124,7 @@ class ClientController extends Controller
         $smsTemplates = SmsTemplate::where('type', 'payment')
             ->where('is_active', true)
             ->get();
-        
+
         // Load balance adjustments with their relationships
         $balanceAdjustments = $client->balanceAdjustments()
             ->with('adjustedBy')
@@ -132,34 +150,34 @@ class ClientController extends Controller
         DB::transaction(function () use ($client, $adjustmentType, $request, $remarks) {
             $oldCurrentBalance = $client->current_balance;
             $oldDueAmount = $client->due_amount;
-            
+
             // Adjust current balance if requested
             if ($adjustmentType === 'current_balance' || $adjustmentType === 'both') {
                 $client->current_balance = $request->current_balance;
             }
-            
+
             // Adjust due amount if requested
             if ($adjustmentType === 'due_amount' || $adjustmentType === 'both') {
                 $client->due_amount = $request->due_amount;
             }
-            
+
             // Update client status based on due amount
             if ($client->due_amount <= 0) {
                 $client->status = 'paid';
             } else {
                 $client->status = 'due';
             }
-            
+
             // Check if current_balance and due_amount are equal, if so, set both to 0
             if (abs($client->current_balance - $client->due_amount) < 0.01) {
                 $client->current_balance = 0;
                 $client->due_amount = 0;
                 $client->status = 'paid';
             }
-            
+
             // Save the changes
             $client->save();
-            
+
             // Save the adjustment history
             BalanceAdjustment::create([
                 'client_id' => $client->id,
@@ -171,7 +189,7 @@ class ClientController extends Controller
                 'new_due_amount' => $client->due_amount,
                 'remarks' => $remarks
             ]);
-            
+
             // Log the adjustment
             \Log::info('Client balance adjusted', [
                 'client_id' => $client->id,

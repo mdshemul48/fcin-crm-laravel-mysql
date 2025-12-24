@@ -47,14 +47,20 @@ class UserTransactionController extends Controller
             'to_user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric|min:1',
             'note' => 'nullable|string|max:255',
+            'transaction_date' => 'required|date',
         ]);
 
-        UserTransaction::create([
+        $transaction = UserTransaction::create([
             'from_user_id' => auth()->id(),
             'to_user_id' => $validated['to_user_id'],
             'amount' => $validated['amount'],
             'note' => $validated['note'],
         ]);
+
+        // Update the created_at timestamp to the selected date
+        $transaction->created_at = Carbon::parse($validated['transaction_date']);
+        $transaction->updated_at = Carbon::parse($validated['transaction_date']);
+        $transaction->save();
 
         return redirect()->route('transactions.index')->with('message', 'Transaction recorded successfully');
     }
@@ -70,9 +76,19 @@ class UserTransactionController extends Controller
             'to_user_id' => 'required|exists:users,id',
             'amount' => 'required|numeric|min:1',
             'note' => 'nullable|string|max:255',
+            'transaction_date' => 'required|date',
         ]);
 
-        $transaction->update($validated);
+        $transaction->update([
+            'to_user_id' => $validated['to_user_id'],
+            'amount' => $validated['amount'],
+            'note' => $validated['note'],
+        ]);
+
+        // Update the created_at timestamp to the selected date
+        $transaction->created_at = Carbon::parse($validated['transaction_date']);
+        $transaction->updated_at = Carbon::parse($validated['transaction_date']);
+        $transaction->save();
 
         return redirect()->route('transactions.index')->with('message', 'Transaction updated successfully');
     }

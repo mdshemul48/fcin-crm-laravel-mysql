@@ -50,6 +50,44 @@
                 </a>
             </div>
 
+            <!-- Active Clients Card -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <a href="{{ route('clients.index', ['billing_status' => 'active']) }}" class="text-decoration-none">
+                    <div class="card border-0 shadow h-100 py-3 bg-gradient-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-uppercase fw-bold mb-2">Active Clients</h6>
+                                    <h4 class="fw-bold mb-0">{{ $activeClients }}</h4>
+                                </div>
+                                <div>
+                                    <i class="fas fa-user-check fa-3x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Inactive Clients Card -->
+            <div class="col-xl-4 col-md-6 mb-4">
+                <a href="{{ route('clients.index', ['billing_status' => 'inactive']) }}" class="text-decoration-none">
+                    <div class="card border-0 shadow h-100 py-3 bg-gradient-secondary text-white">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-uppercase fw-bold mb-2">Inactive Clients</h6>
+                                    <h4 class="fw-bold mb-0">{{ $inactiveClients }}</h4>
+                                </div>
+                                <div>
+                                    <i class="fas fa-user-times fa-3x"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
             <div class="col-xl-4 col-md-6 mb-4">
                 <a href="{{ route('clients.index', ['payment_status' => 'paid']) }}" class="text-decoration-none">
                     <div class="card border-0 shadow h-100 py-3 bg-gradient-success text-white">
@@ -164,7 +202,8 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between">
                             <div>
-                                <h6 class="text-uppercase fw-bold mb-2">Previous Expenses ({{ $previousExpensePeriod }})</h6>
+                                <h6 class="text-uppercase fw-bold mb-2">Previous Expenses ({{ $previousExpensePeriod }})
+                                </h6>
                                 <h4 class="fw-bold mb-0">৳{{ number_format($previousMonthExpenses, 2) }}</h4>
                             </div>
                             <div>

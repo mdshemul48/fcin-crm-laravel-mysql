@@ -48,6 +48,8 @@ class DashboardController extends Controller
     {
         return [
             'totalClients' => Client::count(),
+            'activeClients' => Client::where('billing_status', true)->count(),
+            'inactiveClients' => Client::where('billing_status', false)->count(),
             'paidClients' => Client::where('status', 'paid')->count(),
             'unpaidClients' => Client::where('status', 'due')->count(),
             'totalDue' => Client::where('status', 'due')->sum('due_amount'),
@@ -59,14 +61,14 @@ class DashboardController extends Controller
         // Calculate the current billing period (14th to 14th)
         $now = now();
         $currentPeriodStart = $now->copy()->day(14);
-        
+
         // If we're before the 14th of this month, the billing period started on the 14th of last month
         if ($now->day < 14) {
             $currentPeriodStart->subMonth();
         }
-        
+
         $currentPeriodEnd = $currentPeriodStart->copy()->addMonth();
-        
+
         $paymentCollections = Payment::selectRaw('collected_by, SUM(amount) as total_amount')
             ->where('created_at', '>=', $currentPeriodStart)
             ->where('created_at', '<', $currentPeriodEnd)
@@ -104,14 +106,14 @@ class DashboardController extends Controller
     {
         $now = now();
         $currentPeriodStart = $now->copy()->day(14);
-        
+
         // If we're before the 14th of this month, the billing period started on the 14th of last month
         if ($now->day < 14) {
             $currentPeriodStart->subMonth();
         }
-        
+
         $currentPeriodEnd = $currentPeriodStart->copy()->addMonth();
-        
+
         $monthlyRecharges = ResellerRecharge::where('created_at', '>=', $currentPeriodStart)
             ->where('created_at', '<', $currentPeriodEnd)
             ->get();
@@ -144,19 +146,19 @@ class DashboardController extends Controller
     {
         $now = now();
         $currentPeriodStart = $now->copy()->day(14);
-        
+
         // If we're before the 14th of this month, the billing period started on the 14th of last month
         if ($now->day < 14) {
             $currentPeriodStart->subMonth();
         }
-        
+
         $currentPeriodEnd = $currentPeriodStart->copy()->addMonth();
         $previousPeriodStart = $currentPeriodStart->copy()->subMonth();
         $previousPeriodEnd = $currentPeriodStart;
-        
+
         $currentPeriodLabel = $currentPeriodStart->format('M d') . ' - ' . $currentPeriodEnd->format('M d');
         $previousPeriodLabel = $previousPeriodStart->format('M d') . ' - ' . $previousPeriodEnd->format('M d');
-        
+
         return [
             'currentMonthExpenses' => $this->expenseService->getTotalExpensesByDateRange(
                 $currentPeriodStart->format('Y-m-d'),

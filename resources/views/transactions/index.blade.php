@@ -97,7 +97,7 @@
                                     $canEdit = $transaction->from_user_id === auth()->id();
                                 @endphp
                                 <tr class="{{ $isMyTransaction ? 'table-light' : '' }}">
-                                    <td>{{ $transaction->created_at->format('d M Y, h:i A') }}</td>
+                                    <td>{{ $transaction->created_at->format('d M Y') }}</td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div
@@ -183,6 +183,11 @@
                             </div>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Transaction Date</label>
+                            <input type="date" class="form-control" name="transaction_date" 
+                                value="{{ date('Y-m-d') }}" required>
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Note (Optional)</label>
                             <textarea class="form-control" name="note" rows="2"></textarea>
                         </div>
@@ -228,6 +233,11 @@
                                         <input type="number" step="0.01" class="form-control" name="amount"
                                             value="{{ $transaction->amount }}" required>
                                     </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Transaction Date</label>
+                                    <input type="date" class="form-control" name="transaction_date" 
+                                        value="{{ $transaction->created_at->format('Y-m-d') }}" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Note (Optional)</label>

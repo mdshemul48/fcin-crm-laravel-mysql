@@ -12,6 +12,11 @@
                     </option>
                     <option value="due" {{ request()->query('payment_status') === 'due' ? 'selected' : '' }}>Unpaid
                     </option>
+                    <option value="active" {{ request()->query('billing_status') === 'active' ? 'selected' : '' }}>Active
+                    </option>
+                    <option value="inactive" {{ request()->query('billing_status') === 'inactive' ? 'selected' : '' }}>
+                        Inactive
+                    </option>
                 </select>
                 <input type="text" id="searchInput" class="form-control border-0 shadow-sm w-auto"
                     placeholder="Search by Username, Number, or C.ID" value="{{ request()->query('search') }}">
@@ -126,7 +131,23 @@
                 const params = new URLSearchParams();
 
                 if (search) params.set('search', search);
-                if (status) params.set('payment_status', status);
+
+                // Handle payment status (paid, due) or billing status (active, inactive)
+                // Clear the other filter when switching between them
+                if (status === 'active' || status === 'inactive') {
+                    params.set('billing_status', status);
+                    // Clear payment_status if it was set
+                    params.delete('payment_status');
+                } else if (status) {
+                    params.set('payment_status', status);
+                    // Clear billing_status if it was set
+                    params.delete('billing_status');
+                } else {
+                    // Clear both when "All Clients" is selected
+                    // Note: "All Clients" will still only show active clients by default
+                    params.delete('payment_status');
+                    params.delete('billing_status');
+                }
 
                 const url = `${currentUrl}${params.toString() ? '?' + params.toString() : ''}`;
 
