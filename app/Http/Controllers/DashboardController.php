@@ -26,8 +26,10 @@ class DashboardController extends Controller
         // Payment Collections
         $paymentStats = $this->getPaymentStatistics();
 
-        // Reseller Recharge Statistics
-        $rechargeStats = $this->getResellerRechargeStatistics();
+        // Reseller Recharge Statistics (Admin only)
+        $rechargeStats = auth()->user()->role === 'admin' 
+            ? $this->getResellerRechargeStatistics() 
+            : $this->getEmptyResellerStats();
 
         // Expense Statistics
         $expenseStats = $this->getExpenseStatistics();
@@ -127,6 +129,23 @@ class DashboardController extends Controller
                 ? $monthlyRecharges->avg('commission')
                 : 0,
             'resellerStats' => $resellerStats,
+            'rechargesPeriod' => $periodLabel,
+        ];
+    }
+
+    private function getEmptyResellerStats()
+    {
+        $now = now();
+        $currentPeriodStart = $now->copy()->startOfMonth();
+        $currentPeriodEnd = $now->copy()->endOfMonth();
+        $periodLabel = $currentPeriodStart->format('M d') . ' - ' . $currentPeriodEnd->format('M d, Y');
+
+        return [
+            'monthlyRecharges' => 0,
+            'monthlyCommission' => 0,
+            'totalRechargeCount' => 0,
+            'averageCommission' => 0,
+            'resellerStats' => collect([]),
             'rechargesPeriod' => $periodLabel,
         ];
     }

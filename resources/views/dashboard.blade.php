@@ -214,6 +214,7 @@
                 </div>
             </div>
 
+            @if (auth()->user()->role === 'admin')
             <!-- Reseller Stats -->
             <div class="col-xl-4 col-md-6 mb-4">
                 <div class="card border-0 shadow h-100 bg-gradient-violet text-white">
@@ -249,6 +250,7 @@
                     </div>
                 </div>
             </div>
+            @endif
         </div>
 
         <!-- Enhanced Tables Section -->
@@ -411,6 +413,7 @@
                 </div>
             </div>
 
+            @if (auth()->user()->role === 'admin')
             <div class="col-lg-6 col-12">
                 <div class="card shadow-lg border-0">
                     <div class="card-header bg-gradient-dark text-white py-3">
@@ -475,6 +478,7 @@
                     </div>
                 </div>
             </div>
+            @endif
 
         </div>
 

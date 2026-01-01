@@ -68,10 +68,12 @@ Route::middleware(['auth', 'check.user.status'])->group(function () {
         ->name('bills.generate-monthly')
         ->middleware('restrict.role:admin');
 
-    // Reseller Management Routes
-    Route::resource('resellers', ResellerController::class);
-    Route::resource('reseller-recharges', ResellerRechargeController::class);
-    Route::get('reseller-recharges/filter', [ResellerRechargeController::class, 'filter'])->name('reseller-recharges.filter');
+    // Reseller Management Routes (Admin only)
+    Route::middleware(['restrict.role:admin'])->group(function () {
+        Route::resource('resellers', ResellerController::class);
+        Route::resource('reseller-recharges', ResellerRechargeController::class);
+        Route::get('reseller-recharges/filter', [ResellerRechargeController::class, 'filter'])->name('reseller-recharges.filter');
+    });
 
     Route::resource('transactions', UserTransactionController::class)->only([
         'index',

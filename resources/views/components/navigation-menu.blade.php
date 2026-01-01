@@ -21,6 +21,7 @@
     </div>
 </li>
 
+@if (auth()->user()->role === 'admin')
 <li class="sidebar-item">
     <a href="#resellerSubmenu" class="sidebar-link" data-bs-toggle="collapse">
         <i class="bi bi-diagram-3-fill"></i>
@@ -43,6 +44,7 @@
         </ul>
     </div>
 </li>
+@endif
 
 <li class="sidebar-item">
     <a href="{{ route('expenses.index') }}" class="sidebar-link {{ request()->routeIs('expenses.*') ? 'active' : '' }}">
