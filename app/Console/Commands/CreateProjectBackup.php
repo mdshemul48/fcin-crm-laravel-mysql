@@ -43,6 +43,7 @@ class CreateProjectBackup extends Command
                 '/\/storage\//',
                 '/\/backups\//',
                 '/backup-.*\.zip$/',
+                '/\/\.git\//',
             ];
 
             foreach ($files as $file) {

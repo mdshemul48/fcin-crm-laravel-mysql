@@ -200,6 +200,11 @@
                                 </div>
                             </div>
                             <div class="mb-3">
+                                <label class="form-label">Recharge Date</label>
+                                <input type="date" class="form-control" name="recharge_date" 
+                                    value="{{ now()->format('Y-m-d') }}" required>
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label">Notes</label>
                                 <textarea class="form-control" name="notes" rows="3"></textarea>
                             </div>
@@ -252,6 +257,11 @@
                                         <input type="number" step="0.01" class="form-control" name="commission"
                                             value="{{ $recharge->commission }}" required>
                                     </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Recharge Date</label>
+                                    <input type="date" class="form-control" name="recharge_date" 
+                                        value="{{ $recharge->created_at->format('Y-m-d') }}" required>
                                 </div>
                                 <div class="mb-3">
                                     <label class="form-label">Notes</label>

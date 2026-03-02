@@ -52,9 +52,18 @@ class ResellerRechargeController extends Controller
             'amount' => 'required|numeric|min:0',
             'commission' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
+            'recharge_date' => 'required|date',
         ]);
 
-        ResellerRecharge::create($validated);
+        // Set created_at to the selected recharge date with current time
+        $rechargeDate = Carbon::parse($validated['recharge_date'])->setTime(now()->hour, now()->minute, now()->second);
+        unset($validated['recharge_date']);
+
+        $recharge = ResellerRecharge::create($validated);
+        
+        // Update created_at to the selected date with current time
+        $recharge->created_at = $rechargeDate;
+        $recharge->save();
 
         return redirect()->back()->with('message', 'Recharge added successfully');
     }
@@ -72,9 +81,23 @@ class ResellerRechargeController extends Controller
             'amount' => 'required|numeric|min:0',
             'commission' => 'required|numeric|min:0',
             'notes' => 'nullable|string',
+            'recharge_date' => 'required|date',
         ]);
 
+        // Set created_at to the selected recharge date, preserving the original time
+        $rechargeDate = Carbon::parse($validated['recharge_date'])
+            ->setTime(
+                $resellerRecharge->created_at->hour,
+                $resellerRecharge->created_at->minute,
+                $resellerRecharge->created_at->second
+            );
+        unset($validated['recharge_date']);
+
         $resellerRecharge->update($validated);
+        
+        // Update created_at to the selected date with preserved time
+        $resellerRecharge->created_at = $rechargeDate;
+        $resellerRecharge->save();
 
         return redirect()->route('reseller-recharges.index')->with('message', 'Recharge updated successfully');
     }
