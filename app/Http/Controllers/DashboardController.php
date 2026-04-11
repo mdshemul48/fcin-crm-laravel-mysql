@@ -49,7 +49,7 @@ class DashboardController extends Controller
     private function getClientStatistics()
     {
         return [
-            'totalClients' => Client::where('billing_status', true)->count(),
+            'totalClients' => Client::count(),
             'activeClients' => Client::where('billing_status', true)->count(),
             'inactiveClients' => Client::where('billing_status', false)->count(),
             'paidClients' => Client::where('status', 'paid')->count(),
