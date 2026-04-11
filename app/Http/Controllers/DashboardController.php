@@ -49,12 +49,14 @@ class DashboardController extends Controller
     private function getClientStatistics()
     {
         return [
-            'totalClients' => Client::count(),
+            'totalClients' => Client::where('billing_status', true)->count(),
             'activeClients' => Client::where('billing_status', true)->count(),
             'inactiveClients' => Client::where('billing_status', false)->count(),
             'paidClients' => Client::where('status', 'paid')->count(),
             'unpaidClients' => Client::where('status', 'due')->count(),
-            'totalDue' => Client::where('status', 'due')->sum('due_amount'),
+            'totalDue' => Client::where('billing_status', true)
+                ->where('status', 'due')
+                ->sum('due_amount'),
         ];
     }
 
@@ -66,6 +68,7 @@ class DashboardController extends Controller
         $currentPeriodEnd = $now->copy()->endOfMonth();
 
         $paymentCollections = Payment::selectRaw('collected_by, SUM(amount) as total_amount')
+            ->whereHas('client', fn($q) => $q->where('billing_status', true))
             ->where('created_at', '>=', $currentPeriodStart)
             ->where('created_at', '<=', $currentPeriodEnd)
             ->groupBy('collected_by')
@@ -73,6 +76,7 @@ class DashboardController extends Controller
             ->get();
 
         $paymentCollectionsDaily = Payment::selectRaw('collected_by, SUM(amount) as total_amount')
+            ->whereHas('client', fn($q) => $q->where('billing_status', true))
             ->whereDate('created_at', now())
             ->groupBy('collected_by')
             ->with('user')
