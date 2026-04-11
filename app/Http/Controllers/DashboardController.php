@@ -52,8 +52,8 @@ class DashboardController extends Controller
             'totalClients' => Client::count(),
             'activeClients' => Client::where('billing_status', true)->count(),
             'inactiveClients' => Client::where('billing_status', false)->count(),
-            'paidClients' => Client::where('status', 'paid')->count(),
-            'unpaidClients' => Client::where('status', 'due')->count(),
+            'paidClients' => Client::where('billing_status', true)->where('status', 'paid')->count(),
+            'unpaidClients' => Client::where('billing_status', true)->where('status', 'due')->count(),
             'totalDue' => Client::where('billing_status', true)
                 ->where('status', 'due')
                 ->sum('due_amount'),
